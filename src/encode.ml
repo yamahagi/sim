@@ -45,18 +45,21 @@ let encode env e =
           | ADDI (t, s, d) | SUBI (t, s, d) | MULI (t, s, d) | DIVI (t, s, d)
             ->
               (t lsl 21) lor (s lsl 16) lor d
-          | ADD (t, a, b) | SUB (t, a, b) | MUL (t, a, b) | DIV (t, a, b) | AND(t,a,b) | OR(t,a,b) ->
+          | ADD (t, a, b)
+           |SUB (t, a, b)
+           |MUL (t, a, b)
+           |DIV (t, a, b)
+           |AND (t, a, b)
+           |OR (t, a, b) ->
               (t lsl 21) lor (a lsl 16) lor (b lsl 11)
-          | JUMP label  
-          | BEQ (label) | BLE (label) -> List.assoc label env
+          | JUMP label | BEQ label | BLE label -> List.assoc label env
           | LOAD (t, a, d) | STORE (t, a, d) -> (t lsl 21) lor (a lsl 16) lor d
           | LI (t, d) -> (t lsl 21) lor d
           | CMPD (a, b) -> (a lsl 21) lor (b lsl 16)
           | IN a -> a lsl 21
-          | OUT a -> a lsl 21 
+          | OUT a -> a lsl 21
           | Label _ -> failwith "label is unreachble"
-          | _ -> failwith "yet implemented"
-          )
+          | _ -> failwith "yet implemented" )
       in
       [op ^ t]
 
