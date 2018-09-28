@@ -40,14 +40,15 @@ rule token = parse
 | "divi"  {DIVI}
 | "div"  {DIV}
 | "mr"  {MR}
+| "in"  {IN}
+| "out"  {OUT}
 | "li"  {LI}
 | "store"  {STORE}
 | "load"  {LOAD}
 | "cmpdi"  {CMPDI}
 | "cmpd"  {CMPD}
 | "beq"  {BEQ}
-| "ble"  {BLE}
-| "jump"  {JUMP}
+| "ble"  {BLE} | "jump"  {JUMP}
 | ":"  {COLON}
 | (lower|'.') (digit|lower|upper|'_')* 
     { IDENT(Lexing.lexeme lexbuf) }

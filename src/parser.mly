@@ -54,9 +54,14 @@ order:
     | STORE reg COMMA reg COMMA INT { STORE($2,$4,$6)}
     | CMPDI reg COMMA INT { CMPDI($2,$4)}
     | CMPD reg COMMA reg { CMPD($2,$4)}
-    | BEQ reg COMMA reg { BEQ($2,$4)}
-    | BLE reg COMMA reg { BLE($2,$4)}
+    | BEQ IDENT { BEQ($2)}
+    | BLE IDENT { BLE($2)}
     | IN reg { IN($2)}
     | OUT reg { OUT($2)}
     | JUMP IDENT {JUMP($2)}
+    | error 
+    {
+    let lex = (Parsing.symbol_end_pos ()).Lexing.pos_lnum in
+         failwith ("sytax error at line " ^ string_of_int lex)
+    }
 
