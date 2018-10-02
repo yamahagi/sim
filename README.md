@@ -12,3 +12,4 @@ make
 * 文法はtest.sに書いてあるのがほとんど
 * 4Byte alignのはず(?)なの
 
+# sim
