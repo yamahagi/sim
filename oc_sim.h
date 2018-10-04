@@ -21,6 +21,8 @@ extern uint64_t cnt;
 #define get_rti(ir) ((uint32_t)(((ir)>>16)&0x1f))
 //RS 元レジスタ2
 #define get_rdi(ir) ((uint32_t)(((ir)>>11)&0x1f))
+//コンディションレジスタ reg[30]
+#define cdr reg[30]
 /*
 #define get_shamt(ir) ((uint32_t)(((ir)>>6)&0x1f))
 #define get_funct(ir) ((uint32_t)((ir)&0x3f))

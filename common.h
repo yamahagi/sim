@@ -4,6 +4,7 @@
 #define INSTNUM 64	// 6bit 63
 #define REGNUM 32
 #define ROMNUM (64 * 1024) // words(32bit)
+//メモリのこと？
 #define RAMNUM (256 * 1024)
 
 #define ADDI  0b00000

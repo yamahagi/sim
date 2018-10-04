@@ -12,11 +12,22 @@
 
 //一つ一つに命令が入る？
 uint32_t prom[ROM_NUM];
+//メモリ
 uint32_t ram[RAM_NUM];
+/*
+汎用レジスタ
+%r0 ゼロレジスタ
+%r1 スタックの先頭
+%r2 スタックフレーム
+%r3~%r14 int
+%r15~%r26 float
+%r30 コンディションレジスタ
+%r31 リンクレジスタ
+*/
 int32_t reg[REG_NUM];
 uint32_t freg[REG_NUM];
-//コンディションレジスタ
-int cdr;
+//コンディションレジスタ reg[30]
+int32_t cdr;
 uint32_t pc;
 //命令
 uint32_t ir;
@@ -28,8 +39,11 @@ extern uint32_t _finv(uint32_t);
 extern uint32_t _fsqrt(uint32_t);
 extern uint32_t _fadd(uint32_t, uint32_t);
 extern uint32_t _fmul(uint32_t, uint32_t);
+
+//レジスタの規定
 static inline void init(void) {
 // register init
+	reg[0] = 0;
 	reg[1] = 4*(RAM_NUM-1);
 	reg[2] = prom[0];
 // heap init
@@ -58,6 +72,20 @@ int simulate(void) {
 		if (!(cnt % 100000000)) { 
 			warning("."); 
 
+		}
+	
+		//TODO レジスタの中身をprint
+		//ゼロレジスタを表示	
+		printf("ゼロレジスタ %d\n",reg[0]);
+		printf("スタックの先頭　%d\n",reg[1]);
+		printf("スタックフレーム %d\n",reg[2]);
+		printf("リンクレジスタ %d\n",reg[30]);
+		printf("コンディションレジスタ %d\n",reg[31]);
+		for(int i=0;i<12;i++){
+			printf("reg[%d] %d\n",i+3,reg[i+3]);
+		}
+		for(int i=0;i<12;i++){
+			printf("reg[%d] %d\n",i+15,reg[i+15]);
 		}
 	} while (exec_op(ir)==0);
 	return 0;
@@ -98,9 +126,11 @@ static inline int exec_op(uint32_t ir) {
 		case DIV:
 			_GRT = _GRS / _GRD;
 			break;
+		//メモリから代入 ram
 		case LOAD:
 			_GRD = ram[((_GRS + _GRT)/4)];
 			break;
+		//メモリに代入
 		case STORE:
 			ram[((_GRS + _GRT)/4)] = _GRD;
 			break;
