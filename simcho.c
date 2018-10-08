@@ -95,10 +95,16 @@ static void configure(int argc, char **argv) {
 //prom[(64 * 1024)] // words(32bit)
 static void prom_set(int argc,char **argv) {
 
+	if (argc < 2) {
+                print_usage(argv[0]);
+                exit(1);
+        }
+
 FILE *fp;
     char *filename = argv[1];
     char readline[32] = {'\0'};
         int n = 0;
+
 
     /* ファイルのオープン */
     if ((fp = fopen(filename, "r")) == NULL) {
@@ -140,7 +146,14 @@ static void prom_set(int argc, char **argv) {
 }
 */
 
-void segv_handler(int);
+void segv_handler(int n) {
+/*	uint32_t ir = prom[pc-1];
+	warning("せぐふぉー@%lu.[%x] ir:%08X ", cnt, pc, ir);
+	print_ir(ir);
+	warning("\n");
+	exit(1);
+*/
+}
 static void register_segv_handler(void) {
 	struct sigaction sa;
 	sa.sa_handler = segv_handler;
@@ -149,14 +162,6 @@ static void register_segv_handler(void) {
 		exit(1);
 	}
 
-}
-
-void segv_handler(int n) {
-	uint32_t ir = prom[pc-1];
-	warning("せぐふぉー@%lu.[%x] ir:%08X ", cnt, pc, ir);
-	print_ir(ir);
-	warning("\n");
-	exit(1);
 }
 
 #define print_val(fmt, ...) \

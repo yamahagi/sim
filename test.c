@@ -74,8 +74,13 @@ static void open_log_file(void) {
 #endif
 }
 
-void segv_handler(int a){
-};
+void segv_handler(int n) {
+        uint32_t ir = prom[pc-1];
+        warning("せぐふぉー@%lu.[%x] ir:%08X ", cnt, pc, ir);
+        print_ir(ir);
+        warning("\n");
+        exit(1);
+}
 static void register_segv_handler(void) {
         struct sigaction sa;
         sa.sa_handler = segv_handler;

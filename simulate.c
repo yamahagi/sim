@@ -48,9 +48,12 @@ static inline void init(void) {
 	reg[2] = prom[0];
 	reg[30] = 0;
 // heap init なにこれ?
+	pc = 0;
+/*
 	for (pc = 1; pc*4 <= reg[2]; pc++) {
 		ram[pc-1] = prom[pc];
 	}
+*/
 }
 
 static inline int exec_op(uint32_t ir);
@@ -60,6 +63,7 @@ static inline int exec_op(uint32_t ir);
 int simulate(void) {
 	init();
 	do{
+
 		ir = prom[pc];
 #ifdef LOG_FLAG
 		_print_ir(ir, log_fp);
@@ -76,6 +80,7 @@ int simulate(void) {
 	
 		//TODO レジスタの中身をprint
 		//ゼロレジスタを表示	
+		if(cnt ==1) printf("初期状態\n");
 		printf("ゼロレジスタ %d\n",reg[0]);
 		printf("スタックの先頭　%d\n",reg[1]);
 		printf("スタックフレーム %d\n",reg[2]);
@@ -86,6 +91,10 @@ int simulate(void) {
 		}
 		for(int i=0;i<12;i++){
 			printf("reg[%d] %d\n",i+15,reg[i+15]);
+		}
+		if(ir == 0){
+		printf("終了");	
+		break;
 		}
 	} while (exec_op(ir)==0);
 	return 0;
@@ -127,14 +136,12 @@ static inline int exec_op(uint32_t ir) {
 			_GRT = _GRA / _GRB;
 			break;
 		//メモリから代入 ram
-		//TODO
 		case LOAD:
-			_GRD = ram[((_GRT + _GRT)/4)];
+			_GRT = ram[(_GRA + _IMM)];
 			break;
 		//メモリに代入
-		//TODO
 		case STORE:
-			ram[((_GRS + _GRT)/4)] = _GRD;
+			ram[((_GRA + _IMM))] = _GRT;
 			break;
 		case JUMP:
 			if (pc-1 == get_rti(ir)) {
@@ -170,7 +177,7 @@ static inline int exec_op(uint32_t ir) {
                         break;
 		case END:
 			return 1;
-		default	:	break;
+		default	:	return 0;//break;
 	}
 
 	return 0;
