@@ -1,0 +1,1 @@
+gcc  ./simulate.c

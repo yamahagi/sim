@@ -3,10 +3,10 @@
 #define _SIM_HEAD
 #include "common.h"
 #include <stdint.h>
-extern uint32_t prom[ROM_NUM];
-extern uint32_t ram[RAM_NUM];
-extern int32_t reg[REG_NUM];
-extern uint32_t freg[REG_NUM];
+extern uint32_t prom[ROMNUM];
+extern uint32_t ram[RAMNUM];
+extern int32_t reg[REGNUM];
+extern uint32_t freg[REGNUM];
 extern uint32_t pc;
 //< 0 ; > 1 ; = 2
 extern int cdr;
@@ -23,6 +23,8 @@ extern uint64_t cnt;
 #define get_rdi(ir) ((uint32_t)(((ir)>>11)&0x1f))
 //コンディションレジスタ reg[30]
 #define cdr reg[30]
+//リンクレジスタ reg[31]
+#define lnk reg[31]
 /*
 #define get_shamt(ir) ((uint32_t)(((ir)>>6)&0x1f))
 #define get_funct(ir) ((uint32_t)((ir)&0x3f))
@@ -48,10 +50,10 @@ extern uint64_t cnt;
 ////////////////////////////////////////////////////////////////////////
 
 
-extern const char *InstMap[INST_NUM];
-extern const char *SFunctMap[INST_NUM];
-extern const char *FFunctMap[INST_NUM];
-extern const char *IOFunctMap[INST_NUM];
+extern const char *InstMap[INSTNUM];
+extern const char *SFunctMap[INSTNUM];
+extern const char *FFunctMap[INSTNUM];
+extern const char *IOFunctMap[INSTNUM];
 
 void analyse(uint32_t);
 void print_analysis(FILE*);

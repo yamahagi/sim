@@ -8,12 +8,13 @@
 #include <stdint.h>
 #include <assert.h>
 #include <math.h>
-#include "oc_sim.h"
+#include "include/oc_sim.h"
+#include "include/common.h"
 
 //一つ一つに命令が入る？
-uint32_t prom[ROM_NUM];
+uint32_t prom[ROMNUM];
 //メモリ
-uint32_t ram[RAM_NUM];
+uint32_t ram[RAMNUM];
 /*
 汎用レジスタ
 %r0 ゼロレジスタ
@@ -24,10 +25,9 @@ uint32_t ram[RAM_NUM];
 %r30 コンディションレジスタ
 %r31 リンクレジスタ
 */
-int32_t reg[REG_NUM];
-uint32_t freg[REG_NUM];
+int32_t reg[REGNUM];
+uint32_t freg[REGNUM];
 //コンディションレジスタ reg[30]
-int32_t cdr;
 uint32_t pc;
 //命令
 uint32_t ir;
@@ -44,8 +44,9 @@ extern uint32_t _fmul(uint32_t, uint32_t);
 static inline void init(void) {
 // register init
 	reg[0] = 0;
-	reg[1] = 4*(RAM_NUM-1);
+	reg[1] = 4*(RAMNUM-1);
 	reg[2] = prom[0];
+	reg[30] = 0;
 // heap init
 	for (pc = 1; pc*4 <= reg[2]; pc++) {
 		ram[pc-1] = prom[pc];
@@ -135,16 +136,11 @@ static inline int exec_op(uint32_t ir) {
 			ram[((_GRS + _GRT)/4)] = _GRD;
 			break;
 		case JUMP:
-			if (pc-1 == get_target(ir)) {
+			if (pc-1 == get_rti(ir)) {
 				return 1;
 			}
-			pc = get_target(ir);
-			break;
-		case JEQ:
-			if (_GRS == _GRT) {
-				pc += _IMM - 1;
-			} else {
-			}
+			lnk = pc;
+			pc = get_rti(ir);
 			break;
 		case AND:
 			_GRT = _GRS & _GRD;
@@ -167,7 +163,7 @@ static inline int exec_op(uint32_t ir) {
                         else if (_GRT > _GRS){
 				cdr = 1;
 			}
-                        else if (_GRT = _GRS){
+                        else if (_GRT == _GRS){
 				cdr = 2;
 			}
                         break;

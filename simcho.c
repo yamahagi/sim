@@ -7,7 +7,7 @@
 #include <sys/time.h>
 #include <fcntl.h>
 #include <signal.h>
-#include "oc_sim.h"
+#include "include/oc_sim.h"
 static char *log_file = (char*) "ika.log";
 static char *sfile;
 
@@ -91,7 +91,7 @@ static void configure(int argc, char **argv) {
 }
 
 
-//prom[ROM_NUM]にファイルの中身をセット
+//prom[ROMNUM]にファイルの中身をセット
 //prom[(64 * 1024)] // words(32bit)
 static void prom_set(int argc, char **argv) {
 	int fd, ret;
@@ -105,7 +105,7 @@ static void prom_set(int argc, char **argv) {
 		perror("open @ prom_set");
 		exit(1);
 	}
-	ret = read(fd, prom, ROM_NUM*4);
+	ret = read(fd, prom, ROMNUM*4);
 	if (ret<0) {
 		perror("read");
 		exit(1);
