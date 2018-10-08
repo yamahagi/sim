@@ -5,3 +5,4 @@ test: simulate.c simcho.c
 
 clean:
 	rm -rf ./*.o
+	rm test
