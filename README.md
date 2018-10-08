@@ -2,4 +2,4 @@ https://github.com/occho/cpuex/tree/master/simulator
 
 これを参考にしてます
 
-浮動小数点とかはまだまだです
+浮動小数点とスタック関係がまだまだ
