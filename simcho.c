@@ -93,6 +93,32 @@ static void configure(int argc, char **argv) {
 
 //prom[ROMNUM]にファイルの中身をセット
 //prom[(64 * 1024)] // words(32bit)
+static void prom_set(int argc,char **argv) {
+
+FILE *fp;
+    char *filename = argv[1];
+    char readline[32] = {'\0'};
+        int n = 0;
+
+    /* ファイルのオープン */
+    if ((fp = fopen(filename, "r")) == NULL) {
+        fprintf(stderr, "%sのオープンに失敗しました.\n", filename);
+        exit(EXIT_FAILURE);
+    }
+
+    /* ファイルの終端まで文字を読み取り表示する */
+    while ( fgets(readline, 100, fp) != NULL ) {
+        prom[n] = strtol(readline,NULL,2);
+        n++;
+    }
+
+    /* ファイルのクローズ */
+    fclose(fp);
+
+
+}
+
+/*
 static void prom_set(int argc, char **argv) {
 	int fd, ret;
 	if (argc < 2) {
@@ -112,6 +138,7 @@ static void prom_set(int argc, char **argv) {
 	}
 	close(fd);
 }
+*/
 
 void segv_handler(int);
 static void register_segv_handler(void) {

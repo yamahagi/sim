@@ -14,13 +14,14 @@ extern uint32_t ir;
 extern int32_t lr;
 extern uint64_t cnt;
 
+//命令
 #define get_opcode(ir) ((uint32_t)(((ir)>>26)&0x3f))
-//代入先
-#define get_rsi(ir) ((uint32_t)(((ir)>>21)&0x1f))
-//RT 元レジスタ1
-#define get_rti(ir) ((uint32_t)(((ir)>>16)&0x1f))
-//RS 元レジスタ2
-#define get_rdi(ir) ((uint32_t)(((ir)>>11)&0x1f))
+//代入先 RT 
+#define get_rti(ir) ((uint32_t)(((ir)>>21)&0x1f))
+//RA 元レジスタ1
+#define get_rai(ir) ((uint32_t)(((ir)>>16)&0x1f))
+//RB 元レジスタ2
+#define get_rbi(ir) ((uint32_t)(((ir)>>11)&0x1f))
 //コンディションレジスタ reg[30]
 #define cdr reg[30]
 //リンクレジスタ reg[31]
@@ -38,13 +39,13 @@ extern uint64_t cnt;
 ////////////////////////////////////////////////////////////////////////
 // register access
 ////////////////////////////////////////////////////////////////////////
-#define _GRS reg[get_rsi(ir)]
 #define _GRT reg[get_rti(ir)]
-#define _GRD reg[get_rdi(ir)]
+#define _GRA reg[get_rai(ir)]
+#define _GRB reg[get_rbi(ir)]
 /*
-#define _FRS freg[get_rsi(ir)]
-#define _FRT freg[get_rti(ir)]
-#define _FRD freg[get_rdi(ir)]
+#define _FRS freg[get_rti(ir)]
+#define _FRT freg[get_rai(ir)]
+#define _FRD freg[get_rbi(ir)]
 */
 #define _IMM get_imm(ir)
 ////////////////////////////////////////////////////////////////////////

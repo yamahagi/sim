@@ -47,7 +47,7 @@ static inline void init(void) {
 	reg[1] = 4*(RAMNUM-1);
 	reg[2] = prom[0];
 	reg[30] = 0;
-// heap init
+// heap init なにこれ?
 	for (pc = 1; pc*4 <= reg[2]; pc++) {
 		ram[pc-1] = prom[pc];
 	}
@@ -60,7 +60,6 @@ static inline int exec_op(uint32_t ir);
 int simulate(void) {
 	init();
 	do{
-		reg[0] = 0;
 		ir = prom[pc];
 #ifdef LOG_FLAG
 		_print_ir(ir, log_fp);
@@ -104,34 +103,36 @@ static inline int exec_op(uint32_t ir) {
 
 	switch(opcode){
 		case ADDI:
-			_GRT = _GRS + _IMM;
+			_GRT = _GRA + _IMM;
 			break;
 		case SUBI:
-			_GRT = _GRS - _IMM;
+			_GRT = _GRA - _IMM;
 			break;
 		case MULI:
-			_GRT = _GRS * _IMM;
+			_GRT = _GRA * _IMM;
 			break;
 		case DIVI:
-			_GRT = _GRS / _IMM;
+			_GRT = _GRA / _IMM;
 			break;
 		case ADD:
-			_GRT = _GRS + _GRD;
+			_GRT = _GRA + _GRB;
 			break;
 		case SUB:
-			_GRT = _GRS - _GRD;
+			_GRT = _GRA - _GRB;
 			break;
 		case MUL:
-			_GRT = _GRS * _GRD;
+			_GRT = _GRA * _GRB;
 			break;
 		case DIV:
-			_GRT = _GRS / _GRD;
+			_GRT = _GRA / _GRB;
 			break;
 		//メモリから代入 ram
+		//TODO
 		case LOAD:
-			_GRD = ram[((_GRS + _GRT)/4)];
+			_GRD = ram[((_GRT + _GRT)/4)];
 			break;
 		//メモリに代入
+		//TODO
 		case STORE:
 			ram[((_GRS + _GRT)/4)] = _GRD;
 			break;
@@ -143,31 +144,32 @@ static inline int exec_op(uint32_t ir) {
 			pc = get_rti(ir);
 			break;
 		case AND:
-			_GRT = _GRS & _GRD;
+			_GRT = _GRA & _GRB;
                         break;
 		case OR:
-			_GRT = _GRS | _GRD;
+			_GRT = _GRA | _GRB;
                         break;
 		case OUT:
-                        putchar(_GRS&0xff);
+                        putchar(_GRT&0xff);
                         fflush(stdout);
                         break;
                 case IN:
                         c = getchar();
-                        _GRD = c & 0xff;
+                        _GRT = c & 0xff;
                         break;
                 case CMPD:
-                        if (_GRT < _GRS){
+                        if (_GRT < _GRA){
 				cdr = 0;
 			}
-                        else if (_GRT > _GRS){
+                        else if (_GRT > _GRA){
 				cdr = 1;
 			}
-                        else if (_GRT == _GRS){
+                        else if (_GRT == _GRA){
 				cdr = 2;
 			}
                         break;
-		
+		case END:
+			return 1;
 		default	:	break;
 	}
 
