@@ -1,3 +1,5 @@
+//解読のためのやつ
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
