@@ -26,7 +26,7 @@
 
 #define JUMP   0b100000
 #define BLR	0b100001
-#define BLR	0b100010
+#define BL	0b100010
 
 #define BEQ  0b101000
 #define BLE  0b101001
