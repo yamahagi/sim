@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <sys/types.h>
@@ -34,6 +35,8 @@ uint32_t ir;
 int32_t lr;
 //何命令行ったか？
 uint64_t cnt;
+
+FILE *outputfile1; 
 
 extern uint32_t _finv(uint32_t);
 extern uint32_t _fsqrt(uint32_t);
@@ -73,12 +76,12 @@ int simulate(void) {
 #endif
 		cnt++;
 		pc++;
-		if (!(cnt % 100000000)) { 
+		if (!(cnt % 10000000)) { 
 			warning("."); 
 
 		}
 	
-		//TODO レジスタの中身をprint
+		//TODO 浮動小数点周りのprint
 		//ゼロレジスタを表示	
 		if(cnt ==1) printf("初期状態\n");
 		printf("ゼロレジスタ %d\n",reg[0]);
@@ -112,16 +115,16 @@ static inline int exec_op(uint32_t ir) {
 
 	switch(opcode){
 		case ADDI:
-			_GRT = _GRA + _IMM;
+			_GRT = _GRA + _SI;
 			break;
 		case SUBI:
-			_GRT = _GRA - _IMM;
+			_GRT = _GRA - _SI;
 			break;
 		case MULI:
-			_GRT = _GRA * _IMM;
+			_GRT = _GRA * _SI;
 			break;
 		case DIVI:
-			_GRT = _GRA / _IMM;
+			_GRT = _GRA / _SI;
 			break;
 		case ADD:
 			_GRT = _GRA + _GRB;
@@ -135,49 +138,71 @@ static inline int exec_op(uint32_t ir) {
 		case DIV:
 			_GRT = _GRA / _GRB;
 			break;
-		//メモリから代入 ram
-		case LOAD:
-			_GRT = ram[(_GRA + _IMM)];
-			break;
-		//メモリに代入
-		case STORE:
-			ram[((_GRA + _IMM))] = _GRT;
-			break;
-		case JUMP:
-			if (pc-1 == get_rti(ir)) {
-				return 1;
-			}
-			lnk = pc;
-			pc = get_rti(ir);
-			break;
 		case AND:
 			_GRT = _GRA & _GRB;
                         break;
 		case OR:
 			_GRT = _GRA | _GRB;
                         break;
-		case OUT:
-                        putchar(_GRT&0xff);
-                        fflush(stdout);
+		//メモリから代入 ram
+		case LOAD:
+			_GRT = ram[(_GRA + _SI)];
+			break;
+		//メモリに代入
+		case STORE:
+			ram[((_GRA + _SI))] = _GRT;
+			break;
+		case LI:
+			_GRT = _IMM;
+			break; 	
+		case JUMP:
+			/*
+			if (pc-1 == get_li(ir)) {
+				return 1;
+			}
+			*/
+			lnk = pc+1;
+			pc = get_li(ir);
+			break;
+		case BLR:
+			if(pc == lnk) return 1;
+			pc = lnk;
+			break;
+                case BEQ:
+			if(cdr==1) pc= _LI;
+			break;
+		case BLE:
+			if(cdr==1||cdr==2) pc = _LI;
+			break;
+                case CMPD:
+                        if (_GRT == _GRA){
+				cdr = 1;
+			}
+                        else if (_GRT <= _GRA){
+				cdr = 2;
+			}
+			else{
+				cdr = 0;
+			}
                         break;
                 case IN:
                         c = getchar();
                         _GRT = c & 0xff;
                         break;
-                case CMPD:
-                        if (_GRT < _GRA){
-				cdr = 0;
-			}
-                        else if (_GRT > _GRA){
-				cdr = 1;
-			}
-                        else if (_GRT == _GRA){
-				cdr = 2;
-			}
-                        break;
+		//TODO テキストに出力
+		case OUT:
+  			outputfile1 = fopen("d.txt", "a");
+  			if (outputfile1 == NULL) {
+    			printf("cannot open\n");  
+    			exit(1);                 
+  			}
+  			fprintf(outputfile1, "%d\n",_GRT);
+  			fclose(outputfile1);
+			break;
 		case END:
+			printf("終了");
 			return 1;
-		default	:	return 0;//break;
+		default	:	return 1;//break;
 	}
 
 	return 0;

@@ -14,6 +14,17 @@ extern uint32_t ir;
 extern int32_t lr;
 extern uint64_t cnt;
 
+/*
+[31:26] opcode get_opcode
+[25:21] RT get_rti(ir) _GRT
+[20:16] RA get_rai(ir) _GRA
+[15:11] RB get_rbi(ir) _GRB
+[15:0]  SI get_si(ir)  _SI
+[20:0] IMM get_imm(ir) _IMM
+//LIは４倍されてるので戻す
+[25:0] LI get_li(ir)  _LI
+
+*/
 //命令
 #define get_opcode(ir) ((uint32_t)(((ir)>>26)&0x3f))
 //代入先 RT 
@@ -22,8 +33,13 @@ extern uint64_t cnt;
 #define get_rai(ir) ((uint32_t)(((ir)>>16)&0x1f))
 //RB 元レジスタ2
 #define get_rbi(ir) ((uint32_t)(((ir)>>11)&0x1f))
+//LI ジャンプ先
+#define get_li(ir) ((uint32_t)((((ir)>>2)&0xffffff)))
 //コンディションレジスタ reg[30]
 #define cdr reg[30]
+#define eq 1
+#define le 2
+
 //リンクレジスタ reg[31]
 #define lnk reg[31]
 /*
@@ -31,8 +47,10 @@ extern uint64_t cnt;
 #define get_funct(ir) ((uint32_t)((ir)&0x3f))
 #define get_target(ir) ((uint32_t)((ir)&0x3ffffff))
 */
-//即値
-#define get_imm(ir) \
+//IMM LI用の即値
+#define get_imm(ir) ((uint32_t)(((ir)&0x1fffff)))
+//SI 即値
+#define get_si(ir) \
 	((int32_t) (ir&(1<<15)) ? ((0xffff<<16)|(ir&0xffff)):\
 	(ir&0xffff))
 
@@ -47,7 +65,9 @@ extern uint64_t cnt;
 #define _FRT freg[get_rai(ir)]
 #define _FRD freg[get_rbi(ir)]
 */
+#define _SI get_si(ir)
 #define _IMM get_imm(ir)
+#define _LI get_li(ir)
 ////////////////////////////////////////////////////////////////////////
 
 
