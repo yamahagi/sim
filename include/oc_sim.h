@@ -21,7 +21,6 @@ extern uint64_t cnt;
 [15:11] RB get_rbi(ir) _GRB
 [15:0]  SI get_si(ir)  _SI
 [20:0] IMM get_imm(ir) _IMM
-//LIは４倍されてるので戻す
 [25:0] LI get_li(ir)  _LI
 
 */
@@ -34,7 +33,7 @@ extern uint64_t cnt;
 //RB 元レジスタ2
 #define get_rbi(ir) ((uint32_t)(((ir)>>11)&0x1f))
 //LI ジャンプ先
-#define get_li(ir) ((uint32_t)((((ir)>>2)&0xffffff)))
+#define get_li(ir) ((uint32_t)((((ir)>>2)&0x3ffffff)))
 //コンディションレジスタ reg[30]
 #define cdr reg[30]
 #define eq 1
