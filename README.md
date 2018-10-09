@@ -4,4 +4,4 @@ https://github.com/occho/cpuex/tree/master/simulator
 
 浮動小数点の表示はまだです
 outはとりあえずd.txtというものに出力されます。上書きです。
-浮動小数点とスタック関係がまだまだ
+fibは動いた
