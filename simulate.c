@@ -161,13 +161,15 @@ static inline int exec_op(uint32_t ir) {
 				return 1;
 			}
 			*/
-			lnk = pc+1;
 			pc = get_li(ir);
 			break;
 		case BLR:
 			if(pc == lnk) return 1;
 			pc = lnk;
 			break;
+		case BL:
+			lnk = pc + 1;
+			pc = _LI;
                 case BEQ:
 			if(cdr==1) pc= _LI;
 			break;
