@@ -33,7 +33,7 @@ extern uint64_t cnt;
 //RB 元レジスタ2
 #define get_rbi(ir) ((uint32_t)(((ir)>>11)&0x1f))
 //LI ジャンプ先
-#define get_li(ir) ((uint32_t)((((ir)>>2)&0x3ffffff)))
+#define get_li(ir) ((uint32_t)(((ir)&0x3ffffff)))
 //コンディションレジスタ reg[30]
 #define cdr reg[30]
 #define eq 1
