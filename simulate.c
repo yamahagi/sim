@@ -68,6 +68,8 @@ int simulate(void) {
 	do{
 
 		ir = prom[pc];
+		if(cnt ==0) printf("初期状態\n");
+		printf("pc %d\n",pc);
 #ifdef LOG_FLAG
 		_print_ir(ir, log_fp);
 #endif
@@ -83,7 +85,6 @@ int simulate(void) {
 	
 		//TODO 浮動小数点周りのprint
 		//ゼロレジスタを表示	
-		if(cnt ==1) printf("初期状態\n");
 		printf("ゼロレジスタ %d\n",reg[0]);
 		printf("スタックの先頭　%d\n",reg[1]);
 		printf("スタックフレーム %d\n",reg[2]);
