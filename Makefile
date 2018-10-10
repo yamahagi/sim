@@ -7,8 +7,8 @@ simulate.o: simulate.c
 simcho.o: simcho.c
 	$(obj) simcho.c
 
-sim: simcho.o simulate.o
-	$(app) simcho.o simulate.o -o sim
+test: simcho.o simulate.o
+	$(app) simcho.o simulate.o -o test
 
 clean: 
 	rm -rf ./*.o
