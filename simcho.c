@@ -93,6 +93,7 @@ static void configure(int argc, char **argv) {
 
 //prom[ROMNUM]にファイルの中身をセット
 //prom[(64 * 1024)] // words(32bit)
+//TODO バイナリファイル読み込み
 static void prom_set(int argc,char **argv) {
 
 	if (argc < 2) {

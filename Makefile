@@ -1,8 +1,11 @@
-test: simulate.c simcho.c
-	gcc  -c simulate.c
-	gcc  -c simcho.c
-	gcc simulate.o simcho.o -o test
+obj = gcc -c -g
+app = gcc
 
-clean:
-	rm -rf ./*.o
-	rm test
+simulate.o: simulate.c
+	$(obj) simulate.c 
+
+simcho.o: simcho.c
+	$(obj) simcho.c
+
+sim: simcho.o simulate.o
+	$(app) simcho.o simulate.o -o sim
