@@ -12,7 +12,7 @@
 #include "include/oc_sim.h"
 #include "include/common.h"
 
-//一つ一つに命令が入る？
+//一つ一つに命令が入る
 uint32_t prom[ROMNUM];
 //メモリ
 uint32_t ram[RAMNUM];

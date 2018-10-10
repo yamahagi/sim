@@ -1,6 +1,10 @@
 obj = gcc -c -g
 app = gcc
 
+.PHONY: [test]
+
+all: test simcho.o simulate.o
+
 simulate.o: simulate.c
 	$(obj) simulate.c 
 

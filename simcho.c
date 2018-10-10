@@ -10,7 +10,6 @@
 #include "include/oc_sim.h"
 static char *log_file = (char*) "ika.log";
 static char *sfile;
-
 static void configure(int argc, char **argv);
 static void register_segv_handler(void);
 static void prom_set(int argc, char **argv);
