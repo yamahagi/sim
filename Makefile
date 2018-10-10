@@ -9,3 +9,7 @@ simcho.o: simcho.c
 
 sim: simcho.o simulate.o
 	$(app) simcho.o simulate.o -o sim
+
+clean: 
+	rm -rf ./*.o
+	rm -rf ./sim
