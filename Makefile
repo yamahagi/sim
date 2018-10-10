@@ -16,4 +16,4 @@ test: simcho.o simulate.o
 
 clean: 
 	rm -rf ./*.o
-	rm -rf ./sim
+	rm -rf ./test
