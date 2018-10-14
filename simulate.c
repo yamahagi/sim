@@ -92,9 +92,11 @@ int simulate(void) {
 		printf("スタックフレーム %d\n",reg[2]);
 		printf("リンクレジスタ %d\n",reg[30]);
 		printf("コンディションレジスタ %d\n",reg[31]);
+		//整数レジスタ
 		for(int i=0;i<12;i++){
 			printf("reg[%d] %d\n",i+3,reg[i+3]);
 		}
+		//浮動小数点レジスタ表示(float配列にしてもいいのか？)
 		for(int i=0;i<12;i++){
 			printf("reg[%d] %d\n",i+15,reg[i+15]);
 		}
@@ -141,6 +143,7 @@ static inline int exec_op(uint32_t ir) {
 		case DIV:
 			_GRT = _GRA / _GRB;
 			break;
+		//TODO 浮動小数点レジスタ
 		case AND:
 			_GRT = _GRA & _GRB;
                         break;

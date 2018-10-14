@@ -1,9 +1,9 @@
 obj = gcc -c -g
 app = gcc
 
-.PHONY: [test]
+.PHONY: [sim]
 
-all: test simcho.o simulate.o
+all: sim simcho.o simulate.o
 
 simulate.o: simulate.c
 	$(obj) simulate.c 
@@ -11,9 +11,9 @@ simulate.o: simulate.c
 simcho.o: simcho.c
 	$(obj) simcho.c
 
-test: simcho.o simulate.o
-	$(app) simcho.o simulate.o -o test
+sim: simcho.o simulate.o
+	$(app) simcho.o simulate.o -o sim
 
 clean: 
 	rm -rf ./*.o
-	rm -rf ./test
+	rm -rf ./sim
