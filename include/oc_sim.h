@@ -14,6 +14,8 @@ extern uint32_t ir;
 extern int32_t lr;
 extern uint64_t cnt;
 
+extern char* outputfile;
+
 /*
 [31:26] opcode get_opcode
 [25:21] RT get_rti(ir) _GRT
@@ -35,12 +37,11 @@ extern uint64_t cnt;
 //LI ジャンプ先
 #define get_li(ir) ((uint32_t)(((ir)&0x3ffffff)))
 //コンディションレジスタ reg[30]
-#define cdr reg[30]
+//#define cdr reg[30]
+#define lnk reg[31]
 #define eq 1
 #define le 2
 
-//リンクレジスタ reg[31]
-#define lnk reg[31]
 /*
 #define get_shamt(ir) ((uint32_t)(((ir)>>6)&0x1f))
 #define get_funct(ir) ((uint32_t)((ir)&0x3f))

@@ -28,6 +28,7 @@ uint32_t ram[RAMNUM];
 */
 int32_t reg[REGNUM];
 uint32_t freg[REGNUM];
+int cdr;
 //コンディションレジスタ reg[30]
 uint32_t pc;
 //命令
@@ -36,7 +37,7 @@ int32_t lr;
 //何命令行ったか？
 uint64_t cnt;
 
-FILE *outputfile1; 
+FILE *fpout; 
 
 extern uint32_t _finv(uint32_t);
 extern uint32_t _fsqrt(uint32_t);
@@ -49,7 +50,8 @@ static inline void init(void) {
 	reg[0] = 0;
 	reg[1] = 4*(RAMNUM-1);
 	reg[2] = prom[0];
-	reg[30] = 0;
+	lnk = 0;
+	cdr = 0;
 // heap init なにこれ?
 	pc = 0;
 /*
@@ -154,7 +156,10 @@ static inline int exec_op(uint32_t ir) {
 			ram[((_GRA + _SI))] = _GRT;
 			break;
 		case LI:
-			_GRT = _IMM;
+			_GRT = _SI;
+			break; 	
+		case LIS:
+			_GRT = _SI<<16;
 			break; 	
 		case JUMP:
 			/*
@@ -172,36 +177,93 @@ static inline int exec_op(uint32_t ir) {
 			lnk = pc + 1;
 			pc = _LI;
                 case BEQ:
-			if(cdr==1) pc= _LI;
+			if(cdr==eq) pc= _LI;
 			break;
 		case BLE:
-			if(cdr==1||cdr==2) pc = _LI;
+			if(cdr==eq||cdr==le) pc = _LI;
 			break;
                 case CMPD:
                         if (_GRT == _GRA){
-				cdr = 1;
+				cdr = eq;
 			}
                         else if (_GRT <= _GRA){
-				cdr = 2;
+				cdr = le;
 			}
 			else{
 				cdr = 0;
 			}
                         break;
-                case IN:
+                case INLL:
                         c = getchar();
-                        _GRT = c & 0xff;
+                        _GRT = (_GRT & 0xffffff00)||(c & 0xff);
                         break;
-		//TODO テキストに出力
-		case OUT:
-  			outputfile1 = fopen("d.txt", "a");
-  			if (outputfile1 == NULL) {
+                case INLH:
+                        c = getchar();
+                        _GRT = (_GRT & 0xffff00ff)||(c<<8 & 0xff00);
+                        break;
+                case INUL:
+                        c = getchar();
+                        _GRT = (_GRT & 0xff00ffff)||(c<<16 & 0xff0000);
+                        break;
+                case INUH:
+                        c = getchar();
+                        _GRT = (_GRT & 0x00ffffff)||(c<<24 & 0xff000000);
+                        break;
+		case OUTLL:
+			if(*outputfile == '\0'){
+  				fpout = fopen("d.txt", "a");
+			}
+			else{
+  				fpout = fopen(outputfile, "a");
+  			}
+			if (fpout == NULL) {
+    				printf("cannot open\n");  
+    				exit(1);                 
+  			}
+			
+  			fprintf(fpout, "%d\n",_GRT&0xff);
+  			fclose(fpout);
+			break;
+		case OUTLH:
+  			if(*outputfile == '\0'){
+                                fpout = fopen("d.txt", "a");
+                        }
+                        else{
+                                fpout = fopen(outputfile, "a");
+                        }
+			if (fpout == NULL) {
     			printf("cannot open\n");  
     			exit(1);                 
   			}
-  			fprintf(outputfile1, "%d\n",_GRT);
-  			fclose(outputfile1);
-			break;
+  			fprintf(fpout, "%d\n",(_GRT>>8)&0xff);
+  			fclose(fpout);
+		case OUTUL:
+			if(*outputfile == '\0'){
+                                fpout = fopen("d.txt", "a");
+                        }
+                        else{
+                                fpout = fopen(outputfile, "a");
+                        }
+  			if (fpout == NULL) {
+    			printf("cannot open\n");  
+    			exit(1);                 
+  			}
+  			fprintf(fpout, "%d\n",(_GRT>>16)&0xff);
+  			fclose(fpout);
+		case OUTUH:
+  			
+  			if(*outputfile == '\0'){
+                                fpout = fopen("d.txt", "a");
+                        }
+                        else{
+                                fpout = fopen(outputfile, "a");
+                        }
+			if (fpout == NULL) {
+    			printf("cannot open\n");  
+    			exit(1);                 
+  			}
+  			fprintf(fpout, "%d\n",(_GRT>>24)&0xff);
+  			fclose(fpout);
 		case END:
 			printf("終了");
 			return 1;

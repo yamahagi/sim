@@ -22,6 +22,8 @@ FILE *err_fp;
 FILE *log_fp;
 static void open_log_file(void);
 
+char* outputfile;
+
 static struct timeval tv1,tv2;
 int main(int argc, char **argv, char **envp) {
 	configure(argc, argv);
@@ -62,12 +64,21 @@ static void print_usage(char*name) {
 }
 #undef print_option
 
+
+//inとoutの設定
 static void configure(int argc, char **argv) {
 	int opt;
 	err_fp = stderr;
 	if (argc < 2) {
 		print_usage(argv[0]);
 		exit(1);
+	}
+	if (argc == 3){
+		outputfile = argv[2];
+	}	
+	else{
+		char b[2] = {'\0'};
+                outputfile = b;
 	}
 	sfile = argv[1];
 	if (sfile==NULL) {
@@ -92,13 +103,13 @@ static void configure(int argc, char **argv) {
 
 //prom[ROMNUM]にファイルの中身をセット
 //prom[(64 * 1024)] // words(32bit)
-//TODO バイナリファイル読み込み
 static void prom_set(int argc,char **argv) {
 
 	if (argc < 2) {
                 print_usage(argv[0]);
                 exit(1);
         }
+
 
 FILE *fp;
     char *filename = argv[1];
@@ -107,16 +118,32 @@ FILE *fp;
 
 
     /* ファイルのオープン */
-    if ((fp = fopen(filename, "r")) == NULL) {
+    if ((fp = fopen(filename, "rb")) == NULL) {
         fprintf(stderr, "%sのオープンに失敗しました.\n", filename);
         exit(EXIT_FAILURE);
     }
+	int64_t num1;
+        int64_t num2;
+        int64_t num3;
+        int64_t num4;
+	int i = 1;
+        while(i==1){
+                 if( fread(&num1, 1, 1, fp ) < 1 ){
+                        break;
+                }
+                if( fread(&num2, 1, 1, fp ) < 1 ){
+                        break;
+                        }
+                if( fread(&num3, 1, 1, fp ) < 1 ){
+                        break;
+                }
+                if( fread(&num4, 1, 1, fp ) < 1 ){
+                        break;
+                }
+		 prom[n] = (num1<<24&0xff000000)+(num2<<16&0xff0000)+(num3<<8&0xff00)+(num4&0xff);
+        	n++;
+        }
 
-    /* ファイルの終端まで文字を読み取り表示する */
-    while ( fgets(readline, 100, fp) != NULL ) {
-        prom[n] = strtol(readline,NULL,2);
-        n++;
-    }
 
     /* ファイルのクローズ */
     fclose(fp);
