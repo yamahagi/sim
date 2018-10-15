@@ -1,6 +1,0 @@
-https://github.com/occho/cpuex/tree/master/simulator
-
-これを参考にしてます
-
-呼出し規約周辺があんまわかんない
-
