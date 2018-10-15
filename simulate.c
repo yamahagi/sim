@@ -162,7 +162,7 @@ static inline int exec_op(uint32_t ir) {
 			_GRT = _SI;
 			break; 	
 		case LIS:
-			_GRT = _SI<<16;
+			_GRT = (_SI<<16) | (_GRT & ((1<<16)-1)) ;
 			break; 	
 		case JUMP:
 			/*
