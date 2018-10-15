@@ -38,6 +38,7 @@ extern char* outputfile;
 #define get_li(ir) ((uint32_t)(((ir)&0x3ffffff)))
 //コンディションレジスタ reg[30]
 //#define cdr reg[30]
+//リンクレジスタ reg[31]
 #define lnk reg[31]
 #define eq 1
 #define le 2

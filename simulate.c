@@ -39,10 +39,10 @@ uint64_t cnt;
 
 FILE *fpout; 
 
-extern uint32_t _finv(uint32_t);
-extern uint32_t _fsqrt(uint32_t);
-extern uint32_t _fadd(uint32_t, uint32_t);
-extern uint32_t _fmul(uint32_t, uint32_t);
+extern uint32_t _finv(int32_t);
+extern uint32_t _fsqrt(int32_t);
+extern uint32_t _fadd(int32_t, int32_t);
+extern uint32_t _fmul(int32_t, int32_t);
 
 //レジスタの規定
 static inline void init(void) {
@@ -90,15 +90,18 @@ int simulate(void) {
 		printf("ゼロレジスタ %d\n",reg[0]);
 		printf("スタックの先頭　%d\n",reg[1]);
 		printf("スタックフレーム %d\n",reg[2]);
-		printf("リンクレジスタ %d\n",reg[30]);
-		printf("コンディションレジスタ %d\n",reg[31]);
+		printf("リンクレジスタ %d\n",reg[31]);
 		//整数レジスタ
 		for(int i=0;i<12;i++){
 			printf("reg[%d] %d\n",i+3,reg[i+3]);
 		}
-		//浮動小数点レジスタ表示(float配列にしてもいいのか？)
+		//浮動小数点レジスタ表示
 		for(int i=0;i<12;i++){
 			printf("reg[%d] %d\n",i+15,reg[i+15]);
+		}
+		//それ以外のレジスタ
+		for(int i=0;i<4;i++){
+			printf("reg[%d] %d\n",i+27,reg[i+27]);
 		}
 		if(ir == 0){
 		printf("終了");	
@@ -144,6 +147,8 @@ static inline int exec_op(uint32_t ir) {
 			_GRT = _GRA / _GRB;
 			break;
 		//TODO 浮動小数点レジスタ
+		case FADD:
+			_GRT = fadd(_GRA,_GRB);
 		case AND:
 			_GRT = _GRA & _GRB;
                         break;
