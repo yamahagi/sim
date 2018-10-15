@@ -177,7 +177,7 @@ static inline int exec_op(uint32_t ir) {
 			pc = lnk;
 			break;
 		case BL:
-			lnk = pc + 1;
+			lnk = pc ;
 			pc = _LI;
                 case BEQ:
 			if(cdr==eq) pc= _LI;
@@ -240,6 +240,7 @@ static inline int exec_op(uint32_t ir) {
   			}
   			fprintf(fpout, "%d\n",(_GRT>>8)&0xff);
   			fclose(fpout);
+            break;
 		case OUTUL:
 			if(*outputfile == '\0'){
                                 fpout = fopen("d.txt", "a");
@@ -253,6 +254,7 @@ static inline int exec_op(uint32_t ir) {
   			}
   			fprintf(fpout, "%d\n",(_GRT>>16)&0xff);
   			fclose(fpout);
+            break;
 		case OUTUH:
   			
   			if(*outputfile == '\0'){
@@ -267,6 +269,7 @@ static inline int exec_op(uint32_t ir) {
   			}
   			fprintf(fpout, "%d\n",(_GRT>>24)&0xff);
   			fclose(fpout);
+            break;
 		case END:
 			printf("終了");
 			return 1;
