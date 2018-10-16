@@ -23,13 +23,11 @@ uint32_t ram[RAMNUM];
 %r2 スタックフレーム
 %r3~%r14 int
 %r15~%r26 float
-%r30 コンディションレジスタ
 %r31 リンクレジスタ
 */
 int32_t reg[REGNUM];
 uint32_t freg[REGNUM];
 int cdr;
-//コンディションレジスタ reg[30]
 uint32_t pc;
 //命令
 uint32_t ir;
@@ -147,8 +145,10 @@ static inline int exec_op(uint32_t ir) {
 			_GRT = _GRA / _GRB;
 			break;
 		//TODO 浮動小数点レジスタ
+/*
 		case FADD:
 			_GRT = fadd(_GRA,_GRB);
+*/
 		case AND:
 			_GRT = _GRA & _GRB;
                         break;

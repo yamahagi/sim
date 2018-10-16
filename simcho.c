@@ -53,6 +53,7 @@ static void open_log_file(void) {
 #endif
 }
 
+
 #define print_option(fmt, ...) \
 	warning("\t"fmt"\n", ##__VA_ARGS__)
 static void print_usage(char*name) {
@@ -174,6 +175,7 @@ static void prom_set(int argc, char **argv) {
 */
 
 void segv_handler(int n) {
+	exit(1);
 /*	uint32_t ir = prom[pc-1];
 	warning("せぐふぉー@%lu.[%x] ir:%08X ", cnt, pc, ir);
 	print_ir(ir);
