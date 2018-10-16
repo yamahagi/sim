@@ -83,8 +83,9 @@ int simulate(void) {
 			warning("."); 
 
 		}
-	
-		//TODO 浮動小数点周りのprint
+			
+		float f;	
+		
 		//ゼロレジスタを表示	
 		printf("ゼロレジスタ %d\n",reg[0]);
 		printf("スタックの先頭　%d\n",reg[1]);
@@ -96,7 +97,7 @@ int simulate(void) {
 		}
 		//浮動小数点レジスタ表示
 		for(int i=0;i<12;i++){
-			printf("reg[%d] %d\n",i+15,reg[i+15]);
+			printf("reg[%d] %f\n",i+15,float_get(reg[i+15]));
 		}
 		//それ以外のレジスタ
 		for(int i=0;i<4;i++){
@@ -149,8 +150,6 @@ static inline int exec_op(uint32_t ir) {
 		case DIV:
 			_GRT = _GRA / _GRB;
 			break;
-		//TODO 浮動小数点レジスタ
-
 		case FADD:
 			ra = float_get(_GRA);
 			rb = float_get(_GRB);
