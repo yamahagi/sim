@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <assert.h>
 #include <math.h>
+#include "fpu/ftest.h"
 #include "include/oc_sim.h"
 #include "include/common.h"
 
@@ -117,7 +118,11 @@ static inline int exec_op(uint32_t ir) {
 		float f;
 	} a, b, out;
 	char c;
+	float ra=0.0;
+	float rb=0.0;
+	float resultf = 0.0;
 	opcode = get_opcode(ir);
+	
 
 	switch(opcode){
 		case ADDI:
@@ -145,10 +150,31 @@ static inline int exec_op(uint32_t ir) {
 			_GRT = _GRA / _GRB;
 			break;
 		//TODO 浮動小数点レジスタ
-/*
+
 		case FADD:
-			_GRT = fadd(_GRA,_GRB);
-*/
+			ra = float_get(_GRA);
+			rb = float_get(_GRB);
+			resultf = ra+rb;
+			_GRT = int_get(resultf);
+			break;
+		case FSUB:
+			ra = float_get(_GRA);
+			rb = float_get(_GRB);
+			resultf = ra-rb;
+			_GRT = int_get(resultf);
+			break;
+		case FMUL:
+			ra = float_get(_GRA);
+			rb = float_get(_GRB);
+			resultf = ra*rb;
+			_GRT = int_get(resultf);
+			break;
+		case FDIV:
+			ra = float_get(_GRA);
+			rb = float_get(_GRB);
+			resultf = ra/rb;
+			_GRT = int_get(resultf);
+			break;
 		case AND:
 			_GRT = _GRA & _GRB;
                         break;

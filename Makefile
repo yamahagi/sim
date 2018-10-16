@@ -3,16 +3,19 @@ app = gcc
 
 .PHONY: [sim]
 
-all: sim simcho.o simulate.o
+all: sim simcho.o simulate.o ftest.o
 
 simulate.o: simulate.c
-	$(obj) simulate.c 
+	$(obj) simulate.c
 
 simcho.o: simcho.c
 	$(obj) simcho.c
 
-sim: simcho.o simulate.o
-	$(app) simcho.o simulate.o -o sim
+ftest.o: ./fpu/ftest.c
+	$(obj) ./fpu/ftest.c
+
+sim: simcho.o simulate.o ftest.o
+	$(app) simcho.o simulate.o ftest.o -o sim
 
 clean: 
 	rm -rf ./*.o
