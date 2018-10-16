@@ -3,7 +3,7 @@ app = gcc
 
 .PHONY: [sim]
 
-all: sim simcho.o simulate.o ftest.o
+all: sim simcho.o simulate.o ftools.o
 
 simulate.o: simulate.c
 	$(obj) simulate.c
@@ -11,11 +11,11 @@ simulate.o: simulate.c
 simcho.o: simcho.c
 	$(obj) simcho.c
 
-ftest.o: ./fpu/ftest.c
-	$(obj) ./fpu/ftest.c
+ftools.o: ./fpu/ftools.c
+	$(obj) ./fpu/ftools.c
 
-sim: simcho.o simulate.o ftest.o
-	$(app) simcho.o simulate.o ftest.o -o sim
+sim: simcho.o simulate.o ftools.o
+	$(app) simcho.o simulate.o ftools.o -o sim
 
 clean: 
 	rm -rf ./*.o

@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <assert.h>
 #include <math.h>
-#include "fpu/ftest.h"
+#include "fpu/ftools.h"
 #include "include/oc_sim.h"
 #include "include/common.h"
 
