@@ -17,6 +17,12 @@ ftools.o: ./fpu/ftools.c
 sim: simcho.o simulate.o ftools.o
 	$(app) simcho.o simulate.o ftools.o -o sim
 
+silent: clean
+	$(obj) simulate.c -D"SILENT=1"
+	$(obj) simcho.c -D"SILENT=1"
+	$(obj) ./fpu/ftools.c -D"SILENT=1"
+	$(app) simcho.o simulate.o ftools.o -o sim
+
 clean: 
 	rm -rf ./*.o
 	rm -rf ./sim
