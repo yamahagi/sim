@@ -69,8 +69,11 @@ int simulate(void) {
 	do{
 
 		ir = prom[pc];
+#ifndef SILENT
 		if(cnt ==0) printf("初期状態\n");
 		printf("pc %d\n",pc);
+#endif 
+
 #ifdef LOG_FLAG
 		_print_ir(ir, log_fp);
 #endif
@@ -87,6 +90,7 @@ int simulate(void) {
 		float f;	
 		
 		//ゼロレジスタを表示	
+#ifndef SILENT
 		printf("ゼロレジスタ %d\n",reg[0]);
 		printf("スタックの先頭　%d\n",reg[1]);
 		printf("スタックフレーム %d\n",reg[2]);
@@ -103,6 +107,7 @@ int simulate(void) {
 		for(int i=0;i<4;i++){
 			printf("reg[%d] %d\n",i+27,reg[i+27]);
 		}
+#endif
 		if(ir == 0){
 		printf("終了");	
 		break;
