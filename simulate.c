@@ -122,6 +122,7 @@ static inline int exec_op(uint32_t ir) {
 	float ra=0.0;
 	float rb=0.0;
 	float resultf = 0.0;
+	int32_t si;
 	opcode = get_opcode(ir);
 	
 
@@ -189,7 +190,13 @@ static inline int exec_op(uint32_t ir) {
 			ram[((_GRA + _SI))] = _GRT;
 			break;
 		case LI:
-			_GRT = _SI;
+			si = _SI;
+			if(((si>>31)&0x1)==1){
+				_GRT = (0xffff0000|si);
+			}
+			else if(((si>>31)&0x1)==0){
+				_GRT = (0xffff&si);
+			}
 			break; 	
 		case LIS:
 			_GRT = (_SI<<16) | (_GRT & ((1<<16)-1)) ;
