@@ -8,6 +8,7 @@ extern uint32_t ram[RAMNUM];
 extern int32_t reg[REGNUM];
 extern uint32_t freg[REGNUM];
 extern uint32_t pc;
+extern uint32_t count[256];
 //< 0 ; > 1 ; = 2
 extern int cdr;
 extern uint32_t ir;

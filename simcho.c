@@ -21,7 +21,8 @@ static void print_usage(char*);
 FILE *err_fp;
 FILE *log_fp;
 static void open_log_file(void);
-
+void print_count(void);
+uint32_t count[256];
 char* outputfile;
 
 static struct timeval tv1,tv2;
@@ -218,7 +219,8 @@ static void print_result(void) {
 	warning("========================== SIMULATOR RESULT ==========================\n");
 	warning_nl();
 	print_elapsed_time();
-	print_val("cnt\t: %lu", cnt);
+	print_val("cnt\t: %llu", cnt);
+	print_count();
 #ifdef ANALYSE_FLAG
 	print_val("analyse result");
 	print_analysis(stderr);
@@ -239,5 +241,113 @@ static void print_elapsed_time(void) {
 		print_val("elapsed_time\t: %lf [s]", (double)elapsed_sec + elapsed_usec*1e-6);
 	}
 }
+
+void print_count(void){
+
+        printf("\n使った命令とその回数\n");
+
+        if(count[ADDI]!=0){
+                printf("ADDI %d\n",count[ADDI]);
+        }
+        if(count[SUBI]!=0){
+                printf("SUBI %d\n",count[SUBI]);
+        }
+        if(count[MULI]!=0){
+                printf("MULI %d\n",count[MULI]);
+        }
+        if(count[DIVI]!=0){
+                printf("DIVI %d\n",count[DIVI]);
+        }
+        if(count[ADD]!=0){
+                printf("ADD %d\n",count[ADD]);
+        }
+        if(count[SUB]!=0){
+                printf("SUB %d\n",count[SUB]);
+        }
+        if(count[MUL]!=0){
+                printf("MUL %d\n",count[MUL]);
+        }
+        if(count[DIV]!=0){
+                printf("DIV %d\n",count[DIV]);
+        }
+        if(count[FADD]!=0){
+                printf("FADD %d\n",count[FADD]);
+        }
+        if(count[FSUB]!=0){
+                printf("FSUB %d\n",count[FSUB]);
+        }
+        if(count[FMUL]!=0){
+                printf("FMUL %d\n",count[FMUL]);
+        }
+        if(count[FDIV]!=0){
+                printf("FDIV %d\n",count[FDIV]);
+        }
+        if(count[AND]!=0){
+                printf("AND %d\n",count[AND]);
+        }
+        if(count[OR]!=0){
+                printf("OR %d\n",count[OR]);
+        }
+        if(count[LOAD]!=0){
+                printf("LOAD %d\n",count[LOAD]);
+        }
+        if(count[STORE]!=0){
+                printf("STORE %d\n",count[STORE]);
+        }
+	if(count[LI]!=0){
+                printf("LI %d\n",count[LI]);
+        }
+        if(count[LIS]!=0){
+                printf("LIS %d\n",count[LIS]);
+        }
+        if(count[JUMP]!=0){
+                printf("JUMP %d\n",count[JUMP]);
+        }
+        if(count[BLR]!=0){
+                printf("BLR %d\n",count[BLR]);
+        }
+        if(count[BL]!=0){
+                printf("BL %d\n",count[BL]);
+        }
+        if(count[BEQ]!=0){
+                printf("BEQ %d\n",count[BEQ]);
+        }
+        if(count[BLE]!=0){
+                printf("BLE %d\n",count[BLE]);
+        }
+        if(count[CMPD]!=0){
+                printf("CMPD %d\n",count[CMPD]);
+        }
+        if(count[INLL]!=0){
+                printf("INLL %d\n",count[INLL]);
+        }
+        if(count[INLH]!=0){
+                printf("INLH %d\n",count[INLH]);
+        }
+        if(count[INUL]!=0){
+                printf("INUL %d\n",count[INUL]);
+        }
+        if(count[INUH]!=0){
+                printf("INUH %d\n",count[INUH]);
+        }
+        if(count[OUTLL]!=0){
+                printf("OUTLL %d\n",count[OUTLL]);
+        }
+        if(count[OUTLH]!=0){
+                printf("OUTLH %d\n",count[OUTLH]);
+        }
+        if(count[OUTUL]!=0){
+                printf("OUTULL %d\n",count[OUTUL]);
+        }
+        if(count[OUTUH]!=0){
+                printf("OUTUH %d\n",count[OUTUH]);
+        }
+        if(count[END]!=0){
+                printf("END %d\n",count[END]);
+        }
+
+
+}
+
 
 #undef print_val

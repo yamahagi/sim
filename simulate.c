@@ -28,6 +28,7 @@ uint32_t ram[RAMNUM];
 */
 int32_t reg[REGNUM];
 uint32_t freg[REGNUM];
+uint32_t count[256] = {0};
 int cdr;
 uint32_t pc;
 //命令
@@ -36,12 +37,15 @@ int32_t lr;
 //何命令行ったか？
 uint64_t cnt;
 
+
 FILE *fpout; 
 
 extern uint32_t _finv(int32_t);
 extern uint32_t _fsqrt(int32_t);
 extern uint32_t _fadd(int32_t, int32_t);
 extern uint32_t _fmul(int32_t, int32_t);
+
+void print_count(void);
 
 //レジスタの規定
 static inline void init(void) {
@@ -109,7 +113,7 @@ int simulate(void) {
 		}
 #endif
 		if(ir == 0){
-		printf("終了");	
+		printf("終了\n");	
 		break;
 		}
 	} while (exec_op(ir)==0);
@@ -134,65 +138,81 @@ static inline int exec_op(uint32_t ir) {
 	switch(opcode){
 		case ADDI:
 			_GRT = _GRA + _SI;
+			count[opcode]+=1;
 			break;
 		case SUBI:
 			_GRT = _GRA - _SI;
+			count[opcode]+=1;
 			break;
 		case MULI:
 			_GRT = _GRA * _SI;
+			count[opcode]+=1;
 			break;
 		case DIVI:
 			_GRT = _GRA / _SI;
+			count[opcode]+=1;
 			break;
 		case ADD:
 			_GRT = _GRA + _GRB;
+			count[opcode]+=1;
 			break;
 		case SUB:
 			_GRT = _GRA - _GRB;
+			count[opcode]+=1;
 			break;
 		case MUL:
 			_GRT = _GRA * _GRB;
+			count[opcode]+=1;
 			break;
 		case DIV:
 			_GRT = _GRA / _GRB;
+			count[opcode]+=1;
 			break;
 		case FADD:
 			ra = float_get(_GRA);
 			rb = float_get(_GRB);
 			resultf = ra+rb;
 			_GRT = int_get(resultf);
+			count[opcode]+=1;
 			break;
 		case FSUB:
 			ra = float_get(_GRA);
 			rb = float_get(_GRB);
 			resultf = ra-rb;
 			_GRT = int_get(resultf);
+			count[opcode]+=1;
 			break;
 		case FMUL:
 			ra = float_get(_GRA);
 			rb = float_get(_GRB);
 			resultf = ra*rb;
 			_GRT = int_get(resultf);
+			count[opcode]+=1;
 			break;
 		case FDIV:
 			ra = float_get(_GRA);
 			rb = float_get(_GRB);
 			resultf = ra/rb;
 			_GRT = int_get(resultf);
+			count[opcode]+=1;
 			break;
 		case AND:
 			_GRT = _GRA & _GRB;
+			count[opcode]+=1;
                         break;
 		case OR:
 			_GRT = _GRA | _GRB;
+			count[opcode]+=1;
                         break;
 		//メモリから代入 ram
 		case LOAD:
 			_GRT = ram[(_GRA + _SI)];
+			count[opcode]+=1;
 			break;
 		//メモリに代入
 		case STORE:
 			ram[((_GRA + _SI))] = _GRT;
+			count[opcode]+=1;
 			break;
 		case LI:
 			si = _SI;
@@ -202,9 +222,11 @@ static inline int exec_op(uint32_t ir) {
 			else if(((si>>31)&0x1)==0){
 				_GRT = (0xffff&si);
 			}
+			count[opcode]+=1;
 			break; 	
 		case LIS:
 			_GRT = (_SI<<16) | (_GRT & ((1<<16)-1)) ;
+			count[opcode]+=1;
 			break; 	
 		case JUMP:
 			/*
@@ -213,19 +235,25 @@ static inline int exec_op(uint32_t ir) {
 			}
 			*/
 			pc = get_li(ir);
+			count[opcode]+=1;
 			break;
 		case BLR:
 			if(pc == lnk) return 1;
 			pc = lnk;
+			count[opcode]+=1;
 			break;
 		case BL:
 			lnk = pc ;
 			pc = _LI;
+			count[opcode]+=1;
+			break;
                 case BEQ:
 			if(cdr==eq) pc= _LI;
+			count[opcode]+=1;
 			break;
 		case BLE:
 			if(cdr==eq||cdr==le) pc = _LI;
+			count[opcode]+=1;
 			break;
                 case CMPD:
                         if (_GRT == _GRA){
@@ -237,22 +265,27 @@ static inline int exec_op(uint32_t ir) {
 			else{
 				cdr = 0;
 			}
+			count[opcode]+=1;
                         break;
                 case INLL:
                         c = getchar();
                         _GRT = (_GRT & 0xffffff00)||(c & 0xff);
+			count[opcode]+=1;
                         break;
                 case INLH:
                         c = getchar();
                         _GRT = (_GRT & 0xffff00ff)||(c<<8 & 0xff00);
+			count[opcode]+=1;
                         break;
                 case INUL:
                         c = getchar();
                         _GRT = (_GRT & 0xff00ffff)||(c<<16 & 0xff0000);
+			count[opcode]+=1;
                         break;
                 case INUH:
                         c = getchar();
                         _GRT = (_GRT & 0x00ffffff)||(c<<24 & 0xff000000);
+			count[opcode]+=1;
                         break;
 		case OUTLL:
 			if(*outputfile == '\0'){
@@ -268,6 +301,7 @@ static inline int exec_op(uint32_t ir) {
 			
   			fprintf(fpout, "%d\n",_GRT&0xff);
   			fclose(fpout);
+			count[opcode]+=1;
 			break;
 		case OUTLH:
   			if(*outputfile == '\0'){
@@ -282,6 +316,7 @@ static inline int exec_op(uint32_t ir) {
   			}
   			fprintf(fpout, "%d\n",(_GRT>>8)&0xff);
   			fclose(fpout);
+			count[opcode]+=1;
             break;
 		case OUTUL:
 			if(*outputfile == '\0'){
@@ -296,6 +331,7 @@ static inline int exec_op(uint32_t ir) {
   			}
   			fprintf(fpout, "%d\n",(_GRT>>16)&0xff);
   			fclose(fpout);
+			count[opcode]+=1;
             break;
 		case OUTUH:
   			
@@ -311,12 +347,15 @@ static inline int exec_op(uint32_t ir) {
   			}
   			fprintf(fpout, "%d\n",(_GRT>>24)&0xff);
   			fclose(fpout);
+			count[opcode]+=1;
             break;
 		case END:
-			printf("終了");
+			printf("終了\n");
+			count[opcode]+=1;
 			return 1;
 		default	:	return 1;//break;
 	}
 
 	return 0;
 }
+
