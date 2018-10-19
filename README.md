@@ -2,7 +2,7 @@ https://github.com/occho/cpuex/tree/master/simulator
 
 これを参考にしてます
 
-make testで実行ファイルtest作成
+makeで実行ファイルsim作成
 
 outはデフォルトはd.txtというものに出力されます。二つ目の引数で出力先を指定できます。上書きです。
 fibは動いた。
