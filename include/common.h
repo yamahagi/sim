@@ -23,6 +23,8 @@
 
 #define AND  0b010000
 #define OR  0b010001
+#define SRAWI 0b010010
+#define SLAWI 0b010011
 
 #define LOAD  0b011000
 #define STORE  0b011001

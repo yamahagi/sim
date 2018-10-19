@@ -204,6 +204,15 @@ static inline int exec_op(uint32_t ir) {
 			_GRT = _GRA | _GRB;
 			count[opcode]+=1;
                         break;
+		case SRAWI:
+			//_GRAはint32_tなので多分これで大丈夫
+			_GRT = _GRA>>_SI;
+			count[opcode]+=1;
+                        break;
+		case SLAWI:
+			_GRT = _GRA<<_SI;
+			count[opcode]+=1;
+                        break;
 		//メモリから代入 ram
 		case LOAD:
 			_GRT = ram[(_GRA + _SI)];

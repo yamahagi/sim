@@ -288,6 +288,12 @@ void print_count(void){
         if(count[OR]!=0){
                 printf("OR %d\n",count[OR]);
         }
+        if(count[SRAWI]!=0){
+                printf("SRAWI %d\n",count[SRAWI]);
+        }
+        if(count[SLAWI]!=0){
+                printf("SLAWI %d\n",count[SLAWI]);
+        }
         if(count[LOAD]!=0){
                 printf("LOAD %d\n",count[LOAD]);
         }
