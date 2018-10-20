@@ -162,3 +162,15 @@ switch(get_opcode(ir)){
 	}
 }
 
+void print_cdr(int cdr){
+
+	if(cdr == eq){
+		printf("eq\n");
+	}
+	else if (cdr == le){
+                printf("le\n");
+        }
+	else{
+                printf("フラグなし\n");
+	}
+}

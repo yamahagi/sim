@@ -12,7 +12,7 @@
 #include "fpu/ftools.h"
 #include "include/oc_sim.h"
 #include "include/common.h"
-#include "include/print_opcode.h"
+#include "include/print_reg.h"
 
 //一つ一つに命令が入る
 uint32_t prom[ROMNUM];
@@ -98,10 +98,13 @@ int simulate(void) {
 #ifndef SILENT
 		printf("実行命令 ");
 		print_opcode(ir);
+		//命令実行後ではなく命令実行時の現在のレジスタ状態を表示
 		printf("ゼロレジスタ %d\n",reg[0]);
 		printf("スタックの先頭　%d\n",reg[1]);
 		printf("スタックフレーム %d\n",reg[2]);
 		printf("リンクレジスタ %d\n",reg[31]);
+		printf("コンディションレジスタ ");
+		print_cdr(cdr);
 		//整数レジスタ
 		for(int i=0;i<12;i++){
 			printf("reg[%d] %d\n",i+3,reg[i+3]);
