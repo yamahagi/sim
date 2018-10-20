@@ -12,6 +12,7 @@
 #include "fpu/ftools.h"
 #include "include/oc_sim.h"
 #include "include/common.h"
+#include "include/print_opcode.h"
 
 //一つ一つに命令が入る
 uint32_t prom[ROMNUM];
@@ -95,6 +96,8 @@ int simulate(void) {
 		
 		//ゼロレジスタを表示	
 #ifndef SILENT
+		printf("実行命令 ");
+		print_opcode(ir);
 		printf("ゼロレジスタ %d\n",reg[0]);
 		printf("スタックの先頭　%d\n",reg[1]);
 		printf("スタックフレーム %d\n",reg[2]);
