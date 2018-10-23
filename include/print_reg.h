@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <assert.h>
 #include <math.h>
+#include "common.h"
 
 void print_opcode(int32_t ir){
 
@@ -105,6 +106,10 @@ switch(get_opcode(ir)){
                         break;
                 case BL:
                         printf("BL ");
+			printf("%x\n",ir);
+                        break;
+                case BLRR:
+                        printf("BLRR ");
 			printf("%x\n",ir);
                         break;
                 case BEQ:

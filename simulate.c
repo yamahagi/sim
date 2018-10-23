@@ -262,6 +262,11 @@ static inline int exec_op(uint32_t ir) {
 			pc = _LI;
 			count[opcode]+=1;
 			break;
+		case BLRR:
+			lnk = pc ;
+			pc = get_rti(ir);
+			count[opcode]+=1;
+			break;
                 case BEQ:
 			if(cdr==eq) pc= _LI;
 			count[opcode]+=1;
