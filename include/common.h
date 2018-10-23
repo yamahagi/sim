@@ -5,7 +5,7 @@
 #define REGNUM 32
 #define ROMNUM (64 * 1024) // words(32bit)
 //メモリのこと？
-#define RAMNUM (256 * 1024)
+#define RAMNUM (1024 * 1024)
 
 #define ADDI  0b000000
 #define SUBI  0b000001
