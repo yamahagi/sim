@@ -266,7 +266,7 @@ static inline int exec_op(uint32_t ir) {
 			break;
 		case BLRR:
 			lnk = pc ;
-			pc = get_rti(ir);
+			pc =_GRT;
 			count[opcode]+=1;
 			break;
                 case BEQ:
