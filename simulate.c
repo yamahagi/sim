@@ -94,6 +94,7 @@ int simulate(void) {
 			
 		float f;	
 		
+
 		//ゼロレジスタを表示	
 #ifndef SILENT
 		printf("実行命令 ");
@@ -139,6 +140,7 @@ static inline int exec_op(uint32_t ir) {
 	float resultf = 0.0;
 	int32_t si;
 	opcode = get_opcode(ir);
+    int p;
 	
 
 	switch(opcode){
@@ -288,23 +290,27 @@ static inline int exec_op(uint32_t ir) {
 			count[opcode]+=1;
                         break;
                 case INLL:
-                        c = getchar();
-                        _GRT = (_GRT & 0xffffff00)||(c & 0xff);
+                        scanf("%d",&p);
+                        _GRT = (_GRT & 0xffffff00)|(p & 0xff);
 			count[opcode]+=1;
                         break;
                 case INLH:
-                        c = getchar();
-                        _GRT = (_GRT & 0xffff00ff)||(c<<8 & 0xff00);
+
+                        scanf("%d",&p);
+                        _GRT = (_GRT & 0xffff00ff)|(p<<8 & 0xff00);
 			count[opcode]+=1;
                         break;
                 case INUL:
-                        c = getchar();
-                        _GRT = (_GRT & 0xff00ffff)||(c<<16 & 0xff0000);
+
+                        scanf("%d",&p);
+
+                        _GRT = (_GRT & 0xff00ffff)|(p<<16 & 0xff0000);
 			count[opcode]+=1;
                         break;
                 case INUH:
-                        c = getchar();
-                        _GRT = (_GRT & 0x00ffffff)||(c<<24 & 0xff000000);
+
+                        scanf("%d",&p);
+                        _GRT = (_GRT & 0x00ffffff)|(p<<24 & 0xff000000);
 			count[opcode]+=1;
                         break;
 		case OUTLL:
