@@ -1,5 +1,5 @@
-obj = gcc -c -g
-app = gcc
+obj = gcc -c -g -O2
+app = gcc -O2
 
 .PHONY: [sim]
 
