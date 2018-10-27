@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <sys/time.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -40,6 +41,7 @@ uint64_t cnt;
 
 
 FILE *fpout; 
+struct timeval start;
 
 extern uint32_t _finv(int32_t);
 extern uint32_t _fsqrt(int32_t);
@@ -48,8 +50,19 @@ extern uint32_t _fmul(int32_t, int32_t);
 
 void print_count(void);
 
+double elapsed_time(){
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    return (double)(now.tv_sec - start.tv_sec) + (double)(now.tv_usec - start.tv_usec)/1000000.0;
+}
 //レジスタの規定
 static inline void init(void) {
+    if(*outputfile == '\0'){
+                    fpout = fopen("d.txt", "a");
+            }
+            else{
+                    fpout = fopen(outputfile, "a");
+            }
 // register init
 	reg[0] = 0;
 	reg[1] = 4*(RAMNUM-1);
@@ -58,6 +71,7 @@ static inline void init(void) {
 	cdr = 0;
 // heap init なにこれ?
 	pc = 0;
+    gettimeofday(&start, NULL);
 /*
 	for (pc = 1; pc*4 <= reg[2]; pc++) {
 		ram[pc-1] = prom[pc];
@@ -88,12 +102,15 @@ int simulate(void) {
 		cnt++;
 		pc++;
 		if (!(cnt % 10000000)) { 
-			warning("."); 
-
+        		warning("."); 
+                if(!(cnt % 1000000000)){
+        			warning("time %.3f [sec],operation_count = %ld hp = %d \n",elapsed_time(),cnt,ram[0]); 
+                }
 		}
 			
 		float f;	
 		
+
 		//ゼロレジスタを表示	
 #ifndef SILENT
 		printf("実行命令 ");
@@ -139,6 +156,7 @@ static inline int exec_op(uint32_t ir) {
 	float resultf = 0.0;
 	int32_t si;
 	opcode = get_opcode(ir);
+    int p;
 	
 
 	switch(opcode){
@@ -264,7 +282,7 @@ static inline int exec_op(uint32_t ir) {
 			break;
 		case BLRR:
 			lnk = pc ;
-			pc = get_rti(ir);
+			pc =_GRT;
 			count[opcode]+=1;
 			break;
                 case BEQ:
@@ -288,85 +306,41 @@ static inline int exec_op(uint32_t ir) {
 			count[opcode]+=1;
                         break;
                 case INLL:
-                        c = getchar();
-                        _GRT = (_GRT & 0xffffff00)||(c & 0xff);
+                        scanf("%d",&p);
+                        _GRT = (_GRT & 0xffffff00)|(p & 0xff);
 			count[opcode]+=1;
                         break;
                 case INLH:
-                        c = getchar();
-                        _GRT = (_GRT & 0xffff00ff)||(c<<8 & 0xff00);
+
+                        scanf("%d",&p);
+                        _GRT = (_GRT & 0xffff00ff)|(p<<8 & 0xff00);
 			count[opcode]+=1;
                         break;
                 case INUL:
-                        c = getchar();
-                        _GRT = (_GRT & 0xff00ffff)||(c<<16 & 0xff0000);
+            scanf("%d",&p);
+            _GRT = (_GRT & 0xff00ffff)|(p<<16 & 0xff0000);
 			count[opcode]+=1;
                         break;
                 case INUH:
-                        c = getchar();
-                        _GRT = (_GRT & 0x00ffffff)||(c<<24 & 0xff000000);
+
+            scanf("%d",&p);
+            _GRT = (_GRT & 0x00ffffff)|(p<<24 & 0xff000000);
 			count[opcode]+=1;
                         break;
 		case OUTLL:
-			if(*outputfile == '\0'){
-  				fpout = fopen("d.txt", "a");
-			}
-			else{
-  				fpout = fopen(outputfile, "a");
-  			}
-			if (fpout == NULL) {
-    				printf("cannot open\n");  
-    				exit(1);                 
-  			}
-			
-  			fprintf(fpout, "%d\n",_GRT&0xff);
-  			fclose(fpout);
+  			fprintf(fpout, "%d\n",(_GRT>>0)&0xff);
 			count[opcode]+=1;
 			break;
 		case OUTLH:
-  			if(*outputfile == '\0'){
-                                fpout = fopen("d.txt", "a");
-                        }
-                        else{
-                                fpout = fopen(outputfile, "a");
-                        }
-			if (fpout == NULL) {
-    			printf("cannot open\n");  
-    			exit(1);                 
-  			}
   			fprintf(fpout, "%d\n",(_GRT>>8)&0xff);
-  			fclose(fpout);
 			count[opcode]+=1;
             break;
 		case OUTUL:
-			if(*outputfile == '\0'){
-                                fpout = fopen("d.txt", "a");
-                        }
-                        else{
-                                fpout = fopen(outputfile, "a");
-                        }
-  			if (fpout == NULL) {
-    			printf("cannot open\n");  
-    			exit(1);                 
-  			}
   			fprintf(fpout, "%d\n",(_GRT>>16)&0xff);
-  			fclose(fpout);
 			count[opcode]+=1;
             break;
 		case OUTUH:
-  			
-  			if(*outputfile == '\0'){
-                                fpout = fopen("d.txt", "a");
-                        }
-                        else{
-                                fpout = fopen(outputfile, "a");
-                        }
-			if (fpout == NULL) {
-    			printf("cannot open\n");  
-    			exit(1);                 
-  			}
-  			fprintf(fpout, "%d\n",(_GRT>>24)&0xff);
-  			fclose(fpout);
+  		fprintf(fpout, "%d\n",(_GRT>>24)&0xff);
 			count[opcode]+=1;
             break;
 		case END:
