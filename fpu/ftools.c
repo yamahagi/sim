@@ -72,7 +72,6 @@ int32_t int_get(float b) {
     a.f = b;
 
     int32_t c=0;
-    /* ビットの列を表示します */
     for( i = 31; i >= 0; i-- ){
         c = c | (((a.i>>i)&1)<<i);
     }
