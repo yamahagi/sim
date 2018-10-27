@@ -297,7 +297,7 @@ static inline int exec_op(uint32_t ir) {
                         if (_GRT == _GRA){
 				cdr = eq;
 			}
-                        else if (_GRT <= _GRA){
+                        else if (_GRT < _GRA){
 				cdr = le;
 			}
 			else{
@@ -305,6 +305,24 @@ static inline int exec_op(uint32_t ir) {
 			}
 			count[opcode]+=1;
                         break;
+                case CMPF:
+			float FGRT = float_get(_GRT);
+			float FGRA = float_get(_GRA);
+                        if (FGRT == FGRA){
+				cdr = eq;
+			}
+                        else if (FGRT < FGRA){
+				cdr = le;
+			}
+			else{
+				cdr = 0;
+			}
+			count[opcode]+=1;
+                        break;
+		case BLT:
+			if(cdr==le) pc = _LI;
+			count[opcode]+=1;
+			break;
                 case INLL:
                         scanf("%d",&p);
                         _GRT = (_GRT & 0xffffff00)|(p & 0xff);

@@ -324,6 +324,12 @@ void print_count(void){
         if(count[CMPD]!=0){
                 printf("CMPD %d\n",count[CMPD]);
         }
+        if(count[CMPF]!=0){
+                printf("CMPF %d\n",count[CMPF]);
+        }
+        if(count[BLT]!=0){
+                printf("BLT %d\n",count[BLT]);
+        }
         if(count[INLL]!=0){
                 printf("INLL %d\n",count[INLL]);
         }
