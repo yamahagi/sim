@@ -10,13 +10,11 @@
 #include <assert.h>
 #include "ftools.h"
 #include <math.h>
-#define WAIT_ST 0
-#define STAGE1 1
-#define STAGE2 2
-#define STAGE3 3
 
 /*
-FADD、FSUB、FMUL、FDIVでそれぞれの関数定義に飛べます。
+FADD、FSUB、FMULでそれぞれの関数定義に飛べます。
+ADDとSUBが何も考えずにそのまま移植したので大分コード長くなってしまってます
+時間あったら書き直します
 */
 
 
@@ -724,22 +722,20 @@ if(underflow == 1){
 	result = 0;
 }
 else if(split_bit64(kekka,47,47)==1){
-		printf("47\n");
 	result = (s2<<31)+((split_bit(e2,7,0)+1)<<23)+(split_bit64(kekka,46,24));
 }
 else{
 	if(e2==0){
-		printf("e20\n");
 		result = (s2<<31)+(split_bit64(kekka,46,24));
 	}
 	else{
-		printf("else\n");
 		result = (s2<<31)+((split_bit(e2,7,0))<<23)+(split_bit64(kekka,45,23));
 	}
 }
 
 return result;
 }
+
 /*
 int main(void){
 float a = 0.4;
