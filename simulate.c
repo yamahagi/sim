@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <math.h>
 #include "fpu/ftools.h"
+#include "fpu/fpu.h"
 #include "include/oc_sim.h"
 #include "include/common.h"
 #include "include/print_reg.h"
@@ -128,7 +129,7 @@ int simulate(void) {
 		}
 		//浮動小数点レジスタ表示
 		for(int i=0;i<12;i++){
-			printf("reg[%d] %f\n",i+15,float_get(reg[i+15]));
+			printf("reg[%d] %f\n",i+15,*(float*)(&reg[i+15]));
 		}
 		//それ以外のレジスタ
 		for(int i=0;i<4;i++){
@@ -153,6 +154,7 @@ static inline int exec_op(uint32_t ir) {
 	char c;
 	float ra=0.0;
 	float rb=0.0;
+	float rt=0.0;
 	float resultf = 0.0;
 	int32_t si;
 	opcode = get_opcode(ir);
@@ -193,31 +195,40 @@ static inline int exec_op(uint32_t ir) {
 			count[opcode]+=1;
 			break;
 		case FADD:
-			ra = float_get(_GRA);
-			rb = float_get(_GRB);
+			/*
+			ra = *(float*)(&(_GRA));
+			rb = *(float*)(&(_GRB));
 			resultf = ra+rb;
-			_GRT = int_get(resultf);
+			_GRT = *(int*)(&(resultf));
+			*/
+			_GRT = fadd(_GRA,_GRB);
 			count[opcode]+=1;
 			break;
 		case FSUB:
-			ra = float_get(_GRA);
-			rb = float_get(_GRB);
+			/*	
+			ra = *(float*)(&(_GRA));
+			rb = *(float*)(&(_GRB));
 			resultf = ra-rb;
-			_GRT = int_get(resultf);
+			_GRT = *(int*)(&(resultf));
+			*/
+			_GRT = fsub(_GRA,_GRB);
 			count[opcode]+=1;
 			break;
 		case FMUL:
-			ra = float_get(_GRA);
-			rb = float_get(_GRB);
+			/*
+			ra = *(float*)(&(_GRA));
+			rb = *(float*)(&(_GRB));
 			resultf = ra*rb;
-			_GRT = int_get(resultf);
+			_GRT = *(int*)(&(resultf));
+			*/
+			_GRT = fsub(_GRA,_GRB);
 			count[opcode]+=1;
 			break;
 		case FDIV:
-			ra = float_get(_GRA);
-			rb = float_get(_GRB);
+			ra = *(float*)(&(_GRA));
+			rb = *(float*)(&(_GRB));
 			resultf = ra/rb;
-			_GRT = int_get(resultf);
+			_GRT = *(int*)(&(resultf));
 			count[opcode]+=1;
 			break;
 		case AND:
@@ -306,12 +317,12 @@ static inline int exec_op(uint32_t ir) {
 			count[opcode]+=1;
                         break;
                 case CMPF:
-			float FGRT = float_get(_GRT);
-			float FGRA = float_get(_GRA);
-                        if (FGRT == FGRA){
+			rt = *(float*)(&(_GRT));
+			ra = *(float*)(&(_GRA));
+                        if (rt == ra){
 				cdr = eq;
 			}
-                        else if (FGRT < FGRA){
+                        else if (rt < ra){
 				cdr = le;
 			}
 			else{

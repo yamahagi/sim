@@ -13,6 +13,21 @@
 
 //010101010101010101010110101
 
+int32_t split_bit(int32_t data,int start,int end){
+
+int32_t result = ((0xffffffff>>(31-start))&data)>>end;
+
+return result;
+
+}
+
+int32_t split_bit64(int64_t data,int start,int end){
+
+int32_t result = ((0xffffffffffffffff>>(63-start))&data)>>end;
+
+return result;
+
+}
 float float_get(int32_t b){
 	uint32_t s = (b>>31)&0x1;
 	uint32_t exp = (b>>23)&0xff;

@@ -39,8 +39,8 @@
 #define BEQ  0b101000
 #define BLE  0b101001
 #define CMPD  0b101010
-#define CMPD  0b101011
-#define BLE  0b101100
+#define CMPF  0b101011
+#define BLT  0b101100
 
 #define INLL  0b110000
 #define INLH  0b110001
