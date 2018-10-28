@@ -6233,3 +6233,168 @@ ax02jyoue2 = ax02e1 - 127;
 int64_t bdatakari64 = bdatakari;
 int64_t x2jyoukari64 = x2jyoukari;
 ax02jyoukekka = bdatakari64 * x2jyoukari64;
+
+/*  STAGE4  */
+adata4 = adata3;
+bdata4 = bdata3;
+x02bai4 = x02bai3;
+if(split_bit64(ax02jyoukekka,47,47)==1){
+
+	if(ax02jyous2 == 1){
+		minusax02jyou = ((split_bit(ax02jyoue2,7,0)+1)<<23)+(split_bit64(ax02jyoukekka,46,24));
+	}
+	else{
+		minusax02jyou = (1<<31)+((split_bit(ax02jyoue2,7,0)+1)<<23)+(split_bit64(ax02jyoukekka,46,24));
+	}
+}
+else{
+	if(ax02jyous2 == 1){
+		minusax02jyou = ((split_bit(ax02jyoue2,7,0))<<23)+(split_bit64(ax02jyoukekka,45,23));
+	}
+	else{
+		minusax02jyou = (1<<31)+((split_bit(ax02jyoue2,7,0))<<23)+(split_bit64(ax02jyoukekka,45,23));
+	}
+
+}
+/*  STAGE5  */
+adata5 = adata4;
+bdata5 = bdata4;
+
+if((split_bit(x02bai4,31,31))==(split_bit(minusax02jyou,31,31))){
+	invbtashi1hiki0 = 1;
+}
+else{
+	invbtashi1hiki0 = 0;
+}
+
+if((split_bit(x02bai4,30,23))>(split_bit(minusax02jyou,30,23))||((split_bit(x02bai4,30,23))==(split_bit(minusax02jyou,30,23)) && ((split_bit(x02bai4,22,0))>=(split_bit(minusax02jyou,22,0))))){
+	invbs1 = (split_bit(x02bai4,31,31));
+	invbe1 = (split_bit(x02bai4,30,23));
+	invbdeka = (1<<23)+(split_bit(x02bai4,22,0));
+	invbchibi = ((1<<23)+(split_bit(minusax02jyou,22,0)))>>((split_bit(x02bai4,30,23))-(split_bit(minusax02jyou,30,23)));
+else{
+	invbs1 = (split_bit(minusax02jyou,31,31));
+	invbe1 = (split_bit(minusax02jyou,30,23));
+	invbdeka = (1<<23)+(split_bit(minusax02jyou,22,0));
+	invbchibi = ((1<<23)+(split_bit(x02bai4,22,0)))>>((split_bit(minusax02jyou,30,23))-(split_bit(x02bai4,30,23)));
+}
+
+/*  STAGE6  */
+
+adata6 = adata5;
+bdata6 = bdata5;
+invbs2 = invbs1;
+invbe2 = invbe1;
+
+if (invbtashi1hiki0 == 1){
+	invbkekka = split_bit(invbdeka,24,0) + split_bit(invbchibi,24,0);
+}
+else{
+	invbkekka = split_bit(invbdeka,24,0) - split_bit(invbchibi,24,0);
+}
+
+/*  STAGE7  */
+adata7 = adata6;
+bdata7 = bdata6;
+
+int kijyun = 0;
+
+while(1==1){
+           if(split_bit(invbkekka,24-kijyun,24-kijyun)==1){
+           	if(kijyun == 0){
+			invb = (invbs2<<31)+((split_bit(invbe2,7,0)+1-kijyun)<<23)+split_bit(invbkekka,23-kijyun,1);
+		}
+		else{
+			invb = (invbs2<<31)+((split_bit(invbe2,7,0)+1-kijyun)<<23)+(split_bit(invbkekka,23-kijyun,0)<<(kijyun-1));
+                }
+		break;
+           }
+           kijyun+=1;
+           if(kijyun==24){
+                   break;
+           }
+}
+if(kijyun==24&&split_bit(invbkekka,24-kijyun,24-kijyun)==1){
+	invb = (invbs2<<31)+((split_bit(invbe2,7,0)+1-kijyun)<<23);
+}
+else if(kijyun==24){
+	invb = 0;
+}
+
+/* STAGE8 */
+
+if(split_bit(adata7,31,31)!=(split_bit(bdata7,31,31))){
+	s1 = 1;
+}
+else{
+	s1 = 0;
+}
+e1 = split_bit(adata7,30,23) + (127<<8) + split_bit(invb,30,23);
+esyuuseib = split_bit(bdata,30,23);
+kijyun = 0;
+if(split_bit(adata7,30,23) == 0){
+        while(1==1){
+                if(split_bit(adata7,22-kijyun,22-kijyun)==1){
+                        esyuuseia = kijyun;
+                        adatakari = split_bit(adata7,22-kijyun,0)<<(kijyun+1);
+                        break;
+                }
+                kijyun+=1;
+                if(kijyun==22){
+                        break;
+                }
+        }
+        if(kijyun==22&&split_bit(adata7,22-kijyun,22-kijyun)==1){
+                esyuuseia = 22;
+                adatakari = 1<<23;
+        }
+        else if(kijyun==22){
+                esyuuseia = 23;
+                adatakari = 0;
+        }
+}
+else{
+        esyuuseia = 0;
+        adatakari = (1<<23)+split_bit(adata7,22,0);
+}
+
+invbkari = (1<<23) + split_bit(invb,22,0);
+
+/* STAGE9 */
+s2 = s1;
+if(esyuuseia == 23 || (e1<(esyuuseib + esyuuseia + 127))){
+	underflow = 1;
+}
+else{
+	underflow = 0;
+}
+e2 = e1 - esyuuseia - esyuuseib -127;
+
+int64_t adatakari64 = adatakari;
+int64_t invbkari64 = invbkari;
+
+kekka = adatakari64 * invbkari64;
+
+/* STAGE10 */
+
+if(underflow == 1){
+	result = 0;
+}
+else{
+	if(split_bit(kekka,47,47) == 1){
+		result = (s2<<31)+((split_bit(e2,7,0)+1)<<23) +(split_bit(kekka,46,24));
+	}
+	else{
+		if(e2==0){
+			result = (s2<<31) + (split_bit(kekka,46,24));
+		}
+		else{
+			result = (s2<<31)+((split_bit(e2,7,0))<<23) +(split_bit(kekka,45,23));
+		}
+	}
+}
+
+
+return result;
+
+}
