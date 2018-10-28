@@ -16,23 +16,40 @@ int32_t fdiv(int32_t adata,int32_t bdata){
 int wadata;
 int wbdata;
 
+int result;
+
 int adata1;
 int bdata1;
-int x20bai;
+int x02bai;
 int x02jyou;
 
 int adata2;
-int badata2;
+int bdata2;
 int x02bai2;
 int ax02s1;
 int ax02e1;
 int bdatakari;
 int x2jyoukari;
 
+int adata3;
+int bdata3;
+int x02bai3;
+int64_t ax02jyoukekka;
+int ax02jyous2;
+int ax02jyoue2;
+
 int adata4;
 int bdata4;
 int x02bai4;
 int minusax02jyou;
+
+int adata5;
+int bdata5;
+int invbs1;
+int invbe1;
+int invbdeka;
+int invbchibi;
+int invbtashi1hiki0;
 
 int adata6;
 int bdata6;
@@ -66,7 +83,7 @@ bdata1 = wbdata;
 /* TABLESTART */
 
 if(split_bit(wbdata,22,12)==0){
-	w02bai = 0b00111111111111111111000000000010;
+	x02bai = 0b00111111111111111111000000000010;
 	x02jyou = 0b00111111011111111110000000000101;
 }
 else if (split_bit(wbdata,22,12) == 1){  
@@ -6271,7 +6288,7 @@ if((split_bit(x02bai4,30,23))>(split_bit(minusax02jyou,30,23))||((split_bit(x02b
 	invbs1 = (split_bit(x02bai4,31,31));
 	invbe1 = (split_bit(x02bai4,30,23));
 	invbdeka = (1<<23)+(split_bit(x02bai4,22,0));
-	invbchibi = ((1<<23)+(split_bit(minusax02jyou,22,0)))>>((split_bit(x02bai4,30,23))-(split_bit(minusax02jyou,30,23)));
+	invbchibi = ((1<<23)+(split_bit(minusax02jyou,22,0)))>>((split_bit(x02bai4,30,23))-(split_bit(minusax02jyou,30,23)));}
 else{
 	invbs1 = (split_bit(minusax02jyou,31,31));
 	invbe1 = (split_bit(minusax02jyou,30,23));
@@ -6382,13 +6399,16 @@ if(underflow == 1){
 }
 else{
 	if(split_bit(kekka,47,47) == 1){
+		printf("aaa");
 		result = (s2<<31)+((split_bit(e2,7,0)+1)<<23) +(split_bit(kekka,46,24));
 	}
 	else{
 		if(e2==0){
+		printf("bbb");
 			result = (s2<<31) + (split_bit(kekka,46,24));
 		}
 		else{
+		printf("ccc");
 			result = (s2<<31)+((split_bit(e2,7,0))<<23) +(split_bit(kekka,45,23));
 		}
 	}
@@ -6396,5 +6416,16 @@ else{
 
 
 return result;
+
+}
+int main(void){
+
+float a = 0.4;
+float b = 0.4;
+float d = 0.8;
+float c = float_get (fdiv((int_get(a)),(int_get(b))));
+printf("%f\n",c);
+
+return 0;
 
 }
