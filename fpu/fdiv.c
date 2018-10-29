@@ -73,8 +73,12 @@ int s2;
 int e2;
 int underflow;
 
+/* WAIT_ST */
+
 wadata = adata;
 wbdata = bdata;
+
+/* STAGE1 */
 
 adata1 = wadata;
 bdata1 = wbdata;
@@ -6328,14 +6332,14 @@ while(1==1){
            }
            kijyun+=1;
            if(kijyun==24){
-                   break;
+                if(split_bit(invbkekka,24-kijyun,24-kijyun)==1){
+        		invb = (invbs2<<31)+((split_bit(invbe2,7,0)+1-kijyun)<<23);
+		}
+		else{
+			invb = 0;
+		}
+		break;
            }
-}
-if(kijyun==24&&split_bit(invbkekka,24-kijyun,24-kijyun)==1){
-	invb = (invbs2<<31)+((split_bit(invbe2,7,0)+1-kijyun)<<23);
-}
-else if(kijyun==24){
-	invb = 0;
 }
 
 /* STAGE8 */
@@ -6358,16 +6362,16 @@ if(split_bit(adata7,30,23) == 0){
                 }
                 kijyun+=1;
                 if(kijyun==22){
-                        break;
+        		if(split_bit(adata7,22-kijyun,22-kijyun)==1){
+                		esyuuseia = 22;
+                		adatakari = 1<<23;
+        		}
+			else{
+				esyuuseia = 23;
+                		adatakari = 0;
+			}
+		        break;
                 }
-        }
-        if(kijyun==22&&split_bit(adata7,22-kijyun,22-kijyun)==1){
-                esyuuseia = 22;
-                adatakari = 1<<23;
-        }
-        else if(kijyun==22){
-                esyuuseia = 23;
-                adatakari = 0;
         }
 }
 else{

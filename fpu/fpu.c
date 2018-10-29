@@ -91,6 +91,8 @@ else{
 
 }	
 
+/* STAGE2 */
+
 whiseiki2 = whiseiki1;
 s2 = s1;
 e2 = e1;
@@ -101,6 +103,8 @@ else{
 	kekka = split_bit(deka,24,0) - split_bit(chibi,24,0);
 }
 
+/* STAGE3 */
+
 int kijyun = 0;
 
 while(1==1){
@@ -109,7 +113,7 @@ while(1==1){
 		if(kijyun==0){
 			result = (s2<<31)+((split_bit(e2,7,0)+1)<<23)+(split_bit(kekka,23,1));
 		}
-		if(kijyun==1){
+		else if(kijyun==1){
  	        	if(whiseiki2==1){
          	        result = (s2<<31)+((split_bit(e2,7,0)+1)<<23)+(split_bit(kekka,22,0));
         		}
@@ -117,7 +121,7 @@ while(1==1){
                 	result = (s2<<31)+((split_bit(e2,7,0))<<23)+(split_bit(kekka,22,0));
         		}	
 		}
-		if(kijyun==24){
+		else if(kijyun==24){
 			 if(e2<kijyun-1){
                                result = 0;
                         }
@@ -161,6 +165,8 @@ int s2;
 int e2;
 int whiseiki2;
 
+/* WAIT_ST */
+
 int wadata = adata;
 int wbdata;
 if(split_bit(bdata,31,31)==1){
@@ -171,6 +177,8 @@ else{
 }
 
 int result = 0;
+
+/* STAGE1 */
 
 if(split_bit(wadata,30,23)==0&&split_bit(wbdata,30,23)==0){
 	whiseiki1 = 1;
@@ -221,6 +229,8 @@ else{
 
 }	
 
+/* STAGE2 */
+
 whiseiki2 = whiseiki1;
 s2 = s1;
 e2 = e1;
@@ -231,6 +241,8 @@ else{
 	kekka = split_bit(deka,24,0) - split_bit(chibi,24,0);
 }
 
+/* STAGE3 */
+
 int kijyun = 0;
 
 while(1==1){
@@ -238,7 +250,7 @@ while(1==1){
                 if(kijyun==0){
                         result = (s2<<31)+((split_bit(e2,7,0)+1)<<23)+(split_bit(kekka,23,1));
                 }
-                if(kijyun==1){
+                else if(kijyun==1){
                         if(whiseiki2==1){
                         result = (s2<<31)+((split_bit(e2,7,0)+1)<<23)+(split_bit(kekka,22,0));
                         }
@@ -246,7 +258,7 @@ while(1==1){
                         result = (s2<<31)+((split_bit(e2,7,0))<<23)+(split_bit(kekka,22,0));
                         }
                 }
-                if(kijyun==24){
+                else if(kijyun==24){
                          if(e2<kijyun-1){
                                result = 0;
                         }
@@ -376,6 +388,8 @@ int64_t ak = adata1;
 int64_t bk = bdata1;
 kekka = ak*bk;
 
+/* STAGE3 */
+
 if(underflow == 1){
 	result = 0;
 }
@@ -394,13 +408,13 @@ else{
 return result;
 }
 
-
+/*
 int main(void){
 float a = -0.4;
-float b = 0.8;
+float b = -0.8;
 float d = -0.8;
 float c = float_get (fadd((int_get(a)),(int_get(b))));
-float e = float_get (fsub((int_get(b)),(int_get(d))));
+float e = float_get (fsub((int_get(b)),(int_get(a))));
 float f = float_get (fmul((int_get(b)),(int_get(d))));
 printf("%f\n",c);
 printf("%f\n",e);
@@ -409,4 +423,5 @@ printf("%f\n",f);
 return 0;
 
 }
+*/
 
