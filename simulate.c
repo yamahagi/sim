@@ -12,6 +12,7 @@
 #include <math.h>
 #include "fpu/ftools.h"
 #include "fpu/fpu.h"
+#include "fpu/fdiv.h"
 #include "include/oc_sim.h"
 #include "include/common.h"
 #include "include/print_reg.h"
@@ -195,40 +196,37 @@ static inline int exec_op(uint32_t ir) {
 			count[opcode]+=1;
 			break;
 		case FADD:
-			/*
 			ra = *(float*)(&(_GRA));
 			rb = *(float*)(&(_GRB));
 			resultf = ra+rb;
 			_GRT = *(int*)(&(resultf));
-			*/
-			_GRT = fadd(_GRA,_GRB);
+			//_GRT = fadd(_GRA,_GRB);
 			count[opcode]+=1;
 			break;
 		case FSUB:
-			/*	
 			ra = *(float*)(&(_GRA));
 			rb = *(float*)(&(_GRB));
 			resultf = ra-rb;
 			_GRT = *(int*)(&(resultf));
-			*/
-			_GRT = fsub(_GRA,_GRB);
+			//_GRT = fsub(_GRA,_GRB);
 			count[opcode]+=1;
 			break;
 		case FMUL:
-			/*
 			ra = *(float*)(&(_GRA));
 			rb = *(float*)(&(_GRB));
 			resultf = ra*rb;
 			_GRT = *(int*)(&(resultf));
-			*/
-			_GRT = fsub(_GRA,_GRB);
+			
+			//_GRT = fsub(_GRA,_GRB);
 			count[opcode]+=1;
 			break;
 		case FDIV:
 			ra = *(float*)(&(_GRA));
 			rb = *(float*)(&(_GRB));
 			resultf = ra/rb;
-			_GRT = *(int*)(&(resultf));
+			_GRT = *(int*)(&resultf);
+			
+			//_GRT = fdiv(_GRA,_GRB);
 			count[opcode]+=1;
 			break;
 		case AND:

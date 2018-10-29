@@ -6346,7 +6346,7 @@ if(split_bit(adata7,31,31)!=(split_bit(bdata7,31,31))){
 else{
 	s1 = 0;
 }
-e1 = split_bit(adata7,30,23) + (127<<8) + split_bit(invb,30,23);
+e1 = split_bit(adata7,30,23) + 127 + split_bit(invb,30,23);
 esyuuseib = split_bit(bdata,30,23);
 kijyun = 0;
 if(split_bit(adata7,30,23) == 0){
@@ -6399,16 +6399,13 @@ if(underflow == 1){
 }
 else{
 	if(split_bit(kekka,47,47) == 1){
-		printf("aaa");
 		result = (s2<<31)+((split_bit(e2,7,0)+1)<<23) +(split_bit(kekka,46,24));
 	}
 	else{
 		if(e2==0){
-		printf("bbb");
 			result = (s2<<31) + (split_bit(kekka,46,24));
 		}
 		else{
-		printf("ccc");
 			result = (s2<<31)+((split_bit(e2,7,0))<<23) +(split_bit(kekka,45,23));
 		}
 	}
@@ -6418,6 +6415,7 @@ else{
 return result;
 
 }
+/*
 int main(void){
 
 float a = 0.4;
@@ -6429,3 +6427,4 @@ printf("%f\n",c);
 return 0;
 
 }
+*/

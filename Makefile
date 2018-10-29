@@ -3,7 +3,7 @@ app = gcc -O2
 
 .PHONY: [sim]
 
-all: sim simcho.o simulate.o fpu.o ftools.o
+all: sim simcho.o simulate.o ftools.o fpu.o fdiv.o
 
 simulate.o: simulate.c
 	$(obj) simulate.c
@@ -13,11 +13,14 @@ simcho.o: simcho.c
 
 ftools.o: ./fpu/ftools.c
 	$(obj) ./fpu/ftools.c
-ftools.o: ./fpu/fpu.c
+fpu.o: ./fpu/fpu.c
 	$(obj) ./fpu/fpu.c
 
-sim: simcho.o simulate.o ftools.o fpu.o
-	$(app) simcho.o simulate.o fpu.o ftools.o -o sim
+fdiv.o: ./fpu/fdiv.c
+	$(obj) ./fpu/fdiv.c
+
+sim: simcho.o simulate.o ftools.o fpu.o fdiv.o
+	$(app) simcho.o simulate.o fpu.o fdiv.o ftools.o -o sim
 
 silent: clean
 	$(obj) simulate.c -D"SILENT=1"
