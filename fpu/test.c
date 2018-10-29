@@ -15,8 +15,8 @@ float a,b,c,d;
 int l = 0;
 	srand(time(NULL));
 	 for(n = 0; n < 100000; ++n){
-       a  = ((float)(RAND_MAX/2)-(float)rand())/3.0;    /* 乱数の取得 */
-       b  = ((float)(RAND_MAX/2)-(float)rand())/3.0;    /* 乱数の取得 */
+       a  = ((float)(RAND_MAX/2)-(float)rand())/(float)rand();    /* 乱数の取得 */
+       b  = ((float)(RAND_MAX/2)-(float)rand())/(float)rand();    /* 乱数の取得 */
         c = a/b;
 	d = float_get(fdiv(int_get(a),int_get(b)));
 	if(c-d>fabsf(c)*GOSA||c-d<(-(fabsf(c)*GOSA))){
