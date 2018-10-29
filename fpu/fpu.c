@@ -56,7 +56,7 @@ else{
 	tashi1hiki0 = 0;
 }
 
-if(split_bit(wadata,30,23)>split_bit(wbdata,30,23) || (split_bit(wadata,30,23)==split_bit(wbdata,30,23) && split_bit(wadata,22,0)==split_bit(wbdata,22,0))){
+if(split_bit(wadata,30,23)>split_bit(wbdata,30,23) || (split_bit(wadata,30,23)==split_bit(wbdata,30,23) && split_bit(wadata,22,0)>=split_bit(wbdata,22,0))){
 
 	s1 = split_bit(wadata,31,31);
 	e1 = split_bit(wadata,30,23);

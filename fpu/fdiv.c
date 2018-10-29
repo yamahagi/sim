@@ -6288,7 +6288,7 @@ else{
 	invbtashi1hiki0 = 0;
 }
 
-if((split_bit(x02bai4,30,23))>(split_bit(minusax02jyou,30,23))||((split_bit(x02bai4,30,23))==(split_bit(minusax02jyou,30,23)) && ((split_bit(x02bai4,22,0))>=(split_bit(minusax02jyou,22,0))))){
+if(((split_bit(x02bai4,30,23))>(split_bit(minusax02jyou,30,23)))||((split_bit(x02bai4,30,23))==(split_bit(minusax02jyou,30,23)) && ((split_bit(x02bai4,22,0))>=(split_bit(minusax02jyou,22,0))))){
 	invbs1 = (split_bit(x02bai4,31,31));
 	invbe1 = (split_bit(x02bai4,30,23));
 	invbdeka = (1<<23)+(split_bit(x02bai4,22,0));
@@ -6402,15 +6402,15 @@ if(underflow == 1){
 	result = 0;
 }
 else{
-	if(split_bit(kekka,47,47) == 1){
-		result = (s2<<31)+((split_bit(e2,7,0)+1)<<23) +(split_bit(kekka,46,24));
+	if(split_bit64(kekka,47,47) == 1){
+		result = (s2<<31)+((split_bit(e2,7,0)+1)<<23) +(split_bit64(kekka,46,24));
 	}
 	else{
 		if(e2==0){
-			result = (s2<<31) + (split_bit(kekka,46,24));
+			result = (s2<<31) + (split_bit64(kekka,46,24));
 		}
 		else{
-			result = (s2<<31)+((split_bit(e2,7,0))<<23) +(split_bit(kekka,45,23));
+			result = (s2<<31)+((split_bit(e2,7,0))<<23) +(split_bit64(kekka,45,23));
 		}
 	}
 }
