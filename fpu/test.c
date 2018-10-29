@@ -5,7 +5,7 @@
 #include <stdlib.h> /* 乱数関数を利用するのに必要 */
 #include <time.h>
 #include <math.h>
-#define GOSA 0.00001
+#define GOSA 0.0001
 
 int main(void){
 
