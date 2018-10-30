@@ -29,7 +29,10 @@ return result;
 
 }
 float float_get(int32_t b){
-	uint32_t s = (b>>31)&0x1;
+
+return *(float*)(&b);
+
+/*	uint32_t s = (b>>31)&0x1;
 	uint32_t exp = (b>>23)&0xff;
 	uint32_t frac = b&0x7fffff;
 	
@@ -75,13 +78,15 @@ float float_get(int32_t b){
 
 
 	return l;
-
+*/
 }
 
 
 int32_t int_get(float b) {
 
-    /* float型のデータサイズは32ビットなので、32ビット整数型（ int ）とコンビを組みます */
+	return *(int*)(&b);
+
+/*
     union { float f; int i; } a;
     int i;
     a.f = b;
@@ -91,9 +96,8 @@ int32_t int_get(float b) {
         c = c | (((a.i>>i)&1)<<i);
     }
 
-    /* 指数部（ 1ビット ）、指数部（ 8ビット ）、仮数部（ 23ビット ）を取り出します */
-
     return c;
+*/
 }
 /*
 int main(void){

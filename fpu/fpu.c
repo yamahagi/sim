@@ -28,6 +28,8 @@ int chibi;
 int tashi1hiki0;
 int whiseiki1;
 
+int idou;
+
 int kekka;
 int s2;
 int e2;
@@ -35,8 +37,10 @@ int whiseiki2;
 
 /* WAIT_ST */
 
-int wadata = adata;
-int wbdata = bdata;
+int32_t wadata = adata;
+uint32_t uwadata;
+int32_t wbdata = bdata;
+uint32_t uwbdata;
 
 int result = 0;
 
@@ -57,7 +61,6 @@ else{
 }
 
 if(split_bit(wadata,30,23)>split_bit(wbdata,30,23) || (split_bit(wadata,30,23)==split_bit(wbdata,30,23) && split_bit(wadata,22,0)>=split_bit(wbdata,22,0))){
-
 	s1 = split_bit(wadata,31,31);
 	e1 = split_bit(wadata,30,23);
 	if(split_bit(wadata,30,23)==0){
@@ -67,11 +70,26 @@ if(split_bit(wadata,30,23)>split_bit(wbdata,30,23) || (split_bit(wadata,30,23)==
 		deka = 0x800000|split_bit(wadata,22,0);
 	}
 	if(split_bit(wbdata,30,23)==0){
-                chibi = split_bit(wbdata,22,0)>>(split_bit(wadata,30,23)-split_bit(wbdata,30,23));
-        }
-        else{
-                chibi = (0x800000|split_bit(wbdata,22,0))>>(split_bit(wadata,30,23)-split_bit(wbdata,30,23));
-        }
+		idou = (split_bit(wadata,30,23)-split_bit(wbdata,30,23));
+                if(idou<=31){
+			uwbdata = split_bit(wbdata,22,0);
+			chibi = uwbdata>>idou;
+        	}
+		else{
+			chibi = 0;
+		}
+	}
+	else{
+		idou = (split_bit(wadata,30,23)-split_bit(wbdata,30,23));
+                if(idou<=31){
+                        uwbdata = 0x800000|split_bit(wbdata,22,0);
+                        chibi = uwbdata>>idou;
+                }
+                else{
+                        chibi = 0;
+                }
+
+	}
 }
 else{
 	s1 = split_bit(wbdata,31,31);
@@ -83,11 +101,25 @@ else{
 		deka = 0x800000|split_bit(wbdata,22,0);
 	}
 	if(split_bit(wadata,30,23)==0){
-                chibi = split_bit(wadata,22,0)>>(split_bit(wbdata,30,23)-split_bit(wadata,30,23));
+		idou = (split_bit(wbdata,30,23)-split_bit(wadata,30,23));
+			uwadata = split_bit(wadata,22,0);
+		if(idou<=31){
+                	chibi = (uwadata)>>idou;
+		}
+		else{
+			chibi = 0;
+		}
         }
         else{
-                chibi = (0x800000|split_bit(wadata,22,0))>>(split_bit(wbdata,30,23)-split_bit(wadata,30,23));
-        }
+		idou = (split_bit(wbdata,30,23)-split_bit(wadata,30,23));
+			uwadata = 0x800000|split_bit(wadata,22,0);
+		if(idou<=31){
+                	chibi = (uwadata)>>idou;
+		}
+		else{
+			chibi = 0;
+		}
+	}
 
 }	
 
@@ -102,11 +134,25 @@ if (tashi1hiki0 == 1){
 else{
 	kekka = split_bit(deka,24,0) - split_bit(chibi,24,0);
 }
-
 /* STAGE3 */
-
 int kijyun = 0;
-
+/*
+printf("chibi ");
+ for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&chibi)>>(31-im))&0x1);
+                        }
+                        printf("\n");
+printf("deka  ");
+ for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&deka)>>(31-im))&0x1);
+                        }
+                        printf("\n");
+printf("kekka ");
+ for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&kekka)>>(31-im))&0x1);
+                        }
+                        printf("\n");
+*/
 while(1==1){
 	
 	if(split_bit(kekka,24-kijyun,24-kijyun)==1){
@@ -138,6 +184,7 @@ while(1==1){
                 		result = (s2<<31)+((split_bit(e2,7,0)+1-kijyun)<<23)+(split_bit(kekka,23-kijyun,0)<<(kijyun-1));
         		}
 		}
+//		printf("kijyun %d\n",kijyun);
 		break;
 	}
 	kijyun+=1;
@@ -167,8 +214,12 @@ int whiseiki2;
 
 /* WAIT_ST */
 
+int idou;
+
 int wadata = adata;
-int wbdata;
+int wbdata = bdata;
+uint32_t uwadata;
+uint32_t uwbdata;
 if(split_bit(bdata,31,31)==1){
 		wbdata = split_bit(bdata,30,0);
 }
@@ -205,11 +256,25 @@ if(split_bit(wadata,30,23)>split_bit(wbdata,30,23) || (split_bit(wadata,30,23)==
 		deka = 0x800000|split_bit(wadata,22,0);
 	}
 	if(split_bit(wbdata,30,23)==0){
-                chibi = split_bit(wbdata,22,0)>>(split_bit(wadata,30,23)-split_bit(wbdata,30,23));
-        }
+		idou = (split_bit(wadata,30,23)-split_bit(wbdata,30,23));
+		uwbdata = split_bit(wbdata,22,0);
+		if(idou<=31){
+                	chibi = uwbdata>>idou;
+        	}
+		else{
+			chibi = 0;
+		}
+	}
         else{
-                chibi = (0x800000|split_bit(wbdata,22,0))>>(split_bit(wadata,30,23)-split_bit(wbdata,30,23));
-        }
+		idou = (split_bit(wadata,30,23)-split_bit(wbdata,30,23));
+                uwbdata = 0x800000|split_bit(wbdata,22,0);
+		if(idou<=31){
+                chibi = uwbdata>>idou;
+        	}
+		else{
+			chibi = 0;
+		}
+	}
 }
 else{
 	s1 = split_bit(wbdata,31,31);
@@ -221,10 +286,24 @@ else{
 		deka = 0x800000|split_bit(wbdata,22,0);
 	}
 	if(split_bit(wadata,30,23)==0){
-                chibi = split_bit(wadata,22,0)>>(split_bit(wbdata,30,23)-split_bit(wadata,30,23));
+		idou = (split_bit(wbdata,30,23)-split_bit(wadata,30,23));
+                uwadata = split_bit(wadata,22,0);
+                if(idou<=31){
+                chibi = uwadata>>idou;
+                }
+                else{
+                        chibi = 0;
+                }
         }
         else{
-                chibi = (0x800000|split_bit(wadata,22,0))>>(split_bit(wbdata,30,23)-split_bit(wadata,30,23));
+        	idou = (split_bit(wbdata,30,23)-split_bit(wadata,30,23));
+                uwadata = 0x800000|split_bit(wadata,22,0);
+                if(idou<=31){
+                chibi = uwadata>>idou;
+                }       
+                else{
+                        chibi = 0;
+                }
         }
 
 }	
