@@ -139,16 +139,25 @@ int kijyun = 0;
 /*
 printf("chibi ");
  for(int im=0;im<32;im++){
-                                printf("%d",(*(int*)(&chibi)>>(31-im))&0x1);
+                	if(im==1||im==9){
+				printf(" ");
+			}        
+		        printf("%d",(*(int*)(&chibi)>>(31-im))&0x1);
                         }
                         printf("\n");
 printf("deka  ");
  for(int im=0;im<32;im++){
+                	if(im==1||im==9){
+				printf(" ");
+			}        
                                 printf("%d",(*(int*)(&deka)>>(31-im))&0x1);
                         }
                         printf("\n");
 printf("kekka ");
  for(int im=0;im<32;im++){
+                	if(im==1||im==9){
+				printf(" ");
+			}        
                                 printf("%d",(*(int*)(&kekka)>>(31-im))&0x1);
                         }
                         printf("\n");
@@ -429,14 +438,15 @@ int i=0;
 if(split_bit(wbdata,30,23)==0){
 
 	while(1==1){
-		if(split_bit(wadata,22-i,22-i)==1){
+		if(split_bit(wbdata,22-i,22-i)==1){
 			esyuuseib = i;
 			bdata1 = split_bit(wbdata,22-i,0)<<(i+1);
+//			printf("i %d\n",i);
 			break;
 		}	
 		i+=1;
 		if(i==22){
-			if(split_bit(wadata,22-i,22-i)==1){
+			if(split_bit(wbdata,22-i,22-i)==1){
 				esyuuseib = 22;
 				bdata1 = 1<<23;
 			}
@@ -444,6 +454,7 @@ if(split_bit(wbdata,30,23)==0){
 				esyuuseib = 23;
                 		bdata1 = 0;	
 			}
+//			printf("i %d\n",i);
 			break;
 		}
 	}	
@@ -457,6 +468,7 @@ else{
 
 s2 = s1;
 e2 = e1-127-esyuuseia-esyuuseib;
+//printf("e2 %d\n",e2);
 if(esyuuseia == 23 || esyuuseib == 23 || (e1 < (127 + esyuuseia + esyuuseib))){
 	underflow = 1;
 }
@@ -466,7 +478,14 @@ else{
 int64_t ak = adata1;
 int64_t bk = bdata1;
 kekka = ak*bk;
+/*
+ printf("kekka ");
+                         for(int im=0;im<64;im++){
+                                printf("%d",(*(int*)(&kekka)>>(63-im))&0x1);
+                        }
+                        printf("\n");
 
+*/
 /* STAGE3 */
 
 if(underflow == 1){

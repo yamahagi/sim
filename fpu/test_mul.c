@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include "ftools.c"
 #include "fpu.c"
+#include <math.h>
 
 #define NSTAGE 4
 
@@ -14,6 +15,21 @@ int b = a;
 		b = b/2;
 	}
 	return b;
+}
+
+float ch22(float a){
+
+int b = int_get(a);
+int s = split_bit(b,31,31);
+int e = split_bit(b,30,23);
+int k = split_bit(b,22,0);
+if(e<22){
+return 0;
+}
+else{
+int l = ((e-22)<<23)+k;
+return *(float*)(&l);
+}
 }
 
 int main(void){
@@ -130,9 +146,13 @@ for(i=0;i<255;i++){
 		float am = *(float*)(&x1_reg[0]);
 		float bm = *(float*)(&x2_reg[0]);
 		float cm = am*bm;
-		float dm = float_get(fmul(x1_reg[0],x2_reg[0]));
-		if(!(split_bit(*(int*)(&cm),30,23)==0&&split_bit(*(int*)(&dm),30,23)==0)){
-		if((fabsf(cm)<=1&&fabsf(cm-dm)>0.0001)){
+		int yp = 0x800000;
+		int n = (fmul(x1_reg[0],x2_reg[0]));
+                float dm = *(float*)(&n);
+		float yps = *(float*)(&yp);
+		float maxab = ch22(cm);
+		float diff = fabs(cm-dm);
+		if(!(split_bit(*(int*)(&cm),30,23)==0&&split_bit(*(int*)(&dm),30,23)==0)&&(diff>maxab&&diff>yps)&&(!isinf(am))&&(!isinf(bm))&&(!isinf(cm))){
 			for(int im=0;im<32;im++){
 				printf("%d",(*(int*)(&am)>>(31-im))&0x1);
 			}
@@ -151,30 +171,8 @@ for(i=0;i<255;i++){
 			printf("\n");
 			
 			 printf("%f*%f = %fなのに%f\n", am,bm,cm,dm);
-			counter +=1;
-		   }
-		else if((fabsf(cm)>1&& (abs(split_bit(int_get(cm),30,23)))!=255   &&((abs(split_bit(int_get(cm),30,23)-split_bit(int_get(dm),30,23))>1)||(abs(split_bit(int_get(cm),31,31)-split_bit(int_get(dm),31,31))>0)))){
-			if((abs(split_bit(int_get(cm),30,0)-split_bit(int_get(dm),30,0)))>1){
-			 for(int im=0;im<32;im++){
-                                printf("%d",(*(int*)(&am)>>(31-im))&0x1);
-                        }
-                        printf("\n");
-                        for(int im=0;im<32;im++){
-                                printf("%d",(*(int*)(&bm)>>(31-im))&0x1);
-                        }
-                        printf("\n");
-                        for(int im=0;im<32;im++){
-                                printf("%d",(*(int*)(&cm)>>(31-im))&0x1);
-                        }
-                        printf("\n");
-                        for(int im=0;im<32;im++){
-                                printf("%d",(*(int*)(&dm)>>(31-im))&0x1);
-                        }
-                        printf("\n");
-                         printf("%f*%f = %fなのに%f\n", am,bm,cm,dm);
-                        counter +=1;
-			}
-		}
+	
+				counter +=1;
 		}
 		}
 		}

@@ -16,10 +16,57 @@ int b = a;
 	return b;
 }
 
+float ch23(float a){
+
+int b = int_get(a);
+int s = split_bit(b,31,31);
+int e = split_bit(b,30,23);
+int k = split_bit(b,22,0);
+if(e<23){
+return 0;
+}
+else{
+int l = ((e-23)<<23)+k;
+return *(float*)(&l);
+}
+}
+
+float max(float a,float b,float c){
+
+float a1=fabs(a);
+float b1=fabs(b);
+float c1=fabs(c);
+float d = 1.0;
+
+for(int i=0;i<23;i++){
+	a1 = a1/2;
+	b1 = b1/2;
+	c1 = c1/2;
+}
+for(int i=0;i<126;i++){
+	d = d/2;
+}
+
+if(a>=b&&a>=c&&a>=d){
+	return a;
+}
+else if(b>=a&&b>=c&&b>=d){
+	return b;
+}
+else if(c>=a&&c>=b&&c>=d){
+	return c;
+}
+else{
+	return d;
+}
+}
+
 int main(void){
 
 int y;
 float fx1,fx2,fy;
+
+int kijyun = 0x800000;
 
 int i,j,k,it,jt;
 int m1,m2;
@@ -50,8 +97,8 @@ counter1 = 0;
 
 counter1 = counter1+1;
 counter1 = counter1+1;
-for(i=0;i<254;i++){
-   for(j=0;j<254;j++){
+for(i=0;i<255;i++){
+   for(j=0;j<255;j++){
       for(s1=0;s1<2;s1++){
          for(s2=0;s2<2;s2++){
             for(it=0;it<10;it++){
@@ -130,32 +177,44 @@ for(i=0;i<254;i++){
 		float am = *(float*)(&x1_reg[0]);
 		float bm = *(float*)(&x2_reg[0]);
 		float cm = am+bm;
-		float dm = float_get(fadd(x1_reg[0],x2_reg[0]));
-		if(!(split_bit(*(int*)(&cm),30,23)==0&&split_bit(*(int*)(&dm),30,23)==0)){
-		if((fabsf(cm)<=1&&(abs(split_bit(int_get(cm),30,0)-split_bit(int_get(dm),30,0)))>1)){
-			for(int im=0;im<32;im++){
-				printf("%d",(*(int*)(&am)>>(31-im))&0x1);
-			}
-			printf("\n");
-			for(int im=0;im<32;im++){
-				printf("%d",(*(int*)(&bm)>>(31-im))&0x1);
-			}
-			printf("\n");
-			for(int im=0;im<32;im++){
-				printf("%d",(*(int*)(&cm)>>(31-im))&0x1);
-			}
-			printf("\n");
-			for(int im=0;im<32;im++){
-				printf("%d",(*(int*)(&dm)>>(31-im))&0x1);
-			}
-			printf("\n");
-			
-			 printf("%f+%f = %fなのに%f\n", am,bm,cm,dm);
-			counter +=1;
-		   }
-		else if((fabsf(cm)>1&&((abs(split_bit(int_get(cm),30,23)-split_bit(int_get(dm),30,23))>1)||(abs(split_bit(int_get(cm),31,31)-split_bit(int_get(dm),31,31))>0)))){
-			if((abs(split_bit(int_get(cm),30,0)-split_bit(int_get(dm),30,0)))>1){
+		int n = (fadd(x1_reg[0],x2_reg[0]));
+		float dm = *(float*)(&n);
+		float diff = fabs(cm-dm);
+		
+		int yp = 0x800000;
+		float yps = *(float*)(&yp);
+		float maxa = ch23(am);
+		float maxb = ch23(bm);
+		float maxab = ch23(cm);
+		if((!(split_bit(*(int*)(&cm),30,23)==0&&split_bit(*(int*)(&dm),30,23)==0))&&(diff>maxa&&diff>maxb&&diff>maxab&&diff>yps)&&(!isinf(bm))&&(!isinf(cm))&&(!isinf(am))){
+			if(counter <10000){
+/*			printf("diff ");
 			 for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&diff)>>(31-im))&0x1);
+                        }
+			printf("\n");
+			printf("maxa ");
+			 for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&maxa)>>(31-im))&0x1);
+                        }
+			printf("\n");
+			printf("maxb ");
+			 for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&maxb)>>(31-im))&0x1);
+                        }
+			printf("\n");
+			printf("maxab ");
+			 for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&maxab)>>(31-im))&0x1);
+                        }
+			printf("\n");
+			printf("yp ");
+			 for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&yps)>>(31-im))&0x1);
+                        }
+			printf("\n");
+*/			 
+			for(int im=0;im<32;im++){
                                 printf("%d",(*(int*)(&am)>>(31-im))&0x1);
                         }
                         printf("\n");
@@ -172,11 +231,11 @@ for(i=0;i<254;i++){
                         }
                         printf("\n");
                          printf("%f+%f = %fなのに%f\n", am,bm,cm,dm);
-                        counter +=1;
+                        }
+			counter +=1;
 			}
-		}
-		}
-		}
+		      
+		 }
 		}
 	      }
 	    }

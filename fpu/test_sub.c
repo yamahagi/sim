@@ -16,6 +16,21 @@ int b = a;
 	return b;
 }
 
+float ch23(float a){
+
+int b = int_get(a);
+int s = split_bit(b,31,31);
+int e = split_bit(b,30,23);
+int k = split_bit(b,22,0);
+if(e<23){
+return 0;
+}
+else{
+int l = ((e-23)<<23)+k;
+return *(float*)(&l);
+}
+}
+
 int main(void){
 
 int y;
@@ -130,9 +145,17 @@ for(i=0;i<255;i++){
 		float am = *(float*)(&x1_reg[0]);
 		float bm = *(float*)(&x2_reg[0]);
 		float cm = am-bm;
-		float dm = float_get(fsub(x1_reg[0],x2_reg[0]));
-		if(!(split_bit(*(int*)(&cm),30,23)==0&&split_bit(*(int*)(&dm),30,23)==0)){
-		if((fabsf(cm)<=1&&((abs(split_bit(int_get(cm),30,0)-split_bit(int_get(dm),30,0)))>1))){
+		int n = (fsub(x1_reg[0],x2_reg[0]));
+                float dm = *(float*)(&n);
+                float diff = fabs(cm-dm);
+		int yp = 0x800000;
+                float yps = *(float*)(&yp);
+                float maxa = ch23(am);
+                float maxb = ch23(bm);
+                float maxab = ch23(cm);
+
+		if((!(split_bit(*(int*)(&cm),30,23)==0&&split_bit(*(int*)(&dm),30,23)==0))&&(diff>maxa&&diff>maxb&&diff>maxab&&diff>yps)&&(!isinf(bm))&&(!isinf(cm))&&(!isinf(am))){
+			
 			for(int im=0;im<32;im++){
 				printf("%d",(*(int*)(&am)>>(31-im))&0x1);
 			}
@@ -152,29 +175,6 @@ for(i=0;i<255;i++){
 			
 			 printf("%f-%f = %fなのに%f\n", am,bm,cm,dm);
 			counter +=1;
-		   }
-		else if((fabsf(cm)>1&&((abs(split_bit(int_get(cm),30,23)-split_bit(int_get(dm),30,23))>1)||(abs(split_bit(int_get(cm),31,31)-split_bit(int_get(dm),31,31))>0)))){
-			if((abs(split_bit(int_get(cm),30,0)-split_bit(int_get(dm),30,0)))>1){
-			 for(int im=0;im<32;im++){
-                                printf("%d",(*(int*)(&am)>>(31-im))&0x1);
-                        }
-                        printf("\n");
-                        for(int im=0;im<32;im++){
-                                printf("%d",(*(int*)(&bm)>>(31-im))&0x1);
-                        }
-                        printf("\n");
-                        for(int im=0;im<32;im++){
-                                printf("%d",(*(int*)(&cm)>>(31-im))&0x1);
-                        }
-                        printf("\n");
-                        for(int im=0;im<32;im++){
-                                printf("%d",(*(int*)(&dm)>>(31-im))&0x1);
-                        }
-                        printf("\n");
-                         printf("%f-%f = %fなのに%f\n", am,bm,cm,dm);
-                        counter +=1;
-			}
-                   }
 		}
 		}
 		}
