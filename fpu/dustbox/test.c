@@ -1,11 +1,13 @@
-#include "fdiv.h"
-#include "fpu.h"
-#include "ftools.h"
+#include "fdiv2.h"
+#include "fpu.c"
+#include "ftools.c"
 #include <stdio.h>
 #include <stdlib.h> /* 乱数関数を利用するのに必要 */
 #include <time.h>
 #include <math.h>
 #define GOSA 0.0001
+
+int32_t fdiv(int32_t adata,int32_t bdata);
 
 int main(void){
 

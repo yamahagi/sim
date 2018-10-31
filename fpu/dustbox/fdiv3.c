@@ -13,6 +13,24 @@
 
 int32_t fdiv(int32_t adata,int32_t bdata){
 
+
+/* 目次
+
+WAIT_ST 初期化
+STAGE1 wbdataの仮数部上位11bitの値を調べてそれによる値をx02bai,x02jyouに代入
+STAGE2 ax02s1,ax02e1,bdatakari,x02jyoukariに代入
+STAGE3 ax02jyoue2を調整ax02jyoukekkaに代入
+STAGE4 ax02jyoukekka[47]によってminusax02jyouに代入
+STAGE5 invbのtashi1hiki0,s1,e1,deka,chibiに代入
+STAGE6 invbkekkaに代入
+STAGE7 invbkekkaによってinvbに代入
+STAGE8 s1,e1,esyuuseia,adatakariに代入
+STGAE9 underflowを計算してkekkaを計算
+STAGE10 kekkaの値によってresultを計算
+
+*/
+
+
 int wadata;
 int wbdata;
 
@@ -6233,6 +6251,10 @@ else if (split_bit(wbdata,22,12) == 2047){
   x02jyou = 0b00111110100000000000100000000000;}
 
 /*   TABLEEND  */
+printf("\nx02bai\n");
+print_bit(x02bai);
+printf("x02jyou\n");
+print_bit(x02jyou);
 
 /*  STAGE2 */
 
@@ -6244,6 +6266,11 @@ ax02e1 = 127+split_bit(x02jyou,30,23);
 bdatakari = (1<<23)+split_bit(bdata1,22,0);
 x2jyoukari = (1<<23)+split_bit(x02jyou,22,0);
 
+printf("bdatakari\n");
+print_bit(bdatakari);
+printf("x2jyoukari\n");
+print_bit(x2jyoukari);
+
 /*  STAGE3  */
 
 adata3 = adata2;
@@ -6254,6 +6281,10 @@ ax02jyoue2 = ax02e1 - 127;
 int64_t bdatakari64 = bdatakari;
 int64_t x2jyoukari64 = x2jyoukari;
 ax02jyoukekka = bdatakari64 * x2jyoukari64;
+
+
+printf("ax02jyoukekka %lld\n",ax02jyoukekka);
+print_bit64(ax02jyoukekka);
 
 /*  STAGE4  */
 adata4 = adata3;
@@ -6277,6 +6308,12 @@ else{
 	}
 
 }
+
+printf("skekka %d\n",split_bit64(ax02jyoukekka,47,47));
+printf("s2 %d\n",s2);
+printf("minusax02jyou\n");
+print_bit(minusax02jyou);
+
 /*  STAGE5  */
 adata5 = adata4;
 bdata5 = bdata4;
@@ -6315,6 +6352,15 @@ else{
 	}
 }
 
+printf("invbs1\n");
+print_bit(invbs1);
+printf("invbe1\n");
+print_bit(invbe1);
+printf("invbdeka\n");
+print_bit(invbdeka);
+printf("invbbchibi\n");
+print_bit(invbchibi);
+
 /*  STAGE6  */
 
 adata6 = adata5;
@@ -6329,11 +6375,20 @@ else{
 	invbkekka = split_bit(invbdeka,24,0) - split_bit(invbchibi,24,0);
 }
 
+printf("invbdeka %d\n",split_bit(invbdeka,24,0));
+printf("invbchibi %d\n",split_bit(invbchibi,24,0));
+printf("invbkekka %d\n",invbkekka);
+
+printf("invbkekka\n");
+print_bit(invbkekka);
+
 /*  STAGE7  */
 adata7 = adata6;
 bdata7 = bdata6;
 
 int kijyun = 0;
+
+
 
 while(1==1){
            if(split_bit(invbkekka,24-kijyun,24-kijyun)==1){
@@ -6356,6 +6411,11 @@ while(1==1){
 		break;
            }
 }
+
+printf("kijyun %d\n",kijyun);
+
+printf("invb\n");
+print_bit(invb);
 
 /* STAGE8 */
 
@@ -6396,6 +6456,10 @@ else{
 
 invbkari = (1<<23) + split_bit(invb,22,0);
 
+
+printf("invbkari\n");
+print_bit(invbkari);
+
 /* STAGE9 */
 s2 = s1;
 if(esyuuseia == 23 || (e1<(esyuuseib + esyuuseia + 127))){
@@ -6410,6 +6474,16 @@ int64_t adatakari64 = adatakari;
 int64_t invbkari64 = invbkari;
 
 kekka = adatakari64 * invbkari64;
+
+printf("adatakari %d\n",adatakari);
+printf("invbkari %d\n",invbkari);
+printf("kekka %llu\n",kekka);
+
+printf("kekka");
+for(int i=0;i<24;i++){
+        printf("%d",((kekka>>(46-i))&0x1));
+}
+printf("\n");
 
 /* STAGE10 */
 

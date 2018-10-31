@@ -21,6 +21,20 @@ return result;
 
 }
 
+void print_bit(int32_t data){
+	for(int i=0;i<32;i++){
+		if(i==1||i==9) printf(" ");
+		printf("%d",((data>>(31-i))&0x1));
+	}
+	printf("\n");
+}
+
+void print_bit64(int64_t data){
+	for(int i=0;i<64;i++){
+		printf("%d",((data>>(63-i))&0x1));
+	}
+	printf("\n");
+}
 int32_t split_bit64(int64_t data,int start,int end){
 
 int32_t result = ((0xffffffffffffffff>>(63-start))&data)>>end;

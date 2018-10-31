@@ -6281,8 +6281,6 @@ else{
 adata5 = adata4;
 bdata5 = bdata4;
 
-int idou;
-
 if((split_bit(x02bai4,31,31))==(split_bit(minusax02jyou,31,31))){
 	invbtashi1hiki0 = 1;
 }
@@ -6291,28 +6289,15 @@ else{
 }
 
 if(((split_bit(x02bai4,30,23))>(split_bit(minusax02jyou,30,23)))||((split_bit(x02bai4,30,23))==(split_bit(minusax02jyou,30,23)) && ((split_bit(x02bai4,22,0))>=(split_bit(minusax02jyou,22,0))))){
-	idou = ((split_bit(x02bai4,30,23))-(split_bit(minusax02jyou,30,23)));
 	invbs1 = (split_bit(x02bai4,31,31));
 	invbe1 = (split_bit(x02bai4,30,23));
 	invbdeka = (1<<23)+(split_bit(x02bai4,22,0));
-	if(idou<32){
-		invbchibi = ((1<<23)+(split_bit(minusax02jyou,22,0)))>>((split_bit(x02bai4,30,23))-(split_bit(minusax02jyou,30,23)));
-	}
-	else{
-		invbchibi = 0;
-	}
-}
+	invbchibi = ((1<<23)+(split_bit(minusax02jyou,22,0)))>>((split_bit(x02bai4,30,23))-(split_bit(minusax02jyou,30,23)));}
 else{
-	idou = ((split_bit(minusax02jyou,30,23))-(split_bit(x02bai4,30,23)));
 	invbs1 = (split_bit(minusax02jyou,31,31));
 	invbe1 = (split_bit(minusax02jyou,30,23));
 	invbdeka = (1<<23)+(split_bit(minusax02jyou,22,0));
-	if(idou<32){
-		invbchibi = ((1<<23)+(split_bit(x02bai4,22,0)))>>((split_bit(minusax02jyou,30,23))-(split_bit(x02bai4,30,23)));
-	}
-	else{
-		invbchibi=0;
-	}
+	invbchibi = ((1<<23)+(split_bit(x02bai4,22,0)))>>((split_bit(minusax02jyou,30,23))-(split_bit(x02bai4,30,23)));
 }
 
 /*  STAGE6  */

@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include "ftools.h"
 #include "fpu.h"
+#include "fdiv.h"
+#include <math.h>
 
 #define NSTAGE 4
 
@@ -16,17 +18,17 @@ int b = a;
 	return b;
 }
 
-float ch23(float a){
+float ch20(float a){
 
 int b = int_get(a);
 int s = split_bit(b,31,31);
 int e = split_bit(b,30,23);
 int k = split_bit(b,22,0);
-if(e<23){
+if(e<20){
 return 0;
 }
 else{
-int l = ((e-23)<<23)+k;
+int l = ((e-20)<<23)+k;
 return *(float*)(&l);
 }
 }
@@ -66,7 +68,7 @@ counter1 = 0;
 counter1 = counter1+1;
 counter1 = counter1+1;
 for(i=0;i<255;i++){
-   for(j=0;j<255;j++){
+   for(j=1;j<255;j++){
       for(s1=0;s1<2;s1++){
          for(s2=0;s2<2;s2++){
             for(it=0;it<10;it++){
@@ -142,20 +144,18 @@ for(i=0;i<255;i++){
 		   x2_reg[0] = (s2<<31)+(split_bit(j,7,0)<<23)+m2;
 
 		
+//		float am = *(float*)(&x1_reg[0]);
+//		float bm = *(float*)(&x2_reg[0]);
 		float am = *(float*)(&x1_reg[0]);
-		float bm = *(float*)(&x2_reg[0]);
-		float cm = am-bm;
-		int n = (fsub(x1_reg[0],x2_reg[0]));
-                float dm = *(float*)(&n);
-                float diff = fabs(cm-dm);
+                float bm =  *(float*)(&x2_reg[0]);
+		float cm = am/bm;
 		int yp = 0x800000;
-                float yps = *(float*)(&yp);
-                float maxa = ch23(am);
-                float maxb = ch23(bm);
-                float maxab = ch23(cm);
-
-		if((!(split_bit(*(int*)(&cm),30,23)==0&&split_bit(*(int*)(&dm),30,23)==0))&&(diff>maxa&&diff>maxb&&diff>maxab&&diff>yps)&&(!isinf(bm))&&(!isinf(cm))&&(!isinf(am))){
-			
+		int n = (fdiv(x1_reg[0],x2_reg[0]));
+                float dm = *(float*)(&n);
+		float yps = *(float*)(&yp);
+		float maxab = ch20(cm);
+		float diff = fabs(cm-dm);
+		if(!(split_bit(*(int*)(&cm),30,23)==0&&split_bit(*(int*)(&dm),30,23)==0)&&(diff>maxab&&diff>yps)&&(!isinf(am))&&(!isinf(bm))&&(!isinf(cm))){
 			for(int im=0;im<32;im++){
 				printf("%d",(*(int*)(&am)>>(31-im))&0x1);
 			}
@@ -173,9 +173,9 @@ for(i=0;i<255;i++){
 			}
 			printf("\n");
 			
-			 printf("%f-%f = %fなのに%f\n", am,bm,cm,dm);
-			counter +=1;
-		}
+			 printf("%f/%f = %fなのに%f\n", am,bm,cm,dm);
+				counter +=1;
+			}
 		}
 		}
 	      }

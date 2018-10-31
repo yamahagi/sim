@@ -16,3 +16,5 @@ extern int32_t int_get(float b);
 
 extern int32_t split_bit(int32_t data,int32_t start,int32_t end);
 extern int32_t split_bit64(int64_t data,int32_t start,int32_t end);
+extern void print_bit(int32_t data);
+extern void print_bit64(int64_t data);
