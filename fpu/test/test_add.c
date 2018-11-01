@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "ftools.h"
-#include "fpu.h"
+#include "../ftools.h"
+#include "../fpu.h"
 
 #define NSTAGE 4
 
@@ -31,10 +31,42 @@ return *(float*)(&l);
 }
 }
 
+float max(float a,float b,float c){
+
+float a1=fabs(a);
+float b1=fabs(b);
+float c1=fabs(c);
+float d = 1.0;
+
+for(int i=0;i<23;i++){
+	a1 = a1/2;
+	b1 = b1/2;
+	c1 = c1/2;
+}
+for(int i=0;i<126;i++){
+	d = d/2;
+}
+
+if(a>=b&&a>=c&&a>=d){
+	return a;
+}
+else if(b>=a&&b>=c&&b>=d){
+	return b;
+}
+else if(c>=a&&c>=b&&c>=d){
+	return c;
+}
+else{
+	return d;
+}
+}
+
 int main(void){
 
 int y;
 float fx1,fx2,fy;
+
+int kijyun = 0x800000;
 
 int i,j,k,it,jt;
 int m1,m2;
@@ -144,45 +176,71 @@ for(i=0;i<255;i++){
 		
 		float am = *(float*)(&x1_reg[0]);
 		float bm = *(float*)(&x2_reg[0]);
-		float cm = am-bm;
-		int n = (fsub(x1_reg[0],x2_reg[0]));
-                float dm = *(float*)(&n);
-                float diff = fabs(cm-dm);
+		float cm = am+bm;
+		int n = (fadd(x1_reg[0],x2_reg[0]));
+		float dm = *(float*)(&n);
+		float diff = fabs(cm-dm);
+		
 		int yp = 0x800000;
-                float yps = *(float*)(&yp);
-                float maxa = ch23(am);
-                float maxb = ch23(bm);
-                float maxab = ch23(cm);
-
+		float yps = *(float*)(&yp);
+		float maxa = ch23(am);
+		float maxb = ch23(bm);
+		float maxab = ch23(cm);
 		if((!(split_bit(*(int*)(&cm),30,23)==0&&split_bit(*(int*)(&dm),30,23)==0))&&(diff>maxa&&diff>maxb&&diff>maxab&&diff>yps)&&(!isinf(bm))&&(!isinf(cm))&&(!isinf(am))){
-			
-			for(int im=0;im<32;im++){
-				printf("%d",(*(int*)(&am)>>(31-im))&0x1);
-			}
+			if(counter <10000){
+/*			printf("diff ");
+			 for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&diff)>>(31-im))&0x1);
+                        }
 			printf("\n");
-			for(int im=0;im<32;im++){
-				printf("%d",(*(int*)(&bm)>>(31-im))&0x1);
-			}
+			printf("maxa ");
+			 for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&maxa)>>(31-im))&0x1);
+                        }
 			printf("\n");
-			for(int im=0;im<32;im++){
-				printf("%d",(*(int*)(&cm)>>(31-im))&0x1);
-			}
+			printf("maxb ");
+			 for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&maxb)>>(31-im))&0x1);
+                        }
 			printf("\n");
-			for(int im=0;im<32;im++){
-				printf("%d",(*(int*)(&dm)>>(31-im))&0x1);
-			}
+			printf("maxab ");
+			 for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&maxab)>>(31-im))&0x1);
+                        }
 			printf("\n");
-			
-			 printf("%f-%f = %fなのに%f\n", am,bm,cm,dm);
+			printf("yp ");
+			 for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&yps)>>(31-im))&0x1);
+                        }
+			printf("\n");
+*/			 
+			for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&am)>>(31-im))&0x1);
+                        }
+                        printf("\n");
+                        for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&bm)>>(31-im))&0x1);
+                        }
+                        printf("\n");
+                        for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&cm)>>(31-im))&0x1);
+                        }
+                        printf("\n");
+                        for(int im=0;im<32;im++){
+                                printf("%d",(*(int*)(&dm)>>(31-im))&0x1);
+                        }
+                        printf("\n");
+                         printf("%f+%f = %fなのに%f\n", am,bm,cm,dm);
+                        }
 			counter +=1;
-		}
-		}
+			}
+		      
+		 }
 		}
 	      }
 	    }
 	}
 }
-
 printf("count %d\n",counter);
 
 return 0;

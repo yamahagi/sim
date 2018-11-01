@@ -1,9 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "ftools.h"
-#include "fpu.h"
-#include "fdiv.h"
+#include "../ftools.h"
+#include "../fdiv.h"
 #include <math.h>
 
 #define NSTAGE 4

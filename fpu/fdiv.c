@@ -120,23 +120,14 @@ ax02jyoukekka = bdatakari64 * x2jyoukari64;
 adata4 = adata3;
 bdata4 = bdata3;
 x02bai4 = x02bai3;
+//本当は~ax02jyous2を一番上に持ってくるんだけどどうせ0なので1を最上位にしてます
 if(split_bit64(ax02jyoukekka,47,47)==1){
 
-	if(ax02jyous2 == 1){
-		minusax02jyou = ((split_bit(ax02jyoue2,7,0)+1)<<23)+(split_bit64(ax02jyoukekka,46,24));
-	}
-	else{
 		minusax02jyou = (1<<31)+((split_bit(ax02jyoue2,7,0)+1)<<23)+(split_bit64(ax02jyoukekka,46,24));
-	}
 }
 else{
-	if(ax02jyous2 == 1){
 		minusax02jyou = ((split_bit(ax02jyoue2,7,0))<<23)+(split_bit64(ax02jyoukekka,45,23));
-	}
-	else{
 		minusax02jyou = (1<<31)+((split_bit(ax02jyoue2,7,0))<<23)+(split_bit64(ax02jyoukekka,45,23));
-	}
-
 }
 /*  STAGE5  */
 adata5 = adata4;

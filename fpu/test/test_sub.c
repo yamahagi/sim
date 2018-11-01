@@ -1,9 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "ftools.h"
-#include "fpu.h"
-#include <math.h>
+#include "../ftools.h"
+#include "../fpu.h"
 
 #define NSTAGE 4
 
@@ -17,17 +16,17 @@ int b = a;
 	return b;
 }
 
-float ch22(float a){
+float ch23(float a){
 
 int b = int_get(a);
 int s = split_bit(b,31,31);
 int e = split_bit(b,30,23);
 int k = split_bit(b,22,0);
-if(e<22){
+if(e<23){
 return 0;
 }
 else{
-int l = ((e-22)<<23)+k;
+int l = ((e-23)<<23)+k;
 return *(float*)(&l);
 }
 }
@@ -145,14 +144,18 @@ for(i=0;i<255;i++){
 		
 		float am = *(float*)(&x1_reg[0]);
 		float bm = *(float*)(&x2_reg[0]);
-		float cm = am*bm;
-		int yp = 0x800000;
-		int n = (fmul(x1_reg[0],x2_reg[0]));
+		float cm = am-bm;
+		int n = (fsub(x1_reg[0],x2_reg[0]));
                 float dm = *(float*)(&n);
-		float yps = *(float*)(&yp);
-		float maxab = ch22(cm);
-		float diff = fabs(cm-dm);
-		if(!(split_bit(*(int*)(&cm),30,23)==0&&split_bit(*(int*)(&dm),30,23)==0)&&(diff>maxab&&diff>yps)&&(!isinf(am))&&(!isinf(bm))&&(!isinf(cm))){
+                float diff = fabs(cm-dm);
+		int yp = 0x800000;
+                float yps = *(float*)(&yp);
+                float maxa = ch23(am);
+                float maxb = ch23(bm);
+                float maxab = ch23(cm);
+
+		if((!(split_bit(*(int*)(&cm),30,23)==0&&split_bit(*(int*)(&dm),30,23)==0))&&(diff>maxa&&diff>maxb&&diff>maxab&&diff>yps)&&(!isinf(bm))&&(!isinf(cm))&&(!isinf(am))){
+			
 			for(int im=0;im<32;im++){
 				printf("%d",(*(int*)(&am)>>(31-im))&0x1);
 			}
@@ -170,9 +173,8 @@ for(i=0;i<255;i++){
 			}
 			printf("\n");
 			
-			 printf("%f*%f = %fなのに%f\n", am,bm,cm,dm);
-	
-				counter +=1;
+			 printf("%f-%f = %fなのに%f\n", am,bm,cm,dm);
+			counter +=1;
 		}
 		}
 		}
