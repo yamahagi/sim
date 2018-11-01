@@ -86,6 +86,14 @@ bdata1 = wbdata;
 //TABLESTARTで開始位置、TABLEENDで終了位置に飛べます
 /* TABLESTART */
 
+int wsplit = split_bit(wbdata,22,12);
+float x02baif = (2048.0 / ((float)wsplit + 2048.0)) + (2048.0 / (((float)wsplit+1.0) + 2048.0));
+float x0 = x02baif/2.0;
+float x02jyouf = x0*x0;
+
+x02bai = *(int*)(&x02baif);
+x02jyou = *(int*)(&x02jyouf);
+/*
 if(split_bit(wbdata,22,12)==0){
 	x02bai = 0b00111111111111111111000000000010;
 	x02jyou = 0b00111111011111111110000000000101;
@@ -6231,8 +6239,11 @@ else if (split_bit(wbdata,22,12) == 2046){
 else if (split_bit(wbdata,22,12) == 2047){  
   x02bai = 0b00111111100000000000010000000000;
   x02jyou = 0b00111110100000000000100000000000;}
+*/
 
 /*   TABLEEND  */
+
+
 
 /*  STAGE2 */
 
