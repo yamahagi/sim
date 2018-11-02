@@ -45,10 +45,6 @@ uint64_t cnt;
 FILE *fpout; 
 struct timeval start;
 
-extern uint32_t _finv(int32_t);
-extern uint32_t _fsqrt(int32_t);
-extern uint32_t _fadd(int32_t, int32_t);
-extern uint32_t _fmul(int32_t, int32_t);
 
 void print_count(void);
 
@@ -124,17 +120,9 @@ int simulate(void) {
 		printf("リンクレジスタ %d\n",reg[31]);
 		printf("コンディションレジスタ ");
 		print_cdr(cdr);
-		//整数レジスタ
-		for(int i=0;i<12;i++){
-			printf("reg[%d] %d\n",i+3,reg[i+3]);
-		}
-		//浮動小数点レジスタ表示
-		for(int i=0;i<12;i++){
-			printf("reg[%d] %f\n",i+15,*(float*)(&reg[i+15]));
-		}
-		//それ以外のレジスタ
-		for(int i=0;i<4;i++){
-			printf("reg[%d] %d\n",i+27,reg[i+27]);
+		//整数レジスタのint版とfloat版を表示
+		for(int i=0;i<28;i++){
+			printf("reg[%d] int %d float %f\n",i+3,reg[i+3],*(float*)(&reg[i+3]));
 		}
 #endif
 		if(ir == 0){
@@ -265,7 +253,7 @@ static inline int exec_op(uint32_t ir) {
 		case LI:
 			si = _SI;
 			if(((si>>31)&0x1)==1){
-				_GRT = (0xffff0000|si);
+				_GRT = (0xffff0000|(si&0xffff));
 			}
 			else if(((si>>31)&0x1)==0){
 				_GRT = (0xffff&si);
@@ -273,7 +261,8 @@ static inline int exec_op(uint32_t ir) {
 			count[opcode]+=1;
 			break; 	
 		case LIS:
-			_GRT = (_SI<<16) | (_GRT & ((1<<16)-1)) ;
+			//_GRT = (_SI<<16) | (_GRT & ((1<<16)-1)) ;
+			_GRT = ((_SI&0xffff)<<16);
 			count[opcode]+=1;
 			break; 	
 		case JUMP:
@@ -355,7 +344,6 @@ static inline int exec_op(uint32_t ir) {
 			count[opcode]+=1;
                         break;
                 case INUH:
-
             scanf("%d",&p);
             _GRT = (_GRT & 0x00ffffff)|(p<<24 & 0xff000000);
 			count[opcode]+=1;
