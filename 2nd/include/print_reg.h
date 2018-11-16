@@ -22,28 +22,12 @@ switch(get_opcode(ir)){
                         printf("SUBI ");
 			printf("%x\n",ir);
                         break;
-                case MULI:
-                        printf("MULI ");
-			printf("%x\n",ir);
-                        break;
-                case DIVI:
-                        printf("DIVI ");
-			printf("%x\n",ir);
-                        break;
                 case ADD:
                         printf("ADD ");
 			printf("%x\n",ir);
                         break;
                 case SUB:
                         printf("SUB ");
-			printf("%x\n",ir);
-                        break;
-                case MUL:
-                        printf("MUL ");
-			printf("%x\n",ir);
-                        break;
-                case DIV:
-                        printf("DIV ");
 			printf("%x\n",ir);
                         break;
                 case FADD:
@@ -60,14 +44,6 @@ switch(get_opcode(ir)){
                         break;
 		case FDIV:
                         printf("FDIV ");
-			printf("%x\n",ir);
-                        break;
-                case AND:
-                        printf("AND ");
-			printf("%x\n",ir);
-                        break;
-                case OR:
-                        printf("OR ");
 			printf("%x\n",ir);
                         break;
                 case SRAWI:
@@ -120,8 +96,20 @@ switch(get_opcode(ir)){
                         printf("BLE ");
 			printf("%x\n",ir);
                         break;
+                case BLT:
+                        printf("BLT ");
+			printf("%x\n",ir);
+                        break;
                 case CMPD:
                         printf("CMPD ");
+			printf("%x\n",ir);
+                        break;
+                case CMPF:
+                        printf("CMPF ");
+			printf("%x\n",ir);
+                        break;
+                case CMPDI:
+                        printf("CMPDI ");
 			printf("%x\n",ir);
                         break;
                 case INLL:

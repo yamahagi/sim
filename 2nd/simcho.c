@@ -450,8 +450,8 @@ void print_prom(int32_t ir,int n){
                         printf("CMPF ");
 			printf("r%d r%d \n",get_rti(ir),get_rai(ir));
                         break;
-                case CMPF:
-                        printf("CMPF ");
+                case CMPDI:
+                        printf("CMPDI ");
 			printf("r%d %d \n",get_rti(ir),get_si(ir));
                         break;
                 case INLL:
