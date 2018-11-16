@@ -49,12 +49,11 @@ extern char* outputfile;
 #define get_funct(ir) ((uint32_t)((ir)&0x3f))
 #define get_target(ir) ((uint32_t)((ir)&0x3ffffff))
 */
-//IMM LI用の即値
+//IMM 即値
 #define get_imm(ir) ((uint32_t)(((ir)&0x1fffff)))
 //SI 即値
 #define get_si(ir) \
-	((int32_t) (ir&(1<<15)) ? ((0xffff<<16)|(ir&0xffff)):\
-	(ir&0xffff))
+	(ir&0xffff)
 
 ////////////////////////////////////////////////////////////////////////
 // register access
