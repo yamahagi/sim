@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "ftools.c"
-#include "fpu.c"
+#include "../ftools.h"
+#include "../fpu.h"
 
 float ch22(float a){
 int b = int_get(a);
@@ -25,6 +25,8 @@ int a = 0b10000100001110000000100000000000;
 int b = 0b10000011000111111111111111111111;
 a = 0b11111111000001000001010000110011;
 b = 0b10000000000110010111111011001011;
+a = 0b10000000100111111111111111111111;
+b = 0b01101111000000000000000000000000;
 float t = *(float *)(&(a));
 float l = *(float *)(&(b));
 float c = t*l;

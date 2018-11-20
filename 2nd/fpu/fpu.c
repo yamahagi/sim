@@ -147,7 +147,7 @@ deka_m_reg = deka_m;
 chibi_m_reg = chibi_m;
 adata_reg_1 = adata;
 bdata_reg_1 = bdata;
-
+/*
 int Hcarrysub;
 if(tashi1hiki0_reg==1){
 	Hcarrysub = ((split_bit(deka_m_reg,23,13))<<1)+1 +((split_bit(chibi_m_reg,23,13))<<1) + 1;
@@ -187,12 +187,17 @@ else{
 		carry = 0;
 	}
 }
+*/
+
 /*
 printf("Lsub\n");
 print_bit(Lsub);
 */	
+
+/*
 int L;
 L = split_bit(Lsub,12,0);
+*/
 
 int hiseiki_reg_2;
 int hiseiki_a_reg_2;
@@ -209,18 +214,18 @@ print_bit(Hcarry);
 printf("Hnocarry\n");
 print_bit(Hnocarry);	
 */
-hiseiki_reg_2 = hiseiki_reg;
-hiseiki_a_reg_2 = hiseiki_a_reg;
-s2_reg = deka_s_reg;
-e2_reg = deka_e_reg;
-if(carry==1){
-	kekka_reg =  (Hcarry<<13)+L;
+hiseiki_reg_2 = hiseiki;
+hiseiki_a_reg_2 = hiseiki_a;
+s2_reg = deka_s;
+e2_reg = deka_e;
+if(tashi1hiki0==1){
+	kekka_reg =  deka_m+chibi_m;
 }
 else{
-	kekka_reg =  (Hnocarry<<13)+L;
+	kekka_reg =  deka_m-chibi_m;
 }
-adata_reg_2 = adata_reg_1;
-bdata_reg_2 = bdata_reg_1;
+adata_reg_2 = adata;
+bdata_reg_2 = bdata;
 
 int kijyun=0;
 int result;
@@ -390,7 +395,7 @@ else{
 		chibi_m = ((1<<23)+split_bit(adata,22,0))>>bhikua;
 	}
 }
-
+/*
 int hiseiki_reg;
 int hiseiki_a_reg;
 int tashi1hiki0_reg;
@@ -455,13 +460,11 @@ else{
 		carry = 0;
 	}
 }
-/*
 printf("Lsub\n");
 print_bit(Lsub);
-*/	
 int L;
 L = split_bit(Lsub,12,0);
-
+*/
 int hiseiki_reg_2;
 int hiseiki_a_reg_2;
 int s2_reg;
@@ -477,18 +480,23 @@ print_bit(Hcarry);
 printf("Hnocarry\n");
 print_bit(Hnocarry);	
 */
-hiseiki_reg_2 = hiseiki_reg;
-hiseiki_a_reg_2 = hiseiki_a_reg;
-s2_reg = deka_s_reg;
-e2_reg = deka_e_reg;
-if(carry==1){
-	kekka_reg =  (Hcarry<<13)+L;
+hiseiki_reg_2 = hiseiki;
+hiseiki_a_reg_2 = hiseiki_a;
+s2_reg = deka_s;
+e2_reg = deka_e;
+if(tashi1hiki0==1){
+	kekka_reg =  deka_m+chibi_m;
 }
 else{
-	kekka_reg =  (Hnocarry<<13)+L;
+	kekka_reg =  deka_m-chibi_m;
 }
-adata_reg_2 = adata_reg_1;
-bdata_reg_2 = bdata_reg_1;
+adata_reg_2 = adata;
+if(split_bit(bdata,31,31)==1){
+	bdata_reg_2 = split_bit(bdata,30,0);
+}
+else{
+	bdata_reg_2 = (1<<31)+split_bit(bdata,30,0);
+}
 
 int kijyun=0;
 int result;
@@ -543,151 +551,108 @@ else{
 return result;
 }
 
-
 /*     FMUL      */
 int32_t fmul(int32_t adata,int32_t bdata){
 
-int s1;
-int e1;
-int adata1;
-int bdata1;
-int esyuuseia;
-int esyuuseib;
+int a0;
+a0 = (1<<13)+split_bit(adata,22,10);
 
-int64_t  kekka;
-int s2;
-int e2;
-int underflow;
+int b0;
+b0 = (1<<13)+split_bit(bdata,22,10);
 
-/* WAIT_ST */
+int a1;
+a1 = split_bit(adata,9,0);
 
-int wadata = adata;
-int wbdata = bdata;
+int b1;
+b1 = split_bit(bdata,9,0);
 
-int result = 0;
+int hoge;
+hoge = a0*b1;
 
-/* STAGE1 */
+int fuga;
+fuga = a1*b0;
 
-if((split_bit(wadata,31,31)==1&&split_bit(wbdata,31,31)==0)||(split_bit(wadata,31,31)==0&&split_bit(wbdata,31,31)==1)){
-	s1 = 1;
+int a0b0;
+int a1b0;
+int a0b1;
+int e;
+int e_kuriage;
+int s;
+int notzero;
+int flag;
+
+int eadd;
+eadd = split_bit(adata,30,23)+split_bit(bdata,30,23);
+
+a0b0 = a0*b0;
+a1b0 = a1*b0;
+a0b1 = a0*b1;
+
+if(eadd<127){
+	e_kuriage = 0;
 }
 else{
-	s1 = 0;
+	e_kuriage = eadd-126;
 }
-e1 = split_bit(wadata,30,23) + split_bit(wbdata,30,23);
-int kijyun = 0;
-if(split_bit(wadata,30,23) == 0){
-	while(1==1){
-                if(split_bit(wadata,22-kijyun,22-kijyun)==1){
-                        esyuuseia = kijyun;
-                        adata1 = split_bit(wadata,22-kijyun,0)<<(kijyun+1);
-                        break;
-                }
-                kijyun+=1;
-                if(kijyun==22){
-			if(split_bit(wadata,22-kijyun,22-kijyun)==1){
-				esyuuseia = 22;
-         		        adata1 = 1<<23;
-        		}
-			else{
-				 esyuuseia = 23;
-                		 adata1 = 0;
-			}
-                        break;
-                }
-	}
+
+if(eadd<127){
+	e = 0;
 }
 else{
-	esyuuseia = 0;
-	adata1 = (1<<23)+split_bit(wadata,22,0);
+	e = eadd-127;
 }
 
-int i=0;
-if(split_bit(wbdata,30,23)==0){
-
-	while(1==1){
-		if(split_bit(wbdata,22-i,22-i)==1){
-			esyuuseib = i;
-			bdata1 = split_bit(wbdata,22-i,0)<<(i+1);
-//			printf("i %d\n",i);
-			break;
-		}	
-		i+=1;
-		if(i==22){
-			if(split_bit(wbdata,22-i,22-i)==1){
-				esyuuseib = 22;
-				bdata1 = 1<<23;
-			}
-			else{
-				esyuuseib = 23;
-                		bdata1 = 0;	
-			}
-//			printf("i %d\n",i);
-			break;
-		}
-	}	
+if(split_bit(adata,31,31)!=split_bit(bdata,31,31)){
+	s = 1;
 }
 else{
-	esyuuseib = 0;
-	bdata1 = (1<<23)+split_bit(wbdata,22,0);
+	s = 0;
 }
 
-/* STAGE2 */
-
-s2 = s1;
-e2 = e1-127-esyuuseia-esyuuseib;
-//printf("e2 %d\n",e2);
-if(esyuuseia == 23 || esyuuseib == 23 || (e1 < (127 + esyuuseia + esyuuseib))){
-	underflow = 1;
+if((split_bit(adata,30,23)>0)&&(split_bit(bdata,30,23)>0)){
+	notzero = 1;
 }
 else{
-	underflow = 0;
+	notzero = 0;
 }
-int64_t ak = adata1;
-int64_t bk = bdata1;
-kekka = ak*bk;
-/*
- printf("kekka ");
-                         for(int im=0;im<64;im++){
-                                printf("%d",(*(int*)(&kekka)>>(63-im))&0x1);
-                        }
-                        printf("\n");
 
-*/
-/* STAGE3 */
+int a0b1tasua1b0;
+a0b1tasua1b0=split_bit(a1b0,23,10)+split_bit(a0b1,23,10);
 
-if(underflow == 1){
-	result = 0;
-}
-else if(split_bit64(kekka,47,47)==1){
-	result = (s2<<31)+((split_bit(e2,7,0)+1)<<23)+(split_bit64(kekka,46,24));
+int kekka_L;
+kekka_L = a0b1tasua1b0 + split_bit(a0b0,14,0);
+
+int kekka_H_carry;
+kekka_H_carry = split_bit(a0b0,27,15)+1;
+
+int kekka_H_nocarry;
+kekka_H_nocarry = split_bit(a0b0,27,15);
+
+int carry = split_bit(kekka_L,15,15);
+
+int kekka;
+if(carry == 1){
+	kekka = (kekka_H_carry<<12)+split_bit(kekka_L,14,3);
 }
 else{
-	if(e2==0){
-		result = (s2<<31)+(split_bit64(kekka,46,24));
+	kekka = (kekka_H_nocarry<<12)+split_bit(kekka_L,14,3);
+}
+
+int kotae;
+if(notzero==1){
+	if(split_bit(kekka,24,24)==1){
+		kotae = (s<<31)+(e_kuriage<<23)+split_bit(kekka,23,1);
 	}
 	else{
-		result = (s2<<31)+((split_bit(e2,7,0))<<23)+(split_bit64(kekka,45,23));
+		kotae = (s<<31)+(e<<23)+split_bit(kekka,22,0);
 	}
 }
-
-return result;
+else{
+		kotae = 0;
 }
 
-/*
-int main(void){
-float a = -0.4;
-float b = -0.8;
-float d = -0.8;
-float c = float_get (fadd((int_get(a)),(int_get(b))));
-float e = float_get (fsub((int_get(b)),(int_get(a))));
-float f = float_get (fmul((int_get(b)),(int_get(d))));
-printf("%f\n",c);
-printf("%f\n",e);
-printf("%f\n",f);
-
-return 0;
+return kotae;
 
 }
-*/
+
 
