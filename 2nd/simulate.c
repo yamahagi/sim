@@ -352,7 +352,7 @@ static inline int exec_op(uint32_t ir) {
   		fprintf(fpout, "%d\n",(_GRT>>24)&0xff);
 			count[opcode]+=1;
             break;
-		case END:
+		case NOP:
 			printf("終了\n");
 			count[opcode]+=1;
 			return 1;

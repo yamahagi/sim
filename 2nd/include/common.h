@@ -45,6 +45,6 @@
 #define OUTLH  0b110101
 #define OUTUL  0b110110
 #define OUTUH  0b110111
-#define END 0b111000
+#define NOP 0b111000
 
 #endif

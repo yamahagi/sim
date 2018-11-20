@@ -346,8 +346,8 @@ void print_count(void){
         if(count[OUTUH]!=0){
                 printf("OUTUH %d\n",count[OUTUH]);
         }
-        if(count[END]!=0){
-                printf("END %d\n",count[END]);
+        if(count[NOP]!=0){
+                printf("NOP %d\n",count[NOP]);
         }
 
 
@@ -486,8 +486,8 @@ void print_prom(int32_t ir,int n){
                         printf("OUTUH ");
                         printf("r%d\n",get_rti(ir));
             		break;
-                case END:
-                        printf("END \n");
+                case NOP:
+                        printf("NOP \n");
                 default : printf("not defined\n");
         }
 

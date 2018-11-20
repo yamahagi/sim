@@ -144,8 +144,8 @@ switch(get_opcode(ir)){
                         printf("OUTUH ");
 			printf("%x\n",ir);
             		break;
-                case END:
-                        printf("END ");
+                case NOP:
+                        printf("NOP ");
 			printf("%x\n",ir);
 			break;
                 default :       
