@@ -4,6 +4,7 @@
 #include "common.h"
 #include <stdint.h>
 extern uint32_t prom[ROMNUM];
+extern uint32_t promjmp[ROMNUM][ROMNUM];
 extern uint32_t ram[RAMNUM];
 extern int32_t reg[REGNUM];
 extern uint32_t freg[REGNUM];
@@ -14,7 +15,7 @@ extern int cdr;
 extern uint32_t ir;
 extern int32_t lr;
 extern uint64_t cnt;
-
+extern uint64_t limit;
 extern char* outputfile;
 
 /*

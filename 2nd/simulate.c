@@ -19,6 +19,7 @@
 
 //一つ一つに命令が入る
 uint32_t prom[ROMNUM];
+uint32_t promjmp[ROMNUM][ROMNUM] = {0};
 //メモリ
 uint32_t ram[RAMNUM];
 /*
@@ -40,13 +41,27 @@ uint32_t ir;
 int32_t lr;
 //何命令行ったか？
 uint64_t cnt;
-
+uint64_t limit;
 
 FILE *fpout; 
 struct timeval start;
 
 
 void print_count(void);
+
+void print_jmp(uint32_t promjmp[ROMNUM][ROMNUM]){
+printf("========= jump result ==========\n\n");
+for(int i=0;i<limit;i++){
+	for(int j=0;j<limit;j++){
+		if(promjmp[i][j]!=0){
+			print_prom(prom[i],i);
+			printf("%d回実行\n",promjmp[i][j]);
+		}
+	}
+}
+printf("\n\n");
+
+}
 
 double elapsed_time(){
     struct timeval now;
@@ -130,6 +145,7 @@ int simulate(void) {
 		break;
 		}
 	} while (exec_op(ir)==0);
+	print_jmp(promjmp);
 	return 0;
 } 
 
@@ -247,34 +263,48 @@ static inline int exec_op(uint32_t ir) {
 				return 1;
 			}
 			*/
+			promjmp[pc-1][get_li(ir)]+=1;
 			pc = get_li(ir);
+			
 			count[opcode]+=1;
 			break;
 		case BLR:
 			if(pc == lnk) return 1;
+			promjmp[pc-1][lnk]+=1;
 			pc = lnk;
 			count[opcode]+=1;
 			break;
 		case BL:
 			lnk = pc ;
+			promjmp[pc-1][_LI]+=1;
 			pc = _LI;
 			count[opcode]+=1;
 			break;
 		case BLRR:
 			lnk = pc ;
+			promjmp[pc-1][_GRT]+=1;
 			pc =_GRT;
 			count[opcode]+=1;
 			break;
                 case BEQ:
-			if(cdr==eq) pc= _LI;
+			if(cdr==eq){
+			promjmp[pc-1][_LI]+=1;
+			pc= _LI;
+			}
 			count[opcode]+=1;
 			break;
 		case BLE:
-			if(cdr==eq||cdr==le) pc = _LI;
+			if(cdr==eq||cdr==le){
+			promjmp[pc-1][_LI]+=1;
+			pc= _LI;
+			}
 			count[opcode]+=1;
 			break;
 		case BLT:
-			if(cdr==le) pc = _LI;
+			if(cdr==le){
+			promjmp[pc-1][_LI]+=1;
+			pc= _LI;
+			}
 			count[opcode]+=1;
 			break;
                 case CMPD:
