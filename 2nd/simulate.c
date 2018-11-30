@@ -20,6 +20,7 @@
 //一つ一つに命令が入る
 uint32_t prom[ROMNUM];
 uint32_t promjmp[ROMNUM][ROMNUM] = {0};
+uint32_t promcmpd[ROMNUM][3] = {0};
 //メモリ
 uint32_t ram[RAMNUM];
 /*
@@ -60,9 +61,35 @@ for(int i=0;i<limit;i++){
 	}
 }
 printf("\n\n");
-
 }
 
+void print_cmpd(uint32_t promcmpd[ROMNUM][3]){
+printf("========= cmpd result ==========\n\n");
+for(int i=0;i<limit;i++){
+		if(promcmpd[i][0]!=0||promcmpd[i][1]!=0||promcmpd[i][2]!=0){
+			print_prom(prom[i],i);
+			printf("ge %d回 eq %d回 le %d回\n",promcmpd[i][ge],promcmpd[i][eq],promcmpd[i][le]);
+			}
+}
+printf("\n\n");
+}
+
+void print_jmpd(uint32_t promjmp[ROMNUM][ROMNUM],uint32_t promcmpd[ROMNUM][3]){
+printf("========= jmpd result ==========\n\n");
+for(int i=0;i<limit;i++){
+	for(int j=0;j<limit;j++){
+		if(promjmp[i][j]!=0){
+			print_prom(prom[i],i);
+			printf("%d回実行\n",promjmp[i][j]);
+		}
+	}
+		if(promcmpd[i][0]!=0||promcmpd[i][1]!=0||promcmpd[i][2]!=0){
+			print_prom(prom[i],i);
+			printf("ge %d回 eq %d回 le %d回\n",promcmpd[i][ge],promcmpd[i][eq],promcmpd[i][le]);
+			}
+}
+printf("\n\n");
+}
 double elapsed_time(){
     struct timeval now;
     gettimeofday(&now, NULL);
@@ -145,7 +172,7 @@ int simulate(void) {
 		break;
 		}
 	} while (exec_op(ir)==0);
-	print_jmp(promjmp);
+	print_jmpd(promjmp,promcmpd);
 	return 0;
 } 
 
@@ -310,12 +337,15 @@ static inline int exec_op(uint32_t ir) {
                 case CMPD:
                         if (_GRT == _GRA){
 				cdr = eq;
+				promcmpd[pc-1][eq]+=1;
 			}
                         else if (_GRT < _GRA){
 				cdr = le;
+				promcmpd[pc-1][le]+=1;
 			}
 			else{
 				cdr = 0;
+				promcmpd[pc-1][ge]+=1;
 			}
 			count[opcode]+=1;
                         break;
@@ -324,24 +354,30 @@ static inline int exec_op(uint32_t ir) {
 			ra = *(float*)(&(_GRA));
                         if (rt == ra){
 				cdr = eq;
+				promcmpd[pc-1][eq]+=1;
 			}
                         else if (rt < ra){
 				cdr = le;
+				promcmpd[pc-1][le]+=1;
 			}
 			else{
 				cdr = 0;
+				promcmpd[pc-1][ge]+=1;
 			}
 			count[opcode]+=1;
                         break;
                 case CMPDI:
                         if (_GRT == _SI){
 				cdr = eq;
+				promcmpd[pc-1][eq]+=1;
 			}
                         else if (_GRT < _SI){
 				cdr = le;
+				promcmpd[pc-1][le]+=1;
 			}
 			else{
 				cdr = 0;
+				promcmpd[pc-1][ge]+=1;
 			}
 			count[opcode]+=1;
                         break;

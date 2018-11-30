@@ -5,12 +5,12 @@
 #include <stdint.h>
 extern uint32_t prom[ROMNUM];
 extern uint32_t promjmp[ROMNUM][ROMNUM];
+extern uint32_t promcmpd[ROMNUM][3];
 extern uint32_t ram[RAMNUM];
 extern int32_t reg[REGNUM];
 extern uint32_t freg[REGNUM];
 extern uint32_t pc;
 extern uint32_t count[256];
-//< 0 ; > 1 ; = 2
 extern int cdr;
 extern uint32_t ir;
 extern int32_t lr;
@@ -42,6 +42,9 @@ extern char* outputfile;
 //#define cdr reg[30]
 //リンクレジスタ reg[31]
 #define lnk reg[31]
+
+// ge 0 eq 1 le 2
+#define ge 0
 #define eq 1
 #define le 2
 
