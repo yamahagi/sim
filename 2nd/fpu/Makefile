@@ -11,7 +11,4 @@ div: test/test_div.c fdiv.c ftools.c
 	gcc test/test_div.c fdiv.c ftools.c -o div
 
 clean:
-	rm add
-	rm sub
-	rm mul
-	rm div
+	rm add sub mul div
