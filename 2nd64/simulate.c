@@ -85,7 +85,7 @@ for(int i=0;i<limit;i++){
 	for(int j=0;j<limit;j++){
 		if(promjmp[i][j]!=0){
 				print_prom((prom[i]),i);
-			printf("%d回実行\n",promjmp[i][j]);
+			printf("To %d %d回実行\n",j,promjmp[i][j]);
 		}
 	}
 		if(promcmpd[i][0]!=0||promcmpd[i][1]!=0||promcmpd[i][2]!=0){
@@ -133,7 +133,6 @@ int simulate(void) {
 	init();
 	do{
 		
-		tmp++;
 
 		ir = prom[pc];
 #ifndef SILENT
@@ -147,11 +146,12 @@ int simulate(void) {
 #ifdef ANALYSE_FLAG
 		analyse(ir);
 #endif
-		if (!(cnt % 10000000)) { 
+		if (!(cnt % 1000000)&&(cnt!=0)) { 
         		warning("."); 
-                if(!(cnt % 1000000000)){
+                if(!(cnt % 100000000)){
         			warning("time %.3f [sec],operation_count = %ld hp = %d \n",elapsed_time(),cnt,ram[0]); 
-                }
+		}
+		break;
 		}
 			
 		float f;	
@@ -189,7 +189,7 @@ int simulate(void) {
 
 
 
-	} while (tmp<=100);
+	} while (1==1);
 	print_jmpd(promjmp,promcmpd);
 	return 0;
 } 
