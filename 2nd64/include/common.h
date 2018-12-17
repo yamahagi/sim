@@ -25,7 +25,7 @@
 #define LOAD  0b010000
 #define STORE  0b010001
 #define LI  0b010010
-#define LIS  0b010011
+#define LIW  0b010011
 
 #define JUMP   0b011000
 #define BLR	0b011001

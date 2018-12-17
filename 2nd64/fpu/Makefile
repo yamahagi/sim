@@ -11,6 +11,9 @@ div: test/test_div.c fdiv.c ftools.c
 	gcc test/test_div.c fdiv.c ftools.c -o div
 sqrt: test/test_sqrt.c fsqrt.c ftools.c
 	gcc test/test_sqrt.c fsqrt.c ftools.c -o sqrt
-
+ftoi: test/test_ftoi.c fi.c ftools.c
+	gcc test/test_ftoi.c fi.c ftools.c -o ftoi
+itof: test/test_itof.c fi.c ftools.c
+	gcc test/test_itof.c fi.c ftools.c -o itof
 clean:
-	rm add sub mul div sqrt
+	rm add sub mul div sqrt ftoi itof

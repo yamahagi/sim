@@ -24,7 +24,7 @@ static void open_log_file(void);
 void print_count(void);
 uint32_t count[256];
 char* outputfile;
-uint64_t limit;
+uint32_t limit;
 
 
 static struct timeval tv1,tv2;
@@ -161,12 +161,28 @@ FILE *fp;
                 if( fread(&num8, 1, 1, fp ) < 1 ){
                         break;
                 }
-		 prom[limit] = (num1<<56&0xff00000000000000)+(num2<<48&0xff000000000000)+(num3<<40&0xff0000000000)+(num4<<32&0xff00000000)+(num5<<24&0xff000000)+(num6<<16&0xff0000)+(num7<<8&0xff00)+(num8&0xff);
+/*
+		 prom[limit] = ((num1<<56)&0xff00000000000000)+((num2<<48)&0xff000000000000)+(num3<<40&0xff0000000000)+(num4<<32&0xff00000000)+(num5<<24&0xff000000)+(num6<<16&0xff0000)+(num7<<8&0xff00)+(num8&0xff);
 		printf("%d: ",2*limit);
 		print_prom((prom[limit]>>32)&0xffffffff,limit);
 		printf("%d: ",2*limit+1);
 		print_prom(prom[limit]&0xffffffff,limit);
-        	limit+=2;
+*/  
+	if(num1!=19){
+	 prom[limit] = ((num1<<56)&0xff00000000000000)+(num1<<24&0xff000000)+((num2<<16)&0xff0000)+(num3<<8&0xff00)+(num4&0xff);
+	 prom[limit+1] = ((num5<<56)&0xff00000000000000)+(num5<<24&0xff000000)+((num6<<16)&0xff0000)+(num7<<8&0xff00)+(num8&0xff);
+                printf("%d: ",limit);
+                print_prom((prom[limit]),limit);
+                printf("%d: ",limit+1);
+                print_prom((prom[limit+1]),limit+1);
+      		limit+=2;
+	}
+	else{
+	 prom[limit] = ((num1<<56)&0xff00000000000000)+((num2<<48)&0xff000000000000)+(num3<<40&0xff0000000000)+(num4<<32&0xff00000000)+(num5<<24&0xff000000)+(num6<<16&0xff0000)+(num7<<8&0xff00)+(num8&0xff);
+                printf("%d: ",limit);
+                print_prom(prom[limit],limit);
+		limit+=1;
+	}
         }
 
 
@@ -296,8 +312,8 @@ void print_count(void){
 	if(count[LI]!=0){
                 printf("LI %d\n",count[LI]);
         }
-        if(count[LIS]!=0){
-                printf("LIS %d\n",count[LIS]);
+        if(count[LIW]!=0){
+                printf("LIW %d\n",count[LIW]);
         }
         if(count[JUMP]!=0){
                 printf("JUMP %d\n",count[JUMP]);

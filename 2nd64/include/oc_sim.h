@@ -22,13 +22,14 @@ extern uint32_t promcmpd[ROMNUM][3];
 extern uint32_t ram[RAMNUM];
 extern int32_t reg[REGNUM];
 extern uint32_t freg[REGNUM];
-extern Pc pc;
+//extern Pc pc;
+extern int pc;
 extern uint32_t count[256];
 extern int cdr;
-extern uint32_t ir;
+extern uint64_t ir;
 extern int32_t lr;
-extern uint64_t cnt;
-extern uint64_t limit;
+extern uint32_t cnt;
+extern uint32_t limit;
 extern char* outputfile;
 
 /*
@@ -40,7 +41,14 @@ extern char* outputfile;
 [20:0] IMM get_imm(ir) _IMM
 [25:0] LI get_li(ir)  _LI
 
+
+[63:58] opcode get_opcodew
+[57:53] RTW get_rtiw(ir) _GRTW
+[31:0] SIW get_siw(ir) _SIW
+
 */
+//LIWと見分けるためのやつ
+#define get_opcodew(ir) ((uint32_t)(((ir)>>58)&0x3f))
 //命令
 #define get_opcode(ir) ((uint32_t)(((ir)>>26)&0x3f))
 //代入先 RT 
@@ -70,12 +78,17 @@ extern char* outputfile;
 #define get_imm(ir) ((uint32_t)(((ir)&0x1fffff)))
 //SI 即値
 #define get_si(ir) \
-	(ir&0xffff)
-
+	(uint32_t)(ir&0xffff)
+//SIW 即値
+#define get_siw(ir) \
+	(uint32_t)(ir&0xffffffff)
+//RTW 代入先
+#define get_rtiw(ir)	(uint32_t)((ir>>53)&0x1f)
 ////////////////////////////////////////////////////////////////////////
 // register access
 ////////////////////////////////////////////////////////////////////////
 #define _GRT reg[get_rti(ir)]
+#define _GRTW reg[get_rtiw(ir)]
 #define _GRA reg[get_rai(ir)]
 #define _GRB reg[get_rbi(ir)]
 /*
@@ -84,6 +97,7 @@ extern char* outputfile;
 #define _FRD freg[get_rbi(ir)]
 */
 #define _SI get_si(ir)
+#define _SIW get_siw(ir)
 #define _IMM get_imm(ir)
 #define _LI get_li(ir)
 ////////////////////////////////////////////////////////////////////////

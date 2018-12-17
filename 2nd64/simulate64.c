@@ -38,18 +38,20 @@ uint32_t freg[REGNUM];
 uint32_t count[256] = {0};
 int cdr;
 //命令
-uint64_t ir;
-//リンクレジスタ
+//上32bit
+uint32_t iru;
+//下32bit
+uint32_t ird;
 int32_t lr;
 //何命令行ったか？
-uint32_t cnt;
-uint32_t limit;
+uint64_t cnt;
+uint64_t limit;
 
 
 FILE *fpout; 
 struct timeval start;
 
-int pc;
+Pc pc;
 
 int tmp;
 
@@ -60,7 +62,12 @@ printf("========= jump result ==========\n\n");
 for(int i=0;i<limit;i++){
 	for(int j=0;j<limit;j++){
 		if(promjmp[i][j]!=0){
-				print_prom((prom[i]),i);
+			if(i%2==1){
+				print_prom((prom[i/2]&0xffffffff),i);
+			}
+			else{
+				print_prom(((prom[i/2]>>32)&0xffffffff),i);
+			}
 			printf("%d回実行\n",promjmp[i][j]);
 		}
 	}
@@ -72,7 +79,12 @@ void print_cmpd(uint32_t promcmpd[ROMNUM][3]){
 printf("========= cmpd result ==========\n\n");
 for(int i=0;i<limit;i++){
 		if(promcmpd[i][0]!=0||promcmpd[i][1]!=0||promcmpd[i][2]!=0){
-				print_prom((prom[i]),i);
+			if(i%2==1){
+				print_prom((prom[i/2]&0xffffffff),i);
+			}
+			else{
+				print_prom(((prom[i/2]>>32)&0xffffffff),i);
+			}
 			printf("ge %d回 eq %d回 le %d回\n",promcmpd[i][ge],promcmpd[i][eq],promcmpd[i][le]);
 			}
 }
@@ -84,12 +96,22 @@ printf("========= jmpd result ==========\n\n");
 for(int i=0;i<limit;i++){
 	for(int j=0;j<limit;j++){
 		if(promjmp[i][j]!=0){
-				print_prom((prom[i]),i);
+			if(i%2==1){
+				print_prom((prom[i/2]&0xffffffff),i);
+			}
+			else{
+				print_prom(((prom[i/2]>>32)&0xffffffff),i);
+			}
 			printf("%d回実行\n",promjmp[i][j]);
 		}
 	}
 		if(promcmpd[i][0]!=0||promcmpd[i][1]!=0||promcmpd[i][2]!=0){
-				print_prom((prom[i]),i);
+			if(i%2==1){
+				print_prom((prom[i/2]&0xffffffff),i);
+			}
+			else{
+				print_prom(((prom[i/2]>>32)&0xffffffff),i);
+			}
 			printf("ge %d回 eq %d回 le %d回\n",promcmpd[i][ge],promcmpd[i][eq],promcmpd[i][le]);
 			}
 }
@@ -116,7 +138,8 @@ static inline void init(void) {
 	cdr = 0;
 	tmp = 0;
 // heap init なにこれ?
-	pc = 0;
+	pc.number = 0;
+	pc.position = 0;
     gettimeofday(&start, NULL);
 /*
 	for (pc = 1; pc*4 <= reg[2]; pc++) {
@@ -125,27 +148,29 @@ static inline void init(void) {
 */
 }
 
-static inline int exec_op(uint64_t ir);
+static inline int exec_op(uint32_t ir);
 
 
 //命令がある限りpcを進めて命令を読んで実行
 int simulate(void) {
 	init();
 	do{
+		tmp+=1;
 		
-		tmp++;
-
-		ir = prom[pc];
+		iru = (prom[pc.number]>>32)&(0xffffffff);
+		ird = prom[pc.number]&0xffffffff;
 #ifndef SILENT
 		if(cnt ==0) printf("初期状態\n");
-		printf("pc %d\n",pc);
+		printf("pc %d\n",pc.number);
 #endif 
 
 #ifdef LOG_FLAG
-		_print_ir(ir, log_fp);
+		_print_ir(iru, log_fp);
+		_print_ir(ird, log_fp);
 #endif
 #ifdef ANALYSE_FLAG
-		analyse(ir);
+		analyse(iru);
+		analyse(ird);
 #endif
 		if (!(cnt % 10000000)) { 
         		warning("."); 
@@ -160,9 +185,12 @@ int simulate(void) {
 		//ゼロレジスタを表示	
 #ifndef SILENT
 
+	if(pc.position==0){
+
+		pc.position = 1;
 
 		printf("実行命令 ");
-		print_op(ir);
+		print_op(iru);
 		//命令実行後ではなく命令実行時の現在のレジスタ状態を表示
 		printf("ゼロレジスタ %d\n",reg[0]);
 		printf("スタックの先頭　%d\n",reg[1]);
@@ -175,27 +203,58 @@ int simulate(void) {
 			printf("reg[%d] int %d float %f\n",i+3,reg[i+3],*(float*)(&reg[i+3]));
 		}
 #endif
-		if(ir == 0){
+		if(iru == 0){
 		printf("終了u\n");	
 		break;
 		}
-
-		pc++;
 	
-		if(exec_op(ir)!=0){
+		if(exec_op(iru)!=0){
 			break;
 		}
 		cnt++;
 
+#ifndef SILENT
 
+	}
 
-	} while (tmp<=100);
+	iru = (prom[pc.number]>>32)&(0xffffffff);
+	ird = prom[pc.number]&0xffffffff;
+
+	if(pc.position == 1){
+		pc.position = 0;
+		printf("実行命令 ");
+		print_op(ird);
+		//命令実行後ではなく命令実行時の現在のレジスタ状態を表示
+		printf("ゼロレジスタ %d\n",reg[0]);
+		printf("スタックの先頭　%d\n",reg[1]);
+		printf("スタックフレーム %d\n",reg[2]);
+		printf("リンクレジスタ %d\n",reg[31]);
+		printf("コンディションレジスタ ");
+		print_cdr(cdr);
+		//整数レジスタのint版とfloat版を表示
+		for(int i=0;i<28;i++){
+			printf("reg[%d] int %d float %f\n",i+3,reg[i+3],*(float*)(&reg[i+3]));
+		}
+#endif
+
+		if(ird == 0){
+		printf("終了d\n");	
+		break;
+		}
+		
+		if(exec_op(ird)!=0){
+			break;
+		}
+		cnt++;
+		pc.number++;
+	}
+	} while (tmp<=10);
 	print_jmpd(promjmp,promcmpd);
 	return 0;
 } 
 
 
-static inline int exec_op(uint64_t ir) {
+static inline int exec_op(uint32_t ir) {
 	uint8_t opcode, funct;
 	union {
 		uint32_t i;
@@ -207,7 +266,7 @@ static inline int exec_op(uint64_t ir) {
 	float rt=0.0;
 	float resultf = 0.0;
 	int32_t si;
-	opcode = get_opcodew(ir);
+	opcode = get_opcode(ir);
     	int p;
 	
 
@@ -292,40 +351,44 @@ static inline int exec_op(uint64_t ir) {
 				return 1;
 			}
 			*/
-			promjmp[pc-1][get_li(ir)]+=1;
-			pc = get_li(ir);
+			promjmp[2*pc.number+pc.position][get_li(ir)]+=1;
+			pc.number = get_li(ir)/2;
+			if(get_li(ir)%2==1) pc.position = 1;
 			count[opcode]+=1;
 			break;
 		case BLR:
-			if(pc == lnk-1) return 1;
-			promjmp[pc-1][lnk]+=1;
-			pc = lnk;
+			if(pc.number == lnk/2&&pc.position == (lnk%2)) return 1;
+			promjmp[2*pc.number+pc.position][lnk]+=1;
+			pc.number = lnk/2;
+			if(lnk%2==1) pc.position = 1;
 			count[opcode]+=1;
 			break;
 		case BL:
-			promjmp[pc-1][_LI]+=1;
-			lnk = pc;
-			pc = _LI;
+			promjmp[2*pc.number+pc.position][_LI]+=1;
+			pc.number = _LI/2;
+			if(_LI%2==1) pc.position = 1;
+			lnk = 2*pc.number+pc.position+1;
 			count[opcode]+=1;
 			break;
 		case BLRR:
-			promjmp[pc-1][_GRT]+=1;
-			lnk = pc;
-			pc =_GRT;
+			promjmp[2*pc.number+pc.position][_GRT]+=1;
+			pc.number =_GRT/2;
+			if(_GRT%2==1) pc.position = 1;
+			lnk = 2*pc.number+pc.position+1;
 			count[opcode]+=1;
 			break;
                 case CMPD:
                         if (_GRA == _GRB){
 				cdr = eq;
-				promcmpd[pc-1][eq]+=1;
+				promcmpd[2*pc.number+pc.position][eq]+=1;
 			}
                         else if (_GRA < _GRB){
 				cdr = le;
-				promcmpd[pc-1][le]+=1;
+				promcmpd[2*pc.number+pc.position][le]+=1;
 			}
 			else{
 				cdr = 0;
-				promcmpd[pc-1][ge]+=1;
+				promcmpd[2*pc.number+pc.position][ge]+=1;
 			}
 			count[opcode]+=1;
                         break;
@@ -334,72 +397,77 @@ static inline int exec_op(uint64_t ir) {
 			rb = *(float*)(&(_GRB));
                         if (ra == rb){
 				cdr = eq;
-				promcmpd[pc-1][eq]+=1;
+				promcmpd[2*pc.number+pc.position][eq]+=1;
 			}
                         else if (ra < rb){
 				cdr = le;
-				promcmpd[pc-1][le]+=1;
+				promcmpd[2*pc.number+pc.position][le]+=1;
 			}
 			else{
 				cdr = 0;
-				promcmpd[pc-1][ge]+=1;
+				promcmpd[2*pc.number+pc.position][ge]+=1;
 			}
 			count[opcode]+=1;
                         break;
                 case CMPDI:
                         if (_GRA == _SI){
 				cdr = eq;
-				promcmpd[pc-1][eq]+=1;
+				promcmpd[2*pc.number+pc.position][eq]+=1;
 			}
                         else if (_GRA < _SI){
 				cdr = le;
-				promcmpd[pc-1][le]+=1;
+				promcmpd[2*pc.number+pc.position][le]+=1;
 			}
 			else{
 				cdr = 0;
-				promcmpd[pc-1][ge]+=1;
+				promcmpd[2*pc.number+pc.position][ge]+=1;
 			}
 			count[opcode]+=1;
                         break;
                 case BEQ:
 			if(cdr==eq){
-			promjmp[pc-1][_LI]+=1;
-			pc = _LI;
+			promjmp[2*pc.number+pc.position][_LI]+=1;
+			pc.number = _LI/2;
 			}
 			count[opcode]+=1;
 			break;
 		case BLE:
 			if(cdr==eq||cdr==le){
-			promjmp[pc-1][_LI]+=1;
-			pc = _LI;
+			promjmp[2*pc.number+pc.position][_LI]+=1;
+			pc.number = _LI/2;
+			if(_LI%2==1) pc.position = 1;
 			}
 			count[opcode]+=1;
 			break;
 		case BLT:
 			if(cdr==le){
-			promjmp[pc-1][_LI]+=1;
-			pc = _LI;
+			promjmp[2*pc.number+pc.position][_LI]+=1;
+			pc.number = _LI/2;
+			if(_LI%2==1) pc.position = 1;
 			}
 			count[opcode]+=1;
 			break;
 		case BNE:
 			if(cdr!=eq){
-			promjmp[pc-1][_LI]+=1;
-			pc = _LI;
+			promjmp[2*pc.number+pc.position][_LI]+=1;
+			pc.number = _LI/2;
+			if(_LI%2==1) pc.position = 1;
 			}
 			count[opcode]+=1;
 			break;
 		case BGE:
 			if(cdr!=le){
-			promjmp[pc-1][_LI]+=1;
-			pc = _LI;
+			promjmp[2*pc.number+pc.position][_LI]+=1;
+			pc.number = _LI/2;
+			if(_LI%2==1) pc.position = 1;
 			}
 			count[opcode]+=1;
 			break;
 		case BGT:
 			if(cdr!=le&&cdr!=eq){
-			promjmp[pc-1][_LI]+=1;
-			pc = _LI;
+			promjmp[2*pc.number+pc.position][_LI]+=1;
+			pc.number = _LI/2;
+			if(_LI%2==1) pc.position = 1;
 			}
 			count[opcode]+=1;
 			break;

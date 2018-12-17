@@ -67,11 +67,8 @@ counter1 = 0;
 counter1 = counter1+1;
 counter1 = counter1+1;
 for(i=0;i<255;i++){
-   for(j=1;j<255;j++){
-      for(s1=0;s1<2;s1++){
-         for(s2=0;s2<2;s2++){
+      for(s1=0;s1<1;s1++){
             for(it=0;it<10;it++){
-		for(jt=0;jt<10;jt++){
 		   switch(it){
 			case 0:
 				m1 = 0;
@@ -105,46 +102,10 @@ for(i=0;i<255;i++){
 				}
 				break;
 		   }
-		   switch(jt){
-			case 0:
-				m2 = 0;
-				break;
-			case 1:			
-				m2 = 1;
-				break;
-			case 2:			
-				m2 = 2;
-				break;
-			case 3:			
-				m2 = 7<<19;
-				break;
-			case 4:			
-				m2 = 1<<23;
-				break;
-			case 5:			
-				m2 = (1<<23) + 0x1fffff;
-				break;
-			case 6:			
-				m2 = 0x7fffff;
-				break;
-			default:
-				if(i==256){
-					m2 = 0;
-					dum2 = 0;
-				}
-				else{
-					m2 = split_bit(rand(),22,0);
-					dum2 = split_bit(rand(),9,0);
-				}
-				break;
-		   }
 
 		   x1_reg[0] = (s1<<31)+(split_bit(i,7,0)<<23)+m1;
-		   x2_reg[0] = (s2<<31)+(split_bit(j,7,0)<<23)+m2;
 
 		
-//		float am = *(float*)(&x1_reg[0]);
-//		float bm = *(float*)(&x2_reg[0]);
 		float am = *(float*)(&x1_reg[0]);
 		float cm =sqrt(am);
 		int yp = 0x800000;
@@ -167,15 +128,12 @@ for(i=0;i<255;i++){
 			}
 			printf("\n");
 			
-			 printf("%f/%f = %fなのに%f\n", am,cm,dm);
+			 printf("sqrt%f = %fなのに%f\n", am,cm,dm);
 				counter +=1;
 			}
 		}
 		}
 	      }
-	    }
-	}
-}
 
 printf("count %d\n",counter);
 

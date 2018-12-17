@@ -40,9 +40,9 @@ void print_cdr(int cdr){
 	}
 }
 
-void print_op(int32_t ir){
+void print_op(int64_t ir){
 
-        int opcode =get_opcode(ir);
+        int opcode =get_opcodew(ir);
          switch(opcode){
                 case ADDI:
                         printf("ADDI ");
@@ -108,9 +108,9 @@ void print_op(int32_t ir){
                         printf("LI ");
                         printf("r%d %d\n",get_rti(ir),get_si(ir));
                         break;
-                case LIS:
-                        printf("LIS ");
-                        printf("r%d %d\n",get_rti(ir),get_si(ir));
+                case LIW:
+                        printf("LIW ");
+                        printf("r%d %d\n",get_rtiw(ir),get_siw(ir));
                         break;
                 case JUMP:
                         printf("JUMP ");
@@ -207,7 +207,7 @@ void print_op(int32_t ir){
 
 
 }
-void print_prom(int32_t ir,int n){
+void print_prom(int64_t ir,int n){
 
         int opcode =get_opcode(ir);
         printf("%d: ",n);
@@ -215,8 +215,8 @@ void print_prom(int32_t ir,int n){
 
 }
 
-
-void print_opcode(int32_t ir){
+/*
+void print_opcode(int64_t ir){
 
 switch(get_opcode(ir)){
                 case ADDI:
@@ -359,3 +359,4 @@ switch(get_opcode(ir)){
         		break;
 	}
 }
+*/
