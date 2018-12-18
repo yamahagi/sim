@@ -28,6 +28,8 @@ else{
 int key;
 key = split_bit(adata,23,13);
 
+//printf("key %d\n",key);
+
 float x;
 union {float t; int tbit;} hoge;
 union {float u; int ubit;} fuga;
@@ -59,7 +61,14 @@ if (key < 1024) {
       te[key] = (139-te1) > 26 ? 26 : 139-te1;
       }
 
-
+s[1024] = 0;
+tm[1024] = 4098;
+te[1024] = 13;
+/*
+printf("s[key] %d\n",s[key]);
+printf("tm[key] %d\n",tm[key]);
+printf("te[key] %d\n",te[key]);
+*/
 int ta;
 ta = tm[key]*split_bit(adata,12,0);
 
@@ -75,11 +84,11 @@ notzero_reg = (split_bit(adata,30,23)>0)? 1 : 0;
 se_reg = se;
 
 int ta_s;
-ta_s = (te_reg>13) ? 0 : ta_reg >> te_reg;
+ta_s = (te_reg>27) ? 0 : ta_reg >> te_reg;
 
 int kari;
 kari = s_reg + ta_s;
-
+//printf("kari %d",kari);
 int result;
 
 result = (notzero_reg == 1)? (se_reg<<23)+kari : 0;

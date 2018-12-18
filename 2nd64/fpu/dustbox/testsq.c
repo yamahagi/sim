@@ -21,7 +21,7 @@ return *(float*)(&l);
 
 int main(void){
 
-int a = 0b01111010100000000000000000000000;
+int a = 0b01111100100000000000000000000000;
 float t = *(float *)(&(a));
 float c = sqrt(t);
 int k = (fsqrt(a));

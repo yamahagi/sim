@@ -35,11 +35,11 @@ if(split_bit(adata,31,31)==1){
 	break; case 150:
 	    result = (~((1<<23)+(split_bit(adata,22,0))))+1;
 	break; case 149:
-	    result = split_bit(adata,0,0)==1 ? ~(((1<<22)+split_bit(adata,22,1))+1) + 1 : ~((1<<22)+split_bit(adata,22,1));
+	    result = split_bit(adata,0,0)==1 ? ~(((1<<22)+split_bit(adata,22,1))+1) + 1 : ~((1<<22)+split_bit(adata,22,1))+1;
 	break; case 148:
-	    result = split_bit(adata,1,1)==1 ? ~(((1<<21)+split_bit(adata,22,2))+1) + 1 : ~((1<<21)+split_bit(adata,22,2));
+	    result = split_bit(adata,1,1)==1 ? ~(((1<<21)+split_bit(adata,22,2))+1) + 1 : ~((1<<21)+split_bit(adata,22,2))+1;
 	break; case 147:
-	    result = split_bit(adata,2,2)==1 ? ~(((1<<20)+split_bit(adata,22,3))+1) + 1 : ~((1<<20)+split_bit(adata,22,3));
+	    result = split_bit(adata,2,2)==1 ? ~(((1<<20)+split_bit(adata,22,3))+1) + 1 : ~((1<<20)+split_bit(adata,22,3))+1;
 	break;
 	case 146:
 	    result = split_bit(adata,3,3)==1 ? ~(((1<<19)+split_bit(adata,22,4))+1) + 1 : ~((1<<19)+split_bit(adata,22,4)) + 1;
