@@ -16,7 +16,6 @@
 #include "fpu/fi.h"
 #include "include/oc_sim.h"
 #include "include/common.h"
-#include "include/print_reg.h"
 
 //一つ一つに命令が入る
 uint64_t prom[ROMNUM];

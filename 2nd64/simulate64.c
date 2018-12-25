@@ -38,14 +38,15 @@ uint32_t freg[REGNUM];
 uint32_t count[256] = {0};
 int cdr;
 //命令
+uint64_t ir;
 //上32bit
 uint32_t iru;
 //下32bit
 uint32_t ird;
 int32_t lr;
 //何命令行ったか？
-uint64_t cnt;
-uint64_t limit;
+uint32_t cnt;
+uint32_t limit;
 
 
 FILE *fpout; 
@@ -56,18 +57,13 @@ Pc pc;
 int tmp;
 
 void print_count(void);
-
+/*
 void print_jmp(uint32_t promjmp[ROMNUM][ROMNUM]){
 printf("========= jump result ==========\n\n");
 for(int i=0;i<limit;i++){
 	for(int j=0;j<limit;j++){
 		if(promjmp[i][j]!=0){
-			if(i%2==1){
-				print_prom((prom[i/2]&0xffffffff),i);
-			}
-			else{
-				print_prom(((prom[i/2]>>32)&0xffffffff),i);
-			}
+			print_prom(prom[i],i);
 			printf("%d回実行\n",promjmp[i][j]);
 		}
 	}
@@ -79,39 +75,25 @@ void print_cmpd(uint32_t promcmpd[ROMNUM][3]){
 printf("========= cmpd result ==========\n\n");
 for(int i=0;i<limit;i++){
 		if(promcmpd[i][0]!=0||promcmpd[i][1]!=0||promcmpd[i][2]!=0){
-			if(i%2==1){
-				print_prom((prom[i/2]&0xffffffff),i);
-			}
-			else{
-				print_prom(((prom[i/2]>>32)&0xffffffff),i);
-			}
+			print_prom(prom[i],i);
+			printf("%d回実行\n",promjmp[i][j]);
 			printf("ge %d回 eq %d回 le %d回\n",promcmpd[i][ge],promcmpd[i][eq],promcmpd[i][le]);
 			}
 }
 printf("\n\n");
 }
-
+*/
 void print_jmpd(uint32_t promjmp[ROMNUM][ROMNUM],uint32_t promcmpd[ROMNUM][3]){
 printf("========= jmpd result ==========\n\n");
 for(int i=0;i<limit;i++){
 	for(int j=0;j<limit;j++){
 		if(promjmp[i][j]!=0){
-			if(i%2==1){
-				print_prom((prom[i/2]&0xffffffff),i);
-			}
-			else{
-				print_prom(((prom[i/2]>>32)&0xffffffff),i);
-			}
+			print_prom(prom[i],i);
 			printf("%d回実行\n",promjmp[i][j]);
 		}
 	}
 		if(promcmpd[i][0]!=0||promcmpd[i][1]!=0||promcmpd[i][2]!=0){
-			if(i%2==1){
-				print_prom((prom[i/2]&0xffffffff),i);
-			}
-			else{
-				print_prom(((prom[i/2]>>32)&0xffffffff),i);
-			}
+			print_prom(prom[i],i);
 			printf("ge %d回 eq %d回 le %d回\n",promcmpd[i][ge],promcmpd[i][eq],promcmpd[i][le]);
 			}
 }
@@ -157,17 +139,20 @@ int simulate(void) {
 	do{
 		tmp+=1;
 		
+		//LIWは特別扱い
+		int op_liw = get_opcodew(prom[pc.number]);
 		iru = (prom[pc.number]>>32)&(0xffffffff);
 		ird = prom[pc.number]&0xffffffff;
 #ifndef SILENT
 		if(cnt ==0) printf("初期状態\n");
 		printf("pc %d\n",pc.number);
 #endif 
-
+/*
 #ifdef LOG_FLAG
 		_print_ir(iru, log_fp);
 		_print_ir(ird, log_fp);
 #endif
+*/
 #ifdef ANALYSE_FLAG
 		analyse(iru);
 		analyse(ird);
@@ -185,6 +170,7 @@ int simulate(void) {
 		//ゼロレジスタを表示	
 #ifndef SILENT
 
+if(op_liw!=LIW){
 	if(pc.position==0){
 
 		pc.position = 1;
@@ -223,7 +209,7 @@ int simulate(void) {
 	if(pc.position == 1){
 		pc.position = 0;
 		printf("実行命令 ");
-		print_op(ird);
+		print_op(iru);
 		//命令実行後ではなく命令実行時の現在のレジスタ状態を表示
 		printf("ゼロレジスタ %d\n",reg[0]);
 		printf("スタックの先頭　%d\n",reg[1]);
@@ -248,13 +234,36 @@ int simulate(void) {
 		cnt++;
 		pc.number++;
 	}
-	} while (tmp<=10);
+}
+else{
+	pc.position = 0;
+                printf("実行命令 ");
+                print_prom(prom[pc.number],pc.number);
+                //命令実行後ではなく命令実行時の現在のレジスタ状態を表示
+                printf("ゼロレジスタ %d\n",reg[0]);
+                printf("スタックの先頭　%d\n",reg[1]);
+                printf("スタックフレーム %d\n",reg[2]);
+                printf("リンクレジスタ %d\n",reg[31]);
+                printf("コンディションレジスタ ");
+                print_cdr(cdr);
+                //整数レジスタのint版とfloat版を表示
+                for(int i=0;i<28;i++){
+                        printf("reg[%d] int %d float %f\n",i+3,reg[i+3],*(float*)(&reg[i+3]));
+                }	
+	_GRTW = ((_SIW&0xffffffff));
+        count[LIW]+=1;
+        cnt++;
+        pc.number++;                
+}
+
+
+	} while (tmp<=1000);
 	print_jmpd(promjmp,promcmpd);
 	return 0;
 } 
 
-
-static inline int exec_op(uint32_t ir) {
+//LIW以外の命令を実行
+static inline int exec_op(uint32_t ira) {
 	uint8_t opcode, funct;
 	union {
 		uint32_t i;
@@ -266,7 +275,7 @@ static inline int exec_op(uint32_t ir) {
 	float rt=0.0;
 	float resultf = 0.0;
 	int32_t si;
-	opcode = get_opcode(ir);
+	opcode = get_opcode(ira);
     	int p;
 	
 
@@ -294,6 +303,14 @@ static inline int exec_op(uint32_t ir) {
                         break;
 		case SLAWI:
 			_GRT = _GRA<<_SI;
+			count[opcode]+=1;
+                        break;
+		case XOR:
+			_GRT = _GRA^_GRB;
+			count[opcode]+=1;
+                        break;
+		case AND:
+			_GRT = _GRA&_GRB;
 			count[opcode]+=1;
                         break;
 		case FADD:
@@ -347,48 +364,48 @@ static inline int exec_op(uint32_t ir) {
 			break; 	
 		case JUMP:
 			/*
-			if (pc-1 == get_li(ir)) {
+			if (pc-1 == get_li(ira)) {
 				return 1;
 			}
 			*/
-			promjmp[2*pc.number+pc.position][get_li(ir)]+=1;
-			pc.number = get_li(ir)/2;
-			if(get_li(ir)%2==1) pc.position = 1;
+			promjmp[pc.number][get_li(ira)]+=1;
+			pc.number = get_li(ira);
+			pc.position = 0;
 			count[opcode]+=1;
 			break;
 		case BLR:
-			if(pc.number == lnk/2&&pc.position == (lnk%2)) return 1;
-			promjmp[2*pc.number+pc.position][lnk]+=1;
-			pc.number = lnk/2;
-			if(lnk%2==1) pc.position = 1;
+			if(pc.number == lnk) return 1;
+			promjmp[pc.number][lnk]+=1;
+			pc.number = lnk;
+			pc.position = 0;
 			count[opcode]+=1;
 			break;
 		case BL:
-			promjmp[2*pc.number+pc.position][_LI]+=1;
-			pc.number = _LI/2;
-			if(_LI%2==1) pc.position = 1;
-			lnk = 2*pc.number+pc.position+1;
+			promjmp[pc.number][_LI]+=1;
+			pc.number = _LI;
+			pc.position = 0;
+			lnk = pc.number+1;
 			count[opcode]+=1;
 			break;
 		case BLRR:
-			promjmp[2*pc.number+pc.position][_GRT]+=1;
-			pc.number =_GRT/2;
-			if(_GRT%2==1) pc.position = 1;
-			lnk = 2*pc.number+pc.position+1;
+			promjmp[pc.number][_GRT]+=1;
+			pc.number =_GRT;
+			pc.position = 0;
+			lnk = pc.number+1;
 			count[opcode]+=1;
 			break;
                 case CMPD:
                         if (_GRA == _GRB){
 				cdr = eq;
-				promcmpd[2*pc.number+pc.position][eq]+=1;
+				promcmpd[pc.number][eq]+=1;
 			}
                         else if (_GRA < _GRB){
 				cdr = le;
-				promcmpd[2*pc.number+pc.position][le]+=1;
+				promcmpd[pc.number][le]+=1;
 			}
 			else{
 				cdr = 0;
-				promcmpd[2*pc.number+pc.position][ge]+=1;
+				promcmpd[pc.number][ge]+=1;
 			}
 			count[opcode]+=1;
                         break;
@@ -397,77 +414,77 @@ static inline int exec_op(uint32_t ir) {
 			rb = *(float*)(&(_GRB));
                         if (ra == rb){
 				cdr = eq;
-				promcmpd[2*pc.number+pc.position][eq]+=1;
+				promcmpd[pc.number][eq]+=1;
 			}
                         else if (ra < rb){
 				cdr = le;
-				promcmpd[2*pc.number+pc.position][le]+=1;
+				promcmpd[pc.number][le]+=1;
 			}
 			else{
 				cdr = 0;
-				promcmpd[2*pc.number+pc.position][ge]+=1;
+				promcmpd[pc.number][ge]+=1;
 			}
 			count[opcode]+=1;
                         break;
                 case CMPDI:
                         if (_GRA == _SI){
 				cdr = eq;
-				promcmpd[2*pc.number+pc.position][eq]+=1;
+				promcmpd[pc.number][eq]+=1;
 			}
                         else if (_GRA < _SI){
 				cdr = le;
-				promcmpd[2*pc.number+pc.position][le]+=1;
+				promcmpd[pc.number][le]+=1;
 			}
 			else{
 				cdr = 0;
-				promcmpd[2*pc.number+pc.position][ge]+=1;
+				promcmpd[pc.number][ge]+=1;
 			}
 			count[opcode]+=1;
                         break;
                 case BEQ:
 			if(cdr==eq){
-			promjmp[2*pc.number+pc.position][_LI]+=1;
-			pc.number = _LI/2;
+			promjmp[pc.number][_LI]+=1;
+			pc.number = _LI;
 			}
 			count[opcode]+=1;
 			break;
 		case BLE:
 			if(cdr==eq||cdr==le){
-			promjmp[2*pc.number+pc.position][_LI]+=1;
-			pc.number = _LI/2;
-			if(_LI%2==1) pc.position = 1;
+			promjmp[pc.number][_LI]+=1;
+			pc.number = _LI;
+			pc.position = 0;
 			}
 			count[opcode]+=1;
 			break;
 		case BLT:
 			if(cdr==le){
-			promjmp[2*pc.number+pc.position][_LI]+=1;
-			pc.number = _LI/2;
-			if(_LI%2==1) pc.position = 1;
+			promjmp[pc.number][_LI]+=1;
+			pc.number = _LI;
+			pc.position = 0;
 			}
 			count[opcode]+=1;
 			break;
 		case BNE:
 			if(cdr!=eq){
-			promjmp[2*pc.number+pc.position][_LI]+=1;
-			pc.number = _LI/2;
-			if(_LI%2==1) pc.position = 1;
+			promjmp[pc.number][_LI]+=1;
+			pc.number = _LI;
+			pc.position = 0;
 			}
 			count[opcode]+=1;
 			break;
 		case BGE:
 			if(cdr!=le){
-			promjmp[2*pc.number+pc.position][_LI]+=1;
-			pc.number = _LI/2;
-			if(_LI%2==1) pc.position = 1;
+			promjmp[pc.number][_LI]+=1;
+			pc.number = _LI;
+			pc.position = 0;
 			}
 			count[opcode]+=1;
 			break;
 		case BGT:
 			if(cdr!=le&&cdr!=eq){
-			promjmp[2*pc.number+pc.position][_LI]+=1;
-			pc.number = _LI/2;
-			if(_LI%2==1) pc.position = 1;
+			promjmp[pc.number][_LI]+=1;
+			pc.number = _LI;
+			pc.position = 0;
 			}
 			count[opcode]+=1;
 			break;

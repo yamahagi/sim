@@ -22,8 +22,8 @@ extern uint32_t promcmpd[ROMNUM][3];
 extern uint32_t ram[RAMNUM];
 extern int32_t reg[REGNUM];
 extern uint32_t freg[REGNUM];
-//extern Pc pc;
-extern int pc;
+extern Pc pc;
+//extern int pc;
 extern uint32_t count[256];
 extern int cdr;
 extern uint64_t ir;
@@ -47,7 +47,7 @@ extern char* outputfile;
 [31:0] SIW get_siw(ir) _SIW
 
 */
-//LIWと見分けるためのやつ
+//命令
 #define get_opcodew(ir) ((uint32_t)(((ir)>>58)&0x3f))
 //命令
 #define get_opcode(ir) ((uint32_t)(((ir)>>26)&0x3f))

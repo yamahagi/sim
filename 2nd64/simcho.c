@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include "include/oc_sim.h"
+#include "include/print_reg.h"
 static char *log_file = (char*) "ika.log";
 static char *sfile;
 static void configure(int argc, char **argv);
@@ -168,14 +169,14 @@ FILE *fp;
 		printf("%d: ",2*limit+1);
 		print_prom(prom[limit]&0xffffffff,limit);
 */  
-	if(num1!=19){
-	 prom[limit] = ((num1<<56)&0xff00000000000000)+(num1<<24&0xff000000)+((num2<<16)&0xff0000)+(num3<<8&0xff00)+(num4&0xff);
-	 prom[limit+1] = ((num5<<56)&0xff00000000000000)+(num5<<24&0xff000000)+((num6<<16)&0xff0000)+(num7<<8&0xff00)+(num8&0xff);
+	if(num1!=LIW){
+	 prom[limit] =(((num1<<24&0xff000000)+((num2<<16)&0xff0000)+(num3<<8&0xff00)+(num4&0xff))<<32)+ ((num5<<24&0xff000000)+((num6<<16)&0xff0000)+(num7<<8&0xff00)+(num8&0xff));
                 printf("%d: ",limit);
-                print_prom((prom[limit]),limit);
-                printf("%d: ",limit+1);
-                print_prom((prom[limit+1]),limit+1);
-      		limit+=2;
+		int64_t iru = ((prom[limit]>>32)&0xffffffff)<<32;
+		int64_t ird = ((prom[limit])&0xffffffff)<<32;
+                print_prom(iru,limit);
+                print_prom(ird,limit);
+      		limit+=1;
 	}
 	else{
 	 prom[limit] = ((num1<<56)&0xff00000000000000)+((num2<<48)&0xff000000000000)+(num3<<40&0xff0000000000)+(num4<<32&0xff00000000)+(num5<<24&0xff000000)+(num6<<16&0xff0000)+(num7<<8&0xff00)+(num8&0xff);
@@ -281,6 +282,12 @@ void print_count(void){
         }
         if(count[SLAWI]!=0){
                 printf("SLAWI %d\n",count[SLAWI]);
+        }
+        if(count[XOR]!=0){
+                printf("XOR %d\n",count[XOR]);
+        }
+        if(count[AND]!=0){
+                printf("AND %d\n",count[AND]);
         }
         if(count[FADD]!=0){
                 printf("FADD %d\n",count[FADD]);

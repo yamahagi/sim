@@ -1,3 +1,6 @@
+#ifndef __FUNCTION_H_INCLUDED_
+#define __FUNCTION_H_INCLUDED_
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -10,210 +13,17 @@
 #include <assert.h>
 #include <math.h>
 #include "common.h"
+#include "oc_sim.h"
 
 
-void print_data(int32_t data){
-        for(int i=0;i<32;i++){
-                if(i==1||i==9) printf(" ");
-                printf("%d",((data>>(31-i))&0x1));
-        }
-        printf("\n");
-}
+void print_data(int32_t data);
 
-void print_data64(int64_t data){
-        for(int i=0;i<64;i++){
-                printf("%d",((data>>(63-i))&0x1));
-        }
-        printf("\n");
-}
+void print_data64(int64_t data);
 
-void print_cdr(int cdr){
+void print_cdr(int cdr);
 
-	if(cdr == eq){
-		printf("eq\n");
-	}
-	else if (cdr == le){
-                printf("le\n");
-        }
-	else{
-                printf("フラグなし\n");
-	}
-}
-
-void print_op(int64_t ir){
-
-        int opcode =get_opcodew(ir);
-         switch(opcode){
-                case ADDI:
-                        printf("ADDI ");
-                        printf("r%d r%d %d\n",get_rti(ir),get_rai(ir),get_si(ir));
-                        break;
-                case SUBI:
-                        printf("SUBI ");
-                        printf("r%d r%d %d\n",get_rti(ir),get_rai(ir),get_si(ir));
-                        break;
-                case ADD:
-                        printf("ADD ");
-                        printf("r%d r%d r%d\n",get_rti(ir),get_rai(ir),get_rbi(ir));
-                        break;
-                case SUB:
-                        printf("SUB ");
-                        printf("r%d r%d r%d\n",get_rti(ir),get_rai(ir),get_rbi(ir));
-                        break;
-                case SRAWI:
-                        printf("SRAWI ");
-                        printf("r%d r%d %d\n",get_rti(ir),get_rai(ir),get_si(ir));
-                        break;
-                case SLAWI:
-                        printf("SLAWI ");
-                        printf("r%d r%d %d\n",get_rti(ir),get_rai(ir),get_si(ir));
-			break;
-                case FADD:
-                        printf("FADD ");
-                        printf("r%d r%d r%d\n",get_rti(ir),get_rai(ir),get_rbi(ir));
-                        break;
-                case FSUB:
-                        printf("FSUB ");
-                        printf("r%d r%d r%d\n",get_rti(ir),get_rai(ir),get_rbi(ir));
-                        break;
-                case FMUL:
-                        printf("FMUL ");
-                        printf("r%d r%d r%d\n",get_rti(ir),get_rai(ir),get_rbi(ir));
-                        break;
-                case FDIV:
-                        printf("FDIV ");
-                        printf("r%d r%d r%d\n",get_rti(ir),get_rai(ir),get_rbi(ir));
-                        break;
-                case FTOI:
-                        printf("FTOI ");
-                        printf("r%d r%d\n",get_rti(ir),get_rai(ir));
-                        break;
-                case ITOF:
-                        printf("ITOF ");
-                        printf("r%d r%d\n",get_rti(ir),get_rai(ir));
-                        break;
-                case FSQRT:
-                        printf("FSQRT ");
-                        printf("r%d r%d\n",get_rti(ir),get_rai(ir));
-                        break;
-		 case LOAD:
-                        printf("LOAD ");
-                        printf("r%d r%d %d\n",get_rti(ir),get_rai(ir),get_si(ir));
-                        break;
-                case STORE:
-                        printf("STORE ");
-                        printf("r%d r%d %d\n",get_rti(ir),get_rai(ir),get_si(ir));
-                        break;
-                case LI:
-                        printf("LI ");
-                        printf("r%d %d\n",get_rti(ir),get_si(ir));
-                        break;
-                case LIW:
-                        printf("LIW ");
-                        printf("r%d %d\n",get_rtiw(ir),get_siw(ir));
-                        break;
-                case JUMP:
-                        printf("JUMP ");
-                        printf("%d\n",get_li(ir));
-                        break;
-                case BLR:
-                        printf("BLR\n");
-                        break;
-                case BL:
-                        printf("BL ");
-                        printf("%d\n",get_li(ir));
-                        break;
-                case BLRR:
-                        printf("BLRR ");
-                        printf("r%d\n",get_rti(ir));
-                        break;
-                case CMPD:
-                        printf("CMPD ");
-                        printf("r%d r%d \n",get_rai(ir),get_rbi(ir));
-                        break;
-		case CMPF:
-                        printf("CMPF ");
-                        printf("r%d r%d \n",get_rai(ir),get_rbi(ir));
-                        break;
-                case CMPDI:
-                        printf("CMPDI ");
-                        printf("r%d %d \n",get_rai(ir),get_si(ir));
-                        break;
-                case BEQ:
-                        printf("BEQ ");
-                        printf("%d\n",get_li(ir));
-                        break;
-                case BLE:
-                        printf("BLE ");
-                        printf("%d\n",get_li(ir));
-                        break;
-                 case BLT:
-                        printf("BLT ");
-                        printf("%d\n",get_li(ir));
-                        break;
-                 case BNE:
-                        printf("BNE ");
-                        printf("%d\n",get_li(ir));
-                        break;
-                 case BGE:
-                        printf("BGE ");
-                        printf("%d\n",get_li(ir));
-                        break;
-                 case BGT:
-                        printf("BGT ");
-                        printf("%d\n",get_li(ir));
-                        break;
-                case INLL:
-                        printf("INLL ");
-                        printf("r%d\n",get_rti(ir));
-                        break;
-                case INLH:
-                        printf("INLH ");
-                        printf("r%d\n",get_rti(ir));
-                        break;
-                case INUL:
-                        printf("INUL ");
-                        printf("r%d\n",get_rti(ir));
-                        break;
-                case INUH:
-                        printf("INUH ");
-                        printf("r%d\n",get_rti(ir));
-                        break;
-                case OUTLL:
-                        printf("OUTLL ");
-                        printf("r%d\n",get_rti(ir));
-                        break;
-                case OUTLH:
-                        printf("OUTLH ");
-                        printf("r%d\n",get_rti(ir));
-                        break;
-                case OUTUL:
-                        printf("OUTUL ");
-                        printf("r%d\n",get_rti(ir));
-                        break;
-                case OUTUH:
-                        printf("OUTUH ");
-                        printf("r%d\n",get_rti(ir));
-                        break;
-                case NOP:
-                        printf("NOP \n");
-                        break;
-                case END:
-                        printf("END \n");
-                        break;
-                default : printf("not defined\n");
-        }
-
-
-
-}
-void print_prom(int64_t ir,int n){
-
-        int opcode =get_opcode(ir);
-        printf("%d: ",n);
-	print_op(ir);
-
-}
+void print_op(int32_t ir);
+void print_prom(int64_t ir,int n);
 
 /*
 void print_opcode(int64_t ir){
@@ -360,3 +170,5 @@ switch(get_opcode(ir)){
 	}
 }
 */
+
+#endif

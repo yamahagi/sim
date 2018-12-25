@@ -3,13 +3,13 @@ app = gcc -O2
 
 .PHONY: [sim]
 
-all: sim simcho.o simulate.o ftools.o fpu.o fdiv.o
+all: sim simcho.o simulate64.o ftools.o fpu.o fdiv.o
 
-simulate.o: simulate.c
-	$(obj) simulate.c
+simulate64.o: simulate64.c ./include/print_reg.c
+	$(obj) simulate64.c ./include/print_reg.c
 
-simcho.o: simcho.c
-	$(obj) simcho.c
+simcho.o: simcho.c ./include/print_reg.c
+	$(obj) simcho.c ./include/print_reg.c
 
 ftools.o: ./fpu/ftools.c
 	$(obj) ./fpu/ftools.c
@@ -22,15 +22,15 @@ fdiv.o: ./fpu/fdiv.c
 fi.o: ./fpu/fi.c
 	$(obj) ./fpu/fi.c
 
-sim: simcho.o simulate.o ftools.o fpu.o fdiv.o fi.o
-	$(app) simcho.o simulate.o fpu.o fdiv.o fi.o ftools.o -o sim
+sim: simcho.o simulate64.o ./include/print_reg.c ftools.o fpu.o fdiv.o fi.o
+	$(app) simcho.o simulate64.o ./include/print_reg.c fpu.o fdiv.o fi.o ftools.o -o sim
 
 silent: clean
-	$(obj) simulate.c -D"SILENT=1"
+	$(obj) simulate64.c -D"SILENT=1"
 	$(obj) simcho.c -D"SILENT=1"
 	$(obj) ./fpu/ftools.c -D"SILENT=1"
 	$(obj) ./fpu/fpu.c -D"SILENT=1"
-	$(app) simcho.o simulate.o ftools.o -o sim
+	$(app) simcho.o simulate64.o ftools.o -o sim
 
 clean: 
 	rm -rf ./*.o

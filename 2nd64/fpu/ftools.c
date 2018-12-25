@@ -39,7 +39,7 @@ void print_ubit(uint32_t data){
 
 void print_bit64(int64_t data){
 	for(int i=0;i<64;i++){
-		printf("%d",((data>>(63-i))&0x1));
+		printf("%lld",((data>>(63-i))&0x1));
 	}
 	printf("\n");
 }

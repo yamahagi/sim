@@ -15,5 +15,7 @@ ftoi: test/test_ftoi.c fi.c ftools.c
 	gcc test/test_ftoi.c fi.c ftools.c -o ftoi
 itof: test/test_itof.c fi.c ftools.c
 	gcc test/test_itof.c fi.c ftools.c -o itof
+less: test/test_less.c fless.c ftools.c
+	gcc test/test_less.c fless.c ftools.c -o less
 clean:
 	rm add sub mul div sqrt ftoi itof

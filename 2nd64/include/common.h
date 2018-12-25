@@ -13,6 +13,8 @@
 #define SUB  0b000011
 #define SRAWI 0b000100
 #define SLAWI 0b000101
+#define XOR 0b000110
+#define AND 0b000111
 
 #define FADD  0b001000
 #define FSUB  0b001001
