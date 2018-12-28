@@ -46,7 +46,7 @@ void print_cdr(int cdr){
 
 void print_op(int32_t ir){
 
-        int opcode =get_opcodew(ir);
+        int opcode =get_opcode(ir);
          switch(opcode){
                 case ADDI:
                         printf("ADDI ");
@@ -221,7 +221,7 @@ void print_op(int32_t ir){
 }
 void print_prom(int64_t ir,int n){
 
-	int getw = get_opcode(ir);
+	int getw = get_opcodew(ir);
 	if(getw==LIW){
         	printf("%d: ",n);
 		printf("LIW ");
