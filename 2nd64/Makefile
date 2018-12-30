@@ -22,8 +22,14 @@ fdiv.o: ./fpu/fdiv.c
 fi.o: ./fpu/fi.c
 	$(obj) ./fpu/fi.c
 
-sim: simcho.o simulate64.o ./include/print_reg.c ftools.o fpu.o fdiv.o fi.o
-	$(app) simcho.o simulate64.o ./include/print_reg.c fpu.o fdiv.o fi.o ftools.o -o sim
+fless.o: ./fpu/fless.c
+	$(obj) ./fpu/fless.c
+
+feq.o: ./fpu/feq.c
+	$(obj) ./fpu/feq.c
+
+sim: simcho.o simulate64.o ./include/print_reg.c ftools.o fpu.o fdiv.o fi.o fless.o feq.o
+	$(app) simcho.o simulate64.o ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim
 
 silent: clean
 	$(obj) simulate64.c -D"SILENT=1"

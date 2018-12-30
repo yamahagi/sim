@@ -14,6 +14,8 @@
 #include "fpu/fpu.h"
 #include "fpu/fdiv.h"
 #include "fpu/fi.h"
+#include "fpu/fless.h"
+#include "fpu/feq.h"
 #include "include/oc_sim.h"
 #include "include/common.h"
 #include "include/print_reg.h"
@@ -410,13 +412,11 @@ static inline int exec_op(uint32_t ira) {
 			count[opcode]+=1;
                         break;
                 case CMPF:
-			ra = *(float*)(&(_GRA));
-			rb = *(float*)(&(_GRB));
-                        if (ra == rb){
+                        if (feq(_GRA,_GRB)==1){
 				cdr = eq;
 				promcmpd[pc.number][eq]+=1;
 			}
-                        else if (ra < rb){
+                        else if (fless(_GRA,_GRB)==1){
 				cdr = le;
 				promcmpd[pc.number][le]+=1;
 			}

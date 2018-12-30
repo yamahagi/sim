@@ -14,6 +14,8 @@
 #include "fpu/fpu.h"
 #include "fpu/fdiv.h"
 #include "fpu/fi.h"
+#include "fpu/fless.h"
+#include "fpu/feq.h"
 #include "include/oc_sim.h"
 #include "include/common.h"
 
