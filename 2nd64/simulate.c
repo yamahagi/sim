@@ -25,6 +25,8 @@ uint32_t promjmp[ROMNUM][ROMNUM] = {0};
 uint32_t promcmpd[ROMNUM][3] = {0};
 //メモリ
 uint32_t ram[RAMNUM];
+extern int32_t ramfill[RAMNUM];
+extern int32_t ramnumber;
 /*
 汎用レジスタ
 %r0 ゼロレジスタ
@@ -265,11 +267,13 @@ static inline int exec_op(uint64_t ir) {
 		//メモリから代入 ram
 		case LOAD:
 			_GRT = ram[(_GRA + _SI)];
+			printf("LOAD元 %d 値 %d\n",_GRA + _SI,_GRT);
 			count[opcode]+=1;
 			break;
 		//メモリに代入
 		case STORE:
 			ram[((_GRA + _SI))] = _GRT;
+			printf("store先 %d 値 %d\n",_GRA + _SI,_GRT);
 			count[opcode]+=1;
 			break;
 		case LI:

@@ -26,6 +26,9 @@ uint32_t promjmp[ROMNUM][ROMNUM] = {0};
 uint32_t promcmpd[ROMNUM][3] = {0};
 //メモリ
 uint32_t ram[RAMNUM];
+int32_t ramfill[RAMNUM] = {-1};
+int32_t ramnumber = 0;
+
 /*
 汎用レジスタ
 %r0 ゼロレジスタ
@@ -41,6 +44,7 @@ uint32_t count[256] = {0};
 int cdr;
 //命令
 uint64_t ir;
+uint32_t ir32;
 //上32bit
 uint32_t iru;
 //下32bit
@@ -106,6 +110,7 @@ double elapsed_time(){
     gettimeofday(&now, NULL);
     return (double)(now.tv_sec - start.tv_sec) + (double)(now.tv_usec - start.tv_usec)/1000000.0;
 }
+
 //レジスタの規定
 static inline void init(void) {
     if(*outputfile == '\0'){
@@ -117,7 +122,7 @@ static inline void init(void) {
 // register init
 	reg[0] = 0;
 	reg[1] = 4*(RAMNUM-1);
-	reg[2] = prom[0];
+	reg[2] = 0;
 	lnk = 0;
 	cdr = 0;
 	tmp = 0;
@@ -142,6 +147,7 @@ int simulate(void) {
 		tmp+=1;
 		
 		//LIWは特別扱い
+		ir = prom[pc.number];
 		int op_liw = get_opcodew(prom[pc.number]);
 		iru = (prom[pc.number]>>32)&(0xffffffff);
 		ird = prom[pc.number]&0xffffffff;
@@ -175,10 +181,12 @@ int simulate(void) {
 if(op_liw!=LIW){
 	if(pc.position==0){
 
+		ir32 = iru;
+
 		pc.position = 1;
 
 		printf("実行命令 ");
-		print_op(iru);
+		print_op(ir32);
 		//命令実行後ではなく命令実行時の現在のレジスタ状態を表示
 		printf("ゼロレジスタ %d\n",reg[0]);
 		printf("スタックの先頭　%d\n",reg[1]);
@@ -190,13 +198,17 @@ if(op_liw!=LIW){
 		for(int i=0;i<28;i++){
 			printf("reg[%d] int %d float %f\n",i+3,reg[i+3],*(float*)(&reg[i+3]));
 		}
+		printf("メモリ\n");
+		for(int i=0;i<ramnumber;i++){
+			printf("ram[%d] = %d\n",ramfill[i],ram[ramfill[i]]);
+		}
 #endif
-		if(iru == 0){
+		if(ir32 == 0){
 		printf("終了u\n");	
 		break;
 		}
 	
-		if(exec_op(iru)!=0){
+		if(exec_op(ir32)!=0){
 			break;
 		}
 		cnt++;
@@ -209,9 +221,10 @@ if(op_liw!=LIW){
 	ird = prom[pc.number]&0xffffffff;
 
 	if(pc.position == 1){
+		ir32 = ird;
 		pc.position = 0;
 		printf("実行命令 ");
-		print_op(iru);
+		print_op(ir32);
 		//命令実行後ではなく命令実行時の現在のレジスタ状態を表示
 		printf("ゼロレジスタ %d\n",reg[0]);
 		printf("スタックの先頭　%d\n",reg[1]);
@@ -223,14 +236,18 @@ if(op_liw!=LIW){
 		for(int i=0;i<28;i++){
 			printf("reg[%d] int %d float %f\n",i+3,reg[i+3],*(float*)(&reg[i+3]));
 		}
+		printf("メモリ\n");
+		for(int i=0;i<ramnumber;i++){
+			printf("ram[%d] = %d\n",ramfill[i],ram[ramfill[i]]);
+		}
 #endif
 
-		if(ird == 0){
-		printf("終了d\n");	
+		if(ir32 == 0){
+		printf("終了\n");	
 		break;
 		}
 		
-		if(exec_op(ird)!=0){
+		if(exec_op(ir32)!=0){
 			break;
 		}
 		cnt++;
@@ -259,7 +276,7 @@ else{
 }
 
 
-	} while (tmp<=1000);
+	} while (tmp<=10000);
 	print_jmpd(promjmp,promcmpd);
 	return 0;
 } 
@@ -341,12 +358,21 @@ static inline int exec_op(uint32_t ira) {
 			break;
 		//メモリから代入 ram
 		case LOAD:
+/*			printf("rta %d\n",get_rai(ira));
+			printf("reg[%d] = %d \n",get_rai(ira),reg[get_rai(ira)]);
+			printf("GRA %d\n",_GRA);
+			printf("SI %d\n",_SI);
+			printf("LOAD元 %d 値 %d\n",_GRA + _SI,ram[(_GRA + _SI)]);
+*/
 			_GRT = ram[(_GRA + _SI)];
 			count[opcode]+=1;
 			break;
 		//メモリに代入
 		case STORE:
+//			printf("store先 %d 値 %d\n",_GRA + _SI,_GRT);
 			ram[((_GRA + _SI))] = _GRT;
+			ramfill[ramnumber] = _GRA + _SI;
+			ramnumber+=1;
 			count[opcode]+=1;
 			break;
 		case LI:
@@ -384,16 +410,16 @@ static inline int exec_op(uint32_t ira) {
 			break;
 		case BL:
 			promjmp[pc.number][_LI]+=1;
+			lnk = pc.number+1;
 			pc.number = _LI;
 			pc.position = 0;
-			lnk = pc.number+1;
 			count[opcode]+=1;
 			break;
 		case BLRR:
 			promjmp[pc.number][_GRT]+=1;
+			lnk = pc.number+1;
 			pc.number =_GRT;
 			pc.position = 0;
-			lnk = pc.number+1;
 			count[opcode]+=1;
 			break;
                 case CMPD:

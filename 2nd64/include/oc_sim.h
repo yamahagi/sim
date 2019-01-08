@@ -20,6 +20,8 @@ extern uint64_t prom[ROMNUM];
 extern uint32_t promjmp[ROMNUM][ROMNUM];
 extern uint32_t promcmpd[ROMNUM][3];
 extern uint32_t ram[RAMNUM];
+extern int32_t ramfill[RAMNUM];
+extern int32_t ramnumber;
 extern int32_t reg[REGNUM];
 extern uint32_t freg[REGNUM];
 extern Pc pc;
@@ -27,6 +29,7 @@ extern Pc pc;
 extern uint32_t count[256];
 extern int cdr;
 extern uint64_t ir;
+extern uint32_t ir32;
 extern int32_t lr;
 extern uint32_t cnt;
 extern uint32_t limit;
@@ -50,15 +53,15 @@ extern char* outputfile;
 //命令
 #define get_opcodew(ir) ((uint32_t)(((ir)>>58)&0x3f))
 //命令
-#define get_opcode(ir) ((uint32_t)(((ir)>>26)&0x3f))
+#define get_opcode(ir32) ((uint32_t)(((ir32)>>26)&0x3f))
 //代入先 RT 
-#define get_rti(ir) ((uint32_t)(((ir)>>21)&0x1f))
+#define get_rti(ir32) ((uint32_t)(((ir32)>>21)&0x1f))
 //RA 元レジスタ1
-#define get_rai(ir) ((uint32_t)(((ir)>>16)&0x1f))
+#define get_rai(ir32) ((uint32_t)(((ir32)>>16)&0x1f))
 //RB 元レジスタ2
-#define get_rbi(ir) ((uint32_t)(((ir)>>11)&0x1f))
+#define get_rbi(ir32) ((uint32_t)(((ir32)>>11)&0x1f))
 //LI ジャンプ先
-#define get_li(ir) ((uint32_t)(((ir)&0x3ffffff)))
+#define get_li(ir32) ((uint32_t)(((ir32)&0x3ffffff)))
 //コンディションレジスタ reg[30]
 //#define cdr reg[30]
 //リンクレジスタ reg[31]
@@ -75,10 +78,10 @@ extern char* outputfile;
 #define get_target(ir) ((uint32_t)((ir)&0x3ffffff))
 */
 //IMM 即値
-#define get_imm(ir) ((uint32_t)(((ir)&0x1fffff)))
+#define get_imm(ir32) ((uint32_t)(((ir32)&0x1fffff)))
 //SI 即値
-#define get_si(ir) \
-	(uint32_t)(ir&0xffff)
+#define get_si(ir32) \
+	(uint32_t)(ir32&0xffff)
 //SIW 即値
 #define get_siw(ir) \
 	(uint32_t)(ir&0xffffffff)
@@ -87,19 +90,19 @@ extern char* outputfile;
 ////////////////////////////////////////////////////////////////////////
 // register access
 ////////////////////////////////////////////////////////////////////////
-#define _GRT reg[get_rti(ir)]
+#define _GRT reg[get_rti(ir32)]
 #define _GRTW reg[get_rtiw(ir)]
-#define _GRA reg[get_rai(ir)]
-#define _GRB reg[get_rbi(ir)]
+#define _GRA reg[get_rai(ir32)]
+#define _GRB reg[get_rbi(ir32)]
 /*
 #define _FRS freg[get_rti(ir)]
 #define _FRT freg[get_rai(ir)]
 #define _FRD freg[get_rbi(ir)]
 */
-#define _SI get_si(ir)
+#define _SI get_si(ir32)
 #define _SIW get_siw(ir)
-#define _IMM get_imm(ir)
-#define _LI get_li(ir)
+#define _IMM get_imm(ir32)
+#define _LI get_li(ir32)
 ////////////////////////////////////////////////////////////////////////
 
 
