@@ -168,7 +168,7 @@ int simulate(void) {
 		if (!(cnt % 10000000)) { 
         		warning("."); 
                 if(!(cnt % 1000000000)){
-        			warning("time %.3f [sec],operation_count = %ld hp = %d \n",elapsed_time(),cnt,ram[0]); 
+        			warning("time %.3f [sec],operation_count = %u hp = %d \n",elapsed_time(),cnt,ram[0]); 
                 }
 		}
 			
@@ -276,7 +276,7 @@ else{
 }
 
 
-	} while (tmp<=10000);
+	} while (tmp<=1000000000);
 	print_jmpd(promjmp,promcmpd);
 	return 0;
 } 

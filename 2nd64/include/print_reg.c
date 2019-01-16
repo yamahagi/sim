@@ -19,7 +19,7 @@
 void print_data(int32_t data){
         for(int i=0;i<32;i++){
                 if(i==1||i==9) printf(" ");
-                printf("%lld",((data>>(31-i))&0x1));
+                printf("%d",((data>>(31-i))&0x1));
         }
         printf("\n");
 }
@@ -225,7 +225,7 @@ void print_prom(int64_t ir,int n){
 	if(getw==LIW){
         	printf("%d: ",n);
 		printf("LIW ");
-                printf("r%d %d\n",get_rtiw(ir),get_siw(ir));
+                printf("r%d %lld\n",get_rtiw(ir),get_siw(ir));
 	}
 	else{
 		int iru =  (ir>>32)&0xffffffff;
