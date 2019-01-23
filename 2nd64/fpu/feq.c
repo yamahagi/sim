@@ -14,7 +14,7 @@
 int32_t feq(int32_t adata,int32_t bdata){
 
 
-if(adata==bdata||(split_bit(adata,30,23)==0&&split_bit(bdata,30,23))){
+if(adata==bdata||(split_bit(adata,30,23)==0&&split_bit(bdata,30,23)==0)){
 	return 1;
 }
 else{
