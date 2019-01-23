@@ -63,43 +63,18 @@ Pc pc;
 int tmp;
 
 void print_count(void);
-/*
-void print_jmp(uint32_t promjmp[ROMNUM][ROMNUM]){
-printf("========= jump result ==========\n\n");
-for(int i=0;i<limit;i++){
-	for(int j=0;j<limit;j++){
-		if(promjmp[i][j]!=0){
-			print_prom(prom[i],i);
-			printf("%d回実行\n",promjmp[i][j]);
-		}
-	}
-}
-printf("\n\n");
-}
 
-void print_cmpd(uint32_t promcmpd[ROMNUM][3]){
-printf("========= cmpd result ==========\n\n");
-for(int i=0;i<limit;i++){
-		if(promcmpd[i][0]!=0||promcmpd[i][1]!=0||promcmpd[i][2]!=0){
-			print_prom(prom[i],i);
-			printf("%d回実行\n",promjmp[i][j]);
-			printf("ge %d回 eq %d回 le %d回\n",promcmpd[i][ge],promcmpd[i][eq],promcmpd[i][le]);
-			}
-}
-printf("\n\n");
-}
-*/
 void print_jmpd(uint32_t promjmp[ROMNUM][ROMNUM],uint32_t promcmpd[ROMNUM][3]){
 printf("========= jmpd result ==========\n\n");
 for(int i=0;i<limit;i++){
 	for(int j=0;j<limit;j++){
 		if(promjmp[i][j]!=0){
-			print_prom(prom[i],i);
+			print_jmp(prom[i],i,j);
 			printf("%d回実行\n",promjmp[i][j]);
 		}
 	}
 		if(promcmpd[i][0]!=0||promcmpd[i][1]!=0||promcmpd[i][2]!=0){
-			print_prom(prom[i],i);
+			print_cmpd(prom[i],i);
 			printf("ge %d回 eq %d回 le %d回\n",promcmpd[i][ge],promcmpd[i][eq],promcmpd[i][le]);
 			}
 }
@@ -142,6 +117,7 @@ static inline int exec_op(uint32_t ir);
 
 //命令がある限りpcを進めて命令を読んで実行
 int simulate(void) {
+	int opcode;
 	init();
 	do{
 		tmp+=1;
@@ -178,11 +154,30 @@ int simulate(void) {
 		//ゼロレジスタを表示	
 #ifndef SILENT
 
+if(tmp>110&&reg[2]==0){break;}
+
 if(op_liw!=LIW){
 	if(pc.position==0){
 
 		ir32 = iru;
-
+		opcode = get_opcode(ir32);
+		if(opcode == NOP){
+			if(get_opcode(ird)==NOP){
+				pc.position = 0;
+	                	printf("実行命令 上下NOP\n");
+				count[NOP]+=1;
+        			pc.number++;                
+			}
+			else{
+				pc.position = 1;
+				printf("\n");
+	                	printf("実行命令 ");
+				print_op(ir32);
+				printf("\n");
+				count[NOP]+=1;
+			}
+		}
+		else{
 		pc.position = 1;
 
 		printf("実行命令 ");
@@ -198,10 +193,12 @@ if(op_liw!=LIW){
 		for(int i=0;i<28;i++){
 			printf("reg[%d] int %d float %f\n",i+3,reg[i+3],*(float*)(&reg[i+3]));
 		}
+
 		printf("メモリ\n");
 		for(int i=0;i<ramnumber;i++){
 			printf("ram[%d] = %d\n",ramfill[i],ram[ramfill[i]]);
 		}
+
 #endif
 		if(ir32 == 0){
 		printf("終了u\n");	
@@ -210,6 +207,7 @@ if(op_liw!=LIW){
 	
 		if(exec_op(ir32)!=0){
 			break;
+		}
 		}
 		cnt++;
 
@@ -222,6 +220,15 @@ if(op_liw!=LIW){
 
 	if(pc.position == 1){
 		ir32 = ird;
+		opcode = get_opcode(ir32);
+		if(opcode == NOP){
+                        pc.position = 0;
+                	printf("実行命令 ");
+			print_op(ir32);
+			printf("\n");
+			count[NOP]+=1;
+                }
+                else{
 		pc.position = 0;
 		printf("実行命令 ");
 		print_op(ir32);
@@ -240,6 +247,7 @@ if(op_liw!=LIW){
 		for(int i=0;i<ramnumber;i++){
 			printf("ram[%d] = %d\n",ramfill[i],ram[ramfill[i]]);
 		}
+
 #endif
 
 		if(ir32 == 0){
@@ -249,6 +257,7 @@ if(op_liw!=LIW){
 		
 		if(exec_op(ir32)!=0){
 			break;
+		}
 		}
 		cnt++;
 		pc.number++;
@@ -276,7 +285,7 @@ else{
 }
 
 
-	} while (tmp<=1000000000);
+	} while (tmp<=10000);
 	print_jmpd(promjmp,promcmpd);
 	return 0;
 } 
@@ -289,6 +298,7 @@ static inline int exec_op(uint32_t ira) {
 		float f;
 	} a, b, out;
 	char c;
+	int in;
 	float ra=0.0;
 	float rb=0.0;
 	float rt=0.0;
@@ -371,8 +381,15 @@ static inline int exec_op(uint32_t ira) {
 		case STORE:
 //			printf("store先 %d 値 %d\n",_GRA + _SI,_GRT);
 			ram[((_GRA + _SI))] = _GRT;
-			ramfill[ramnumber] = _GRA + _SI;
-			ramnumber+=1;
+			for(in=0;in<ramnumber;in++){
+				if(ramfill[in] == _GRA + _SI){
+					break;
+				} 
+			}
+			if(in==ramnumber){
+				ramfill[ramnumber] = _GRA + _SI;
+				ramnumber+=1;
+			}
 			count[opcode]+=1;
 			break;
 		case LI:

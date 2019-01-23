@@ -24,7 +24,8 @@ void print_cdr(int cdr);
 
 void print_op(int32_t ir);
 void print_prom(int64_t ir,int n);
-
+void print_jmp(int64_t ir,int from,int to);
+void print_cmpd(int64_t ir,int n);
 /*
 void print_opcode(int64_t ir){
 

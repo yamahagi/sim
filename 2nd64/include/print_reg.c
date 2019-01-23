@@ -235,6 +235,33 @@ void print_prom(int64_t ir,int n){
         	printf("%d: ",n);
 		print_op(ird);
 	}	
+}
+
+void print_jmp(int64_t ir,int from,int to){
+
+	int iru =  (ir>>32)&0xffffffff;;
+	if(get_opcode(iru)==BLR){
+        	printf("%d: ",from);
+		printf("BLR %d\n",to);
+	}
+	else{
+		printf("%d: ",from);
+		print_op(iru);
+	}
+}
+
+void print_cmpd(int64_t ir,int n){
+
+	int iru = (ir>>32)&0xffffffff;
+	int ird = ir&0xffffffff;
+	int opcode_u = get_opcode(iru);
+	printf("%d: ",n);
+	if(opcode_u == CMPD || opcode_u == CMPF || opcode_u == CMPDI){
+		print_op(iru);
+	}
+	else{
+		print_op(ird);
+	}
 
 }
 
