@@ -548,19 +548,19 @@ static inline int exec_op(uint32_t ira) {
 			count[opcode]+=1;
                         break;
 		case OUTLL:
-  			fprintf(fpout, "%c\n",(_GRT>>0)&0xff);
+  			fprintf(fpout, "%c",(_GRT>>0)&0xff);
 			count[opcode]+=1;
 			break;
 		case OUTLH:
-  			fprintf(fpout, "%c\n",(_GRT>>8)&0xff);
+  			fprintf(fpout, "%c",(_GRT>>8)&0xff);
 			count[opcode]+=1;
             break;
 		case OUTUL:
-  			fprintf(fpout, "%c\n",(_GRT>>16)&0xff);
+  			fprintf(fpout, "%c",(_GRT>>16)&0xff);
 			count[opcode]+=1;
             break;
 		case OUTUH:
-	  		fprintf(fpout, "%c\n",(_GRT>>24)&0xff);
+	  		fprintf(fpout, "%c",(_GRT>>24)&0xff);
 			count[opcode]+=1;
             break;
 		case NOP:
