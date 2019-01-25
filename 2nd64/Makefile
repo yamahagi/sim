@@ -32,14 +32,17 @@ sim: simcho.o simulate64.o ./include/print_reg.c ftools.o fpu.o fdiv.o fi.o fles
 	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim
 	rm -rf ./*.o
 
-fib: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/sim/sim/2nd64/test/bin/fib/safe/fib.ml.linked.s.txt 
-	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/sim/sim/2nd64/test/bin/fib/safe/fib.ml.linked.s.txt fib.txt
+fib: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/fib/safe/fib.ml.linked.s.txt
+	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/fib/safe/fib.ml.linked.s.txt  fib.txt
 
-minrt: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/sim/sim/2nd64/test/bin/minrt/safe/minrt.ml.linked.s.txt 
-	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/sim/sim/2nd64/test/bin/minrt/safe/minrt.ml.linked.s.txt minrt.txt
+minrt: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/minrt/safe/minrt.ml.linked.s.txt
+	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/minrt/safe/minrt.ml.linked.s.txt  minrt.txt
 
-mandelbrot: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/sim/sim/2nd64/test/bin/mandelbrot/safe/mandelbrot.ml.linked.s.txt 
-	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/sim/sim/2nd64/test/bin/mandelbrot/safe/mandelbrot.ml.linked.s.txt mandelbrot.txt
+mandelbrot: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/mandelbrot/safe/mandelbrot.ml.linked.s.txt
+	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/mandelbrot/safe/mandelbrot.ml.linked.s.txt  mandelbrot.txt
+
+mandelbrot30: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/mandelbrot/safe-30/mandelbrot.ml.linked.s.txt
+	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/mandelbrot/safe-30/mandelbrot.ml.linked.s.txt  mandelbrot30.txt
 
 silent: clean
 	$(obj) -DSILENT simulate64.c
