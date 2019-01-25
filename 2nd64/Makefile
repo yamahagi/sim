@@ -30,13 +30,52 @@ feq.o: ./fpu/feq.c
 
 sim: simcho.o simulate64.o ./include/print_reg.c ftools.o fpu.o fdiv.o fi.o fless.o feq.o
 	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim
+	rm -rf ./*.o
+
+fib: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/sim/sim/2nd64/test/bin/fib/safe/fib.ml.linked.s.txt 
+	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/sim/sim/2nd64/test/bin/fib/safe/fib.ml.linked.s.txt fib.txt
+
+minrt: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/sim/sim/2nd64/test/bin/minrt/safe/minrt.ml.linked.s.txt 
+	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/sim/sim/2nd64/test/bin/minrt/safe/minrt.ml.linked.s.txt minrt.txt
+
+mandelbrot: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/sim/sim/2nd64/test/bin/mandelbrot/safe/mandelbrot.ml.linked.s.txt 
+	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/sim/sim/2nd64/test/bin/mandelbrot/safe/mandelbrot.ml.linked.s.txt mandelbrot.txt
 
 silent: clean
-	$(obj) simulate64.c -D"SILENT=1"
+	$(obj) -DSILENT simulate64.c
+	$(obj) simcho.c
+	$(obj) ./fpu/ftools.c
+	$(obj) ./fpu/fpu.c
+	$(obj) ./fpu/fdiv.c
+	$(obj) ./fpu/fless.c
+	$(obj) ./fpu/feq.c
+	$(obj) ./fpu/fi.c
+	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim
+	rm -rf ./*.o
+
+silentreg: clean
+	$(obj) simulate64.c -D"SILENTREG=1"
 	$(obj) simcho.c -D"SILENT=1"
 	$(obj) ./fpu/ftools.c -D"SILENT=1"
 	$(obj) ./fpu/fpu.c -D"SILENT=1"
-	$(app) simcho.o simulate64.o ftools.o -o sim
+	$(obj) ./fpu/fdiv.c
+	$(obj) ./fpu/fless.c
+	$(obj) ./fpu/feq.c
+	$(obj) ./fpu/fi.c
+	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim
+	rm -rf ./*.o
+
+silentmem: clean
+	$(obj) -DSILENTMEM simulate64.c
+	$(obj) simcho.c
+	$(obj) ./fpu/ftools.c
+	$(obj) ./fpu/fpu.c
+	$(obj) ./fpu/fdiv.c
+	$(obj) ./fpu/fless.c
+	$(obj) ./fpu/feq.c
+	$(obj) ./fpu/fi.c
+	$(app) -DSILENTMEM simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim
+	rm -rf ./*.o
 
 clean: 
 	rm -rf ./*.o

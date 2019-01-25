@@ -60,7 +60,7 @@ struct timeval start;
 
 Pc pc;
 
-int tmp;
+int64_t tmp;
 
 void print_count(void);
 
@@ -114,6 +114,29 @@ static inline void init(void) {
 
 static inline int exec_op(uint32_t ir);
 
+void print_reg(void){
+	#ifndef SILENTREG
+                printf("ゼロレジスタ %d\n",reg[0]);
+                printf("スタックの先頭　%d\n",reg[1]);
+                printf("スタックフレーム %d\n",reg[2]);
+                printf("リンクレジスタ %d\n",reg[31]);
+                printf("コンディションレジスタ ");
+                print_cdr(cdr);
+                //整数レジスタのint版とfloat版を表示
+                for(int i=0;i<28;i++){
+                        printf("reg[%d] int %d float %f\n",i+3,reg[i+3],*(float*)(&reg[i+3]));
+                }
+	#endif
+}
+
+void print_mem(void){
+	#ifndef SILENTMEM
+                printf("メモリ\n");
+                for(int i=0;i<ramnumber;i++){
+                        printf("ram[%d] = %d\n",ramfill[i],ram[ramfill[i]]);
+                }
+	#endif
+}
 
 //命令がある限りpcを進めて命令を読んで実行
 int simulate(void) {
@@ -152,7 +175,6 @@ int simulate(void) {
 		
 
 		//ゼロレジスタを表示	
-#ifndef SILENT
 
 if(tmp>110&&reg[2]==0){break;}
 
@@ -164,42 +186,32 @@ if(op_liw!=LIW){
 		if(opcode == NOP){
 			if(get_opcode(ird)==NOP){
 				pc.position = 0;
-	                	printf("実行命令 上下NOP\n");
+//	                	printf("実行命令 上下NOP\n");
 				count[NOP]+=1;
         			pc.number++;                
 			}
 			else{
 				pc.position = 1;
+
+#ifndef SILENT
 				printf("\n");
 	                	printf("実行命令 ");
 				print_op(ir32);
 				printf("\n");
+#endif 
 				count[NOP]+=1;
 			}
 		}
 		else{
 		pc.position = 1;
-
+#ifndef SILENT
 		printf("実行命令 ");
 		print_op(ir32);
-		//命令実行後ではなく命令実行時の現在のレジスタ状態を表示
-		printf("ゼロレジスタ %d\n",reg[0]);
-		printf("スタックの先頭　%d\n",reg[1]);
-		printf("スタックフレーム %d\n",reg[2]);
-		printf("リンクレジスタ %d\n",reg[31]);
-		printf("コンディションレジスタ ");
-		print_cdr(cdr);
-		//整数レジスタのint版とfloat版を表示
-		for(int i=0;i<28;i++){
-			printf("reg[%d] int %d float %f\n",i+3,reg[i+3],*(float*)(&reg[i+3]));
-		}
-
-		printf("メモリ\n");
-		for(int i=0;i<ramnumber;i++){
-			printf("ram[%d] = %d\n",ramfill[i],ram[ramfill[i]]);
-		}
-
 #endif
+		//命令実行後ではなく命令実行時の現在のレジスタ状態を表示
+		print_reg();
+		print_mem();
+		
 		if(ir32 == 0){
 		printf("終了u\n");	
 		break;
@@ -211,7 +223,6 @@ if(op_liw!=LIW){
 		}
 		cnt++;
 
-#ifndef SILENT
 
 	}
 
@@ -222,33 +233,23 @@ if(op_liw!=LIW){
 		ir32 = ird;
 		opcode = get_opcode(ir32);
 		if(opcode == NOP){
-                        pc.position = 0;
+                       pc.position = 0;
+#ifndef SILENT
                 	printf("実行命令 ");
 			print_op(ir32);
 			printf("\n");
+#endif
 			count[NOP]+=1;
                 }
                 else{
 		pc.position = 0;
+#ifndef SILENT
 		printf("実行命令 ");
 		print_op(ir32);
-		//命令実行後ではなく命令実行時の現在のレジスタ状態を表示
-		printf("ゼロレジスタ %d\n",reg[0]);
-		printf("スタックの先頭　%d\n",reg[1]);
-		printf("スタックフレーム %d\n",reg[2]);
-		printf("リンクレジスタ %d\n",reg[31]);
-		printf("コンディションレジスタ ");
-		print_cdr(cdr);
-		//整数レジスタのint版とfloat版を表示
-		for(int i=0;i<28;i++){
-			printf("reg[%d] int %d float %f\n",i+3,reg[i+3],*(float*)(&reg[i+3]));
-		}
-		printf("メモリ\n");
-		for(int i=0;i<ramnumber;i++){
-			printf("ram[%d] = %d\n",ramfill[i],ram[ramfill[i]]);
-		}
-
 #endif
+		//命令実行後ではなく命令実行時の現在のレジスタ状態を表示
+		print_reg();
+		print_mem();
 
 		if(ir32 == 0){
 		printf("終了\n");	
@@ -265,19 +266,13 @@ if(op_liw!=LIW){
 }
 else{
 	pc.position = 0;
-                printf("実行命令 ");
-                print_prom(prom[pc.number],pc.number);
-                //命令実行後ではなく命令実行時の現在のレジスタ状態を表示
-                printf("ゼロレジスタ %d\n",reg[0]);
-                printf("スタックの先頭　%d\n",reg[1]);
-                printf("スタックフレーム %d\n",reg[2]);
-                printf("リンクレジスタ %d\n",reg[31]);
-                printf("コンディションレジスタ ");
-                print_cdr(cdr);
-                //整数レジスタのint版とfloat版を表示
-                for(int i=0;i<28;i++){
-                        printf("reg[%d] int %d float %f\n",i+3,reg[i+3],*(float*)(&reg[i+3]));
-                }	
+#ifndef SILENT
+	printf("実行命令 ");
+        print_prom(prom[pc.number],pc.number);
+#endif
+	//命令実行後ではなく命令実行時の現在のレジスタ状態を表示
+	print_reg();
+	print_mem();
 	_GRTW = ((_SIW&0xffffffff));
         count[LIW]+=1;
         cnt++;
@@ -285,7 +280,7 @@ else{
 }
 
 
-	} while (tmp<=10000);
+	} while (tmp<=100000000000);
 	print_jmpd(promjmp,promcmpd);
 	return 0;
 } 
@@ -303,7 +298,7 @@ static inline int exec_op(uint32_t ira) {
 	float rb=0.0;
 	float rt=0.0;
 	float resultf = 0.0;
-	int32_t si;
+	uint32_t si;
 	opcode = get_opcode(ira);
     	int p;
 	
@@ -394,10 +389,10 @@ static inline int exec_op(uint32_t ira) {
 			break;
 		case LI:
 			si = _SI;
-			if(((si>>31)&0x1)==1){
+			if(((si>>15)&0x1)==1){
 				_GRT = (0xffff0000|(si&0xffff));
 			}
-			else if(((si>>31)&0x1)==0){
+			else if(((si>>15)&0x1)==0){
 				_GRT = (0xffff&si);
 			}
 			count[opcode]+=1;
@@ -543,29 +538,29 @@ static inline int exec_op(uint32_t ira) {
 			count[opcode]+=1;
                         break;
                 case INUL:
-            scanf("%d",&p);
-            _GRT = (_GRT & 0xff00ffff)|(p<<16 & 0xff0000);
+            		scanf("%d",&p);
+            		_GRT = (_GRT & 0xff00ffff)|(p<<16 & 0xff0000);
 			count[opcode]+=1;
                         break;
                 case INUH:
-            scanf("%d",&p);
-            _GRT = (_GRT & 0x00ffffff)|(p<<24 & 0xff000000);
+        	    scanf("%d",&p);
+            		_GRT = (_GRT & 0x00ffffff)|(p<<24 & 0xff000000);
 			count[opcode]+=1;
                         break;
 		case OUTLL:
-  			fprintf(fpout, "%d\n",(_GRT>>0)&0xff);
+  			fprintf(fpout, "%c\n",(_GRT>>0)&0xff);
 			count[opcode]+=1;
 			break;
 		case OUTLH:
-  			fprintf(fpout, "%d\n",(_GRT>>8)&0xff);
+  			fprintf(fpout, "%c\n",(_GRT>>8)&0xff);
 			count[opcode]+=1;
             break;
 		case OUTUL:
-  			fprintf(fpout, "%d\n",(_GRT>>16)&0xff);
+  			fprintf(fpout, "%c\n",(_GRT>>16)&0xff);
 			count[opcode]+=1;
             break;
 		case OUTUH:
-  		fprintf(fpout, "%d\n",(_GRT>>24)&0xff);
+	  		fprintf(fpout, "%c\n",(_GRT>>24)&0xff);
 			count[opcode]+=1;
             break;
 		case NOP:

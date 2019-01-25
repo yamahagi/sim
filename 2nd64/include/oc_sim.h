@@ -81,10 +81,10 @@ extern char* outputfile;
 #define get_imm(ir32) ((uint32_t)(((ir32)&0x1fffff)))
 //SI 即値
 #define get_si(ir32) \
-	((int32_t)(ir32&0xffff)-2*(0x8000*((ir32>>15)&0x1)))
+	(int32_t)((ir32&0xffff)-2*(0x8000*((ir32>>15)&0x1)))
 //SIW 即値
 #define get_siw(ir) \
-	((int32_t)(ir&0xffffffff)-2*(0x80000000*((ir>>31)&0x1)))
+	(int32_t)((ir&0xffffffff)-2*(0x80000000*((ir>>31)&0x1)))
 //RTW 代入先
 #define get_rtiw(ir)	(uint32_t)((ir>>53)&0x1f)
 ////////////////////////////////////////////////////////////////////////
