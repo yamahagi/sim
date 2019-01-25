@@ -53,7 +53,7 @@ silent: clean
 	$(obj) ./fpu/fless.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
 	$(obj) ./fpu/feq.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
 	$(obj) ./fpu/fi.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
-	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim -D"SILENT=1" -D"SILENTMEM=1"
+	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
 	rm -rf ./*.o
 
 silentreg: clean
