@@ -45,39 +45,39 @@ mandelbrot30: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/mandelbrot/saf
 	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/mandelbrot/safe-30/mandelbrot.ml.linked.s.txt  mandelbrot30.txt
 
 silent: clean
-	$(obj) -DSILENT simulate64.c
-	$(obj) simcho.c
-	$(obj) ./fpu/ftools.c
-	$(obj) ./fpu/fpu.c
-	$(obj) ./fpu/fdiv.c
-	$(obj) ./fpu/fless.c
-	$(obj) ./fpu/feq.c
-	$(obj) ./fpu/fi.c
-	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim
+	$(obj) simulate64.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
+	$(obj) simcho.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
+	$(obj) ./fpu/ftools.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
+	$(obj) ./fpu/fpu.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
+	$(obj) ./fpu/fdiv.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
+	$(obj) ./fpu/fless.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
+	$(obj) ./fpu/feq.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
+	$(obj) ./fpu/fi.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
+	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim -D"SILENT=1" -D"SILENTMEM=1"
 	rm -rf ./*.o
 
 silentreg: clean
 	$(obj) simulate64.c -D"SILENTREG=1"
-	$(obj) simcho.c -D"SILENT=1"
-	$(obj) ./fpu/ftools.c -D"SILENT=1"
-	$(obj) ./fpu/fpu.c -D"SILENT=1"
-	$(obj) ./fpu/fdiv.c
-	$(obj) ./fpu/fless.c
-	$(obj) ./fpu/feq.c
-	$(obj) ./fpu/fi.c
-	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim
+	$(obj) simcho.c -D"SILENTREG=1"
+	$(obj) ./fpu/ftools.c -D"SILENTREG=1"
+	$(obj) ./fpu/fpu.c -D"SILENTREG=1"
+	$(obj) ./fpu/fdiv.c -D"SILENTREG=1"
+	$(obj) ./fpu/fless.c -D"SILENTREG=1"
+	$(obj) ./fpu/feq.c -D"SILENTREG=1"
+	$(obj) ./fpu/fi.c -D"SILENTREG=1"
+	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim -D"SILENTREG=1"
 	rm -rf ./*.o
 
 silentmem: clean
-	$(obj) -DSILENTMEM simulate64.c
-	$(obj) simcho.c
-	$(obj) ./fpu/ftools.c
-	$(obj) ./fpu/fpu.c
-	$(obj) ./fpu/fdiv.c
-	$(obj) ./fpu/fless.c
-	$(obj) ./fpu/feq.c
-	$(obj) ./fpu/fi.c
-	$(app) -DSILENTMEM simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim
+	$(obj) simulate64.c -D"SILENTMEM=1"
+	$(obj) simcho.c -D"SILENTMEM=1"
+	$(obj) ./fpu/ftools.c -D"SILENTMEM=1"
+	$(obj) ./fpu/fpu.c -D"SILENTMEM=1"
+	$(obj) ./fpu/fdiv.c -D"SILENTMEM=1"
+	$(obj) ./fpu/fless.c -D"SILENTMEM=1"
+	$(obj) ./fpu/feq.c -D"SILENTMEM=1"
+	$(obj) ./fpu/fi.c -D"SILENTMEM=1"
+	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim -D"SILENTMEM=1"
 	rm -rf ./*.o
 
 clean: 
