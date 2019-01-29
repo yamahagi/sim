@@ -133,7 +133,7 @@ void print_mem(void){
 	#ifndef SILENTMEM
                 printf("メモリ\n");
                 for(int i=0;i<ramnumber;i++){
-                        printf("ram[%d] = %d\n",ramfill[i],ram[ramfill[i]]);
+                        printf("ram[%d] = int %d float %f\n",ramfill[i],ram[ramfill[i]],*(float*)(&ram[ramfill[i]]));
                 }
 	#endif
 }

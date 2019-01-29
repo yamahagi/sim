@@ -110,24 +110,27 @@ for(i=0;i<255;i++){
 		int yp = 0x800000;
 		float yps = *(float*)(&yp);
 		int a = (itof(x1_reg[0]));
-		float n = *(float*)(&a);
+		float n = *(int*)(&x1_reg[0]);
 		float maxab = ch20(am);
-		float diff = fabs(am-n);
-		if(!((split_bit(*(int*)(&n),30,23)==0||split_bit(x1_reg[0],30,23)==0)&&split_bit(*(int*)(&n),30,23)==0)&&(diff>maxab&&diff>yps)&&(!isinf(am))&&(!isinf(n))){
+		int diff = abs(a-*(int*)(&n));
+		float fdiff = fabs(*(float*)(&a)-n);
+		
+		if(diff>1){
+			printf("diff %f\n",fdiff);
 			for(int im=0;im<32;im++){
 				printf("%d",((x1_reg[0])>>(31-im))&0x1);
-			}
-			printf("\n");
-			for(int im=0;im<32;im++){
-				printf("%d",(*(int*)(&am)>>(31-im))&0x1);
 			}
 			printf("\n");
 			for(int im=0;im<32;im++){
 				printf("%d",(*(int*)(&n)>>(31-im))&0x1);
 			}
 			printf("\n");
+			for(int im=0;im<32;im++){
+				printf("%d",(*(int*)(&a)>>(31-im))&0x1);
+			}
+			printf("\n");
 			
-			 printf("itof%d = %fなのに%f\n", x1_reg[0],am,n);
+			 printf("itof%d = %fなのに%f\n", x1_reg[0],n,*(float*)&a);
 				counter +=1;
 			}
 		}

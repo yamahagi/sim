@@ -126,6 +126,7 @@ switch (split_bit(adata,30,23)){
 	    result = ((1<<24)+(split_bit(adata,22,0)<<1));
 	break; case 150:
 	    result = ((1<<23)+(split_bit(adata,22,0)));
+		break;
 	case 149:
 	    result = split_bit(adata,0,0)==1 ? (((1<<22)+split_bit(adata,22,1))) + 1 : ((1<<22)+split_bit(adata,22,1));
 	break;
@@ -217,7 +218,6 @@ int result;
 
 int32_t hosuu;
 hosuu = ~adata+1;
-
 int32_t kuriage30;
 kuriage30 = ~adata+257;
 

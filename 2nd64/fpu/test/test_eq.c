@@ -154,7 +154,7 @@ for(i=0;i<255;i++){
 		}
 		int booleanfpu;
 		booleanfpu = feq(x1_reg[0],x2_reg[0]);
-		if(booleanreal!=booleanfpu&&(!(split_bit(x1_reg[0],30,23) == 0 && split_bit(x2_reg[0],30,23) == 0 && booleanfpu == 0))&&(split_bit(x1_reg[0],30,23) != 255&&split_bit(x2_reg[0],30,23) != 255))  { 
+		if(booleanreal!=booleanfpu&&(!(split_bit(x1_reg[0],30,23) == 0&&split_bit(x2_reg[0],30,23)==0&&booleanreal==0&&booleanfpu==1))&&(split_bit(x1_reg[0],30,23) != 255&&split_bit(x2_reg[0],30,23) != 255))  { 
 			for(int im=0;im<32;im++){
 				printf("%d",(x1_reg[0]>>(31-im))&0x1);
 			}
