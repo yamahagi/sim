@@ -28,21 +28,24 @@ fless.o: ./fpu/fless.c
 feq.o: ./fpu/feq.c
 	$(obj) ./fpu/feq.c
 
-sim: simcho.o simulate64.o ./include/print_reg.c ftools.o fpu.o fdiv.o fi.o fless.o feq.o
-	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim
+fsqrt.o: ./fpu/fsqrt.c
+	$(obj) ./fpu/fsqrt.c
+
+sim: simcho.o simulate64.o ./include/print_reg.c ftools.o fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o
+	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim
 	rm -rf ./*.o
 
-fib: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/fib/safe/fib.ml.linked.s.txt
-	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/fib/safe/fib.ml.linked.s.txt  fib.txt
+fib: silent ./test/bin/fib/safe/fib.ml.linked.s.txt 
+	./sim ./test/bin/fib/safe/fib.ml.linked.s.txt  fib.txt
 
-minrt: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/minrt/safe/minrt.ml.linked.s.txt
-	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/minrt/safe/minrt.ml.linked.s.txt  minrt.txt
+minrt: silent ./test/bin/minrt/safe/minrt.ml.linked.s.txt
+	./sim ./test/bin/minrt/safe/minrt.ml.linked.s.txt  minrt.ppm ./test/bin/minrt/contest.bin
 
-mandelbrot: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/mandelbrot/safe/mandelbrot.ml.linked.s.txt
-	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/mandelbrot/safe/mandelbrot.ml.linked.s.txt  mandelbrot.txt
+mandelbrot: silent ./test/bin/mandelbrot/safe/mandelbrot.ml.linked.s.txt
+	./sim ./test/bin/mandelbrot/safe/mandelbrot.ml.linked.s.txt mandelbrot.txt
 
-mandelbrot30: sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/mandelbrot/safe-30/mandelbrot.ml.linked.s.txt
-	./sim /Users/ohagimasaya/Desktop/B3/3A/cpuex/mine/bin/mandelbrot/safe-30/mandelbrot.ml.linked.s.txt  mandelbrot30.txt
+mandelbrot30: silent ./test/bin/mandelbrot/safe-30/mandelbrot.ml.linked.s.txt
+	./sim ./test/bin/mandelbrot/safe-30/mandelbrot.ml.linked.s.txt mandelbrot30.txt
 
 silent: clean
 	$(obj) simulate64.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
@@ -53,7 +56,8 @@ silent: clean
 	$(obj) ./fpu/fless.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
 	$(obj) ./fpu/feq.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
 	$(obj) ./fpu/fi.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
-	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
+	$(obj) ./fpu/fsqrt.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
+	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
 	rm -rf ./*.o
 
 silentreg: clean
@@ -65,7 +69,8 @@ silentreg: clean
 	$(obj) ./fpu/fless.c -D"SILENTREG=1"
 	$(obj) ./fpu/feq.c -D"SILENTREG=1"
 	$(obj) ./fpu/fi.c -D"SILENTREG=1"
-	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim -D"SILENTREG=1"
+	$(obj) ./fpu/fsqrt.c -D"SILENTREG=1"
+	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim -D"SILENTREG=1"
 	rm -rf ./*.o
 
 silentmem: clean
@@ -77,7 +82,8 @@ silentmem: clean
 	$(obj) ./fpu/fless.c -D"SILENTMEM=1"
 	$(obj) ./fpu/feq.c -D"SILENTMEM=1"
 	$(obj) ./fpu/fi.c -D"SILENTMEM=1"
-	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim -D"SILENTMEM=1"
+	$(obj) ./fpu/fsqrt.c -D"SILENTMEM=1"
+	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim -D"SILENTMEM=1"
 	rm -rf ./*.o
 
 silentmemreg: clean
@@ -89,7 +95,8 @@ silentmemreg: clean
 	$(obj) ./fpu/fless.c -D"SILENTREG=1" -D"SILENTMEM=1"
 	$(obj) ./fpu/feq.c -D"SILENTREG=1" -D"SILENTMEM=1"
 	$(obj) ./fpu/fi.c -D"SILENTREG=1" -D"SILENTMEM=1"
-	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim -D"SILENTREG=1" -D"SILENTMEM=1"
+	$(obj) ./fpu/fsqrt.c -D"SILENTREG=1" -D"SILENTMEM=1"
+	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim -D"SILENTREG=1" -D"SILENTMEM=1"
 	rm -rf ./*.o
 
 

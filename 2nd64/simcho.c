@@ -23,8 +23,9 @@ FILE *err_fp;
 FILE *log_fp;
 static void open_log_file(void);
 void print_count(void);
-uint32_t count[256];
+uint64_t count[256];
 char* outputfile;
+char* inputfile;
 uint32_t limit;
 
 
@@ -71,19 +72,27 @@ static void print_usage(char*name) {
 
 
 //inとoutの設定
+//argv[1]は命令ファイル　argv[2]は出力ファイル argv[3]は入力ファイル
 static void configure(int argc, char **argv) {
 	int opt;
+	char in[2] = {'\0'};
 	err_fp = stderr;
 	if (argc < 2) {
 		print_usage(argv[0]);
 		exit(1);
 	}
-	if (argc == 3){
+	if (argc == 4){
 		outputfile = argv[2];
+		inputfile = argv[3];
+	}
+	else if (argc == 3){
+		outputfile = argv[2];
+                inputfile = in;
 	}	
 	else{
 		char b[2] = {'\0'};
                 outputfile = b;
+                inputfile = in;
 	}
 	sfile = argv[1];
 	if (sfile==NULL) {
@@ -260,130 +269,130 @@ void print_count(void){
         printf("\n使った命令とその回数\n");
 
         if(count[ADDI]!=0){
-                printf("ADDI %d\n",count[ADDI]);
+                printf("ADDI %llu\n",count[ADDI]);
         }
         if(count[SUBI]!=0){
-                printf("SUBI %d\n",count[SUBI]);
+                printf("SUBI %llu\n",count[SUBI]);
         }
         if(count[ADD]!=0){
-                printf("ADD %d\n",count[ADD]);
+                printf("ADD %llu\n",count[ADD]);
         }
         if(count[SUB]!=0){
-                printf("SUB %d\n",count[SUB]);
+                printf("SUB %llu\n",count[SUB]);
         }
         if(count[SRAWI]!=0){
-                printf("SRAWI %d\n",count[SRAWI]);
+                printf("SRAWI %llu\n",count[SRAWI]);
         }
         if(count[SLAWI]!=0){
-                printf("SLAWI %d\n",count[SLAWI]);
+                printf("SLAWI %llu\n",count[SLAWI]);
         }
         if(count[XOR]!=0){
-                printf("XOR %d\n",count[XOR]);
+                printf("XOR %llu\n",count[XOR]);
         }
         if(count[AND]!=0){
-                printf("AND %d\n",count[AND]);
+                printf("AND %llu\n",count[AND]);
         }
         if(count[FADD]!=0){
-                printf("FADD %d\n",count[FADD]);
+                printf("FADD %llu\n",count[FADD]);
         }
         if(count[FSUB]!=0){
-                printf("FSUB %d\n",count[FSUB]);
+                printf("FSUB %llu\n",count[FSUB]);
         }
         if(count[FMUL]!=0){
-                printf("FMUL %d\n",count[FMUL]);
+                printf("FMUL %llu\n",count[FMUL]);
         }
         if(count[FDIV]!=0){
-                printf("FDIV %d\n",count[FDIV]);
+                printf("FDIV %llu\n",count[FDIV]);
         }
         if(count[FTOI]!=0){
-                printf("FTOI %d\n",count[FTOI]);
+                printf("FTOI %llu\n",count[FTOI]);
         }
         if(count[ITOF]!=0){
-                printf("ITOF %d\n",count[ITOF]);
+                printf("ITOF %llu\n",count[ITOF]);
         }
         if(count[FSQRT]!=0){
-                printf("FSQRT %d\n",count[FSQRT]);
+                printf("FSQRT %llu\n",count[FSQRT]);
         }
         if(count[LOAD]!=0){
-                printf("LOAD %d\n",count[LOAD]);
+                printf("LOAD %llu\n",count[LOAD]);
         }
         if(count[STORE]!=0){
-                printf("STORE %d\n",count[STORE]);
+                printf("STORE %llu\n",count[STORE]);
         }
 	if(count[LI]!=0){
-                printf("LI %d\n",count[LI]);
+                printf("LI %llu\n",count[LI]);
         }
         if(count[LIW]!=0){
-                printf("LIW %d\n",count[LIW]);
+                printf("LIW %llu\n",count[LIW]);
         }
         if(count[JUMP]!=0){
-                printf("JUMP %d\n",count[JUMP]);
+                printf("JUMP %llu\n",count[JUMP]);
         }
         if(count[BLR]!=0){
-                printf("BLR %d\n",count[BLR]);
+                printf("BLR %llu\n",count[BLR]);
         }
         if(count[BL]!=0){
-                printf("BL %d\n",count[BL]);
+                printf("BL %llu\n",count[BL]);
         }
         if(count[BLRR]!=0){
-                printf("BLRR %d\n",count[BLRR]);
+                printf("BLRR %llu\n",count[BLRR]);
         }
         if(count[CMPD]!=0){
-                printf("CMPD %d\n",count[CMPD]);
+                printf("CMPD %llu\n",count[CMPD]);
         }
         if(count[CMPF]!=0){
-                printf("CMPF %d\n",count[CMPF]);
+                printf("CMPF %llu\n",count[CMPF]);
         }
         if(count[CMPDI]!=0){
-                printf("CMPDI %d\n",count[CMPDI]);
+                printf("CMPDI %llu\n",count[CMPDI]);
         }
         if(count[BEQ]!=0){
-                printf("BEQ %d\n",count[BEQ]);
+                printf("BEQ %llu\n",count[BEQ]);
         }
         if(count[BLE]!=0){
-                printf("BLE %d\n",count[BLE]);
+                printf("BLE %llu\n",count[BLE]);
         }
         if(count[BLT]!=0){
-                printf("BLT %d\n",count[BLT]);
+                printf("BLT %llu\n",count[BLT]);
         }
         if(count[BNE]!=0){
-                printf("BNE %d\n",count[BNE]);
+                printf("BNE %llu\n",count[BNE]);
         }
         if(count[BGE]!=0){
-                printf("BLE %d\n",count[BGE]);
+                printf("BLE %llu\n",count[BGE]);
         }
         if(count[BGT]!=0){
-                printf("BLT %d\n",count[BGT]);
+                printf("BLT %llu\n",count[BGT]);
         }
         if(count[INLL]!=0){
-                printf("INLL %d\n",count[INLL]);
+                printf("INLL %llu\n",count[INLL]);
         }
         if(count[INLH]!=0){
-                printf("INLH %d\n",count[INLH]);
+                printf("INLH %llu\n",count[INLH]);
         }
         if(count[INUL]!=0){
-                printf("INUL %d\n",count[INUL]);
+                printf("INUL %llu\n",count[INUL]);
         }
         if(count[INUH]!=0){
-                printf("INUH %d\n",count[INUH]);
+                printf("INUH %llu\n",count[INUH]);
         }
         if(count[OUTLL]!=0){
-                printf("OUTLL %d\n",count[OUTLL]);
+                printf("OUTLL %llu\n",count[OUTLL]);
         }
         if(count[OUTLH]!=0){
-                printf("OUTLH %d\n",count[OUTLH]);
+                printf("OUTLH %llu\n",count[OUTLH]);
         }
         if(count[OUTUL]!=0){
-                printf("OUTULL %d\n",count[OUTUL]);
+                printf("OUTULL %llu\n",count[OUTUL]);
         }
         if(count[OUTUH]!=0){
-                printf("OUTUH %d\n",count[OUTUH]);
+                printf("OUTUH %llu\n",count[OUTUH]);
         }
         if(count[NOP]!=0){
-                printf("NOP %d\n",count[NOP]);
+                printf("NOP %llu\n",count[NOP]);
         }
         if(count[END]!=0){
-                printf("END %d\n",count[END]);
+                printf("END %llu\n",count[END]);
         }
 
 

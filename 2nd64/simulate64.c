@@ -16,6 +16,7 @@
 #include "fpu/fi.h"
 #include "fpu/fless.h"
 #include "fpu/feq.h"
+#include "fpu/fsqrt.h"
 #include "include/oc_sim.h"
 #include "include/common.h"
 #include "include/print_reg.h"
@@ -40,7 +41,7 @@ int32_t ramnumber = 0;
 */
 int32_t reg[REGNUM];
 uint32_t freg[REGNUM];
-uint32_t count[256] = {0};
+uint64_t count[256] = {0};
 int cdr;
 //命令
 uint64_t ir;
@@ -51,20 +52,20 @@ uint32_t iru;
 uint32_t ird;
 int32_t lr;
 //何命令行ったか？
-uint32_t cnt;
+uint64_t cnt;
 uint32_t limit;
 
-
 FILE *fpout; 
+FILE *fpin;
 struct timeval start;
 
 Pc pc;
-
 int64_t tmp;
 
 void print_count(void);
 
 void print_jmpd(uint32_t promjmp[ROMNUM][ROMNUM],uint32_t promcmpd[ROMNUM][3]){
+printf("\n");
 printf("========= jmpd result ==========\n\n");
 for(int i=0;i<limit;i++){
 	for(int j=0;j<limit;j++){
@@ -94,17 +95,21 @@ static inline void init(void) {
             else{
                     fpout = fopen(outputfile, "a");
             }
+     if(*inputfile != '\0'){
+	fpin = fopen(inputfile, "rb");
+	}
 // register init
 	reg[0] = 0;
 	reg[1] = 4*(RAMNUM-1);
 	reg[2] = 0;
 	lnk = 0;
 	cdr = 0;
-	tmp = 0;
+	cnt = 0;
 // heap init なにこれ?
 	pc.number = 0;
 	pc.position = 0;
     gettimeofday(&start, NULL);
+
 /*
 	for (pc = 1; pc*4 <= reg[2]; pc++) {
 		ram[pc-1] = prom[pc];
@@ -143,8 +148,7 @@ int simulate(void) {
 	int opcode;
 	init();
 	do{
-		tmp+=1;
-		
+		cnt++;	
 		//LIWは特別扱い
 		ir = prom[pc.number];
 		int op_liw = get_opcodew(prom[pc.number]);
@@ -167,7 +171,7 @@ int simulate(void) {
 		if (!(cnt % 10000000)) { 
         		warning("."); 
                 if(!(cnt % 1000000000)){
-        			warning("time %.3f [sec],operation_count = %u hp = %d \n",elapsed_time(),cnt,ram[0]); 
+        			warning("time %.3f [sec],operation_count = %llu \n",elapsed_time(),cnt); 
                 }
 		}
 			
@@ -176,7 +180,6 @@ int simulate(void) {
 
 		//ゼロレジスタを表示	
 
-if(tmp>110&&reg[2]==0){break;}
 //一つ目の命令読み込み
 if(op_liw!=LIW){
 	if(pc.position==0){
@@ -221,7 +224,6 @@ if(op_liw!=LIW){
 			break;
 		}
 		}
-		cnt++;
 
 
 	}
@@ -260,7 +262,6 @@ if(op_liw!=LIW){
 			break;
 		}
 		}
-		cnt++;
 		pc.number++;
 	}
 }
@@ -275,12 +276,12 @@ else{
 	print_mem();
 	_GRTW = ((_SIW&0xffffffff));
         count[LIW]+=1;
-        cnt++;
         pc.number++;                
 }
 
 
-	} while (tmp<=1000000000);
+	} while (cnt<=20000000000);
+	fclose(fpin);
 	print_jmpd(promjmp,promcmpd);
 	return 0;
 } 
@@ -301,7 +302,7 @@ static inline int exec_op(uint32_t ira) {
 	uint32_t si;
 	opcode = get_opcode(ira);
     	int p;
-	
+	FILE *fp;
 
 	switch(opcode){
 		case ADDI:
@@ -359,6 +360,10 @@ static inline int exec_op(uint32_t ira) {
 			break;
 		case ITOF:
 			_GRT = itof(_GRA);
+			count[opcode]+=1;
+			break;
+		case FSQRT:
+			_GRT = fsqrt(_GRA);
 			count[opcode]+=1;
 			break;
 		//メモリから代入 ram
@@ -528,23 +533,22 @@ static inline int exec_op(uint32_t ira) {
 			count[opcode]+=1;
 			break;
                 case INLL:
-                        scanf("%d",&p);
+			fread(&p, 1, 1, fpin);
                         _GRT = (_GRT & 0xffffff00)|(p & 0xff);
 			count[opcode]+=1;
                         break;
                 case INLH:
-
-                        scanf("%d",&p);
+			fread(&p, 1, 1, fpin);
                         _GRT = (_GRT & 0xffff00ff)|(p<<8 & 0xff00);
 			count[opcode]+=1;
                         break;
                 case INUL:
-            		scanf("%d",&p);
+			fread(&p, 1, 1, fpin);
             		_GRT = (_GRT & 0xff00ffff)|(p<<16 & 0xff0000);
 			count[opcode]+=1;
                         break;
                 case INUH:
-        	    scanf("%d",&p);
+			fread(&p, 1, 1, fpin);
             		_GRT = (_GRT & 0x00ffffff)|(p<<24 & 0xff000000);
 			count[opcode]+=1;
                         break;
@@ -555,15 +559,15 @@ static inline int exec_op(uint32_t ira) {
 		case OUTLH:
   			fprintf(fpout, "%c",(_GRT>>8)&0xff);
 			count[opcode]+=1;
-            break;
+	                break;
 		case OUTUL:
   			fprintf(fpout, "%c",(_GRT>>16)&0xff);
 			count[opcode]+=1;
-            break;
+            		break;
 		case OUTUH:
 	  		fprintf(fpout, "%c",(_GRT>>24)&0xff);
 			count[opcode]+=1;
-            break;
+            		break;
 		case NOP:
 			count[opcode]+=1;
 			break;

@@ -26,14 +26,15 @@ extern int32_t reg[REGNUM];
 extern uint32_t freg[REGNUM];
 extern Pc pc;
 //extern int pc;
-extern uint32_t count[256];
+extern uint64_t count[256];
 extern int cdr;
 extern uint64_t ir;
 extern uint32_t ir32;
 extern int32_t lr;
-extern uint32_t cnt;
+extern uint64_t cnt;
 extern uint32_t limit;
 extern char* outputfile;
+extern char* inputfile;
 
 /*
 [31:26] opcode get_opcode
