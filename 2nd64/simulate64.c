@@ -90,10 +90,10 @@ double elapsed_time(){
 //レジスタの規定
 static inline void init(void) {
     if(*outputfile == '\0'){
-                    fpout = fopen("d.txt", "a");
+                    fpout = fopen("d.txt", "w");
             }
             else{
-                    fpout = fopen(outputfile, "a");
+                    fpout = fopen(outputfile, "w");
             }
      if(*inputfile != '\0'){
 	fpin = fopen(inputfile, "rb");
@@ -148,7 +148,7 @@ int simulate(void) {
 	int opcode;
 	init();
 	do{
-		cnt++;	
+		cnt+=1;
 		//LIWは特別扱い
 		ir = prom[pc.number];
 		int op_liw = get_opcodew(prom[pc.number]);
@@ -190,7 +190,7 @@ if(op_liw!=LIW){
 			if(get_opcode(ird)==NOP){
 				pc.position = 0;
 //	                	printf("実行命令 上下NOP\n");
-				count[NOP]+=1;
+				count[NOP]+=2;
         			pc.number++;                
 			}
 			else{
