@@ -177,7 +177,7 @@ int simulate(void) {
 		//ゼロレジスタを表示	
 
 if(tmp>110&&reg[2]==0){break;}
-
+//一つ目の命令読み込み
 if(op_liw!=LIW){
 	if(pc.position==0){
 
@@ -280,7 +280,7 @@ else{
 }
 
 
-	} while (tmp<=100000000000);
+	} while (tmp<=1000000000);
 	print_jmpd(promjmp,promcmpd);
 	return 0;
 } 
@@ -483,6 +483,7 @@ static inline int exec_op(uint32_t ira) {
 			if(cdr==eq){
 			promjmp[pc.number][_LI]+=1;
 			pc.number = _LI;
+			pc.position = 0;
 			}
 			count[opcode]+=1;
 			break;

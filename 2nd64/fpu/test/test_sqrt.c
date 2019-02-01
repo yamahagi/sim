@@ -68,7 +68,7 @@ counter1 = counter1+1;
 counter1 = counter1+1;
 for(i=0;i<255;i++){
       for(s1=0;s1<1;s1++){
-            for(it=0;it<10;it++){
+            for(it=0;it<10000;it++){
 		   switch(it){
 			case 0:
 				m1 = 0;

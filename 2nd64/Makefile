@@ -80,6 +80,19 @@ silentmem: clean
 	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim -D"SILENTMEM=1"
 	rm -rf ./*.o
 
+silentmemreg: clean
+	$(obj) simulate64.c -D"SILENTREG=1" -D"SILENTMEM=1"
+	$(obj) simcho.c -D"SILENTREG=1" -D"SILENTMEM=1"
+	$(obj) ./fpu/ftools.c -D"SILENTREG=1" -D"SILENTMEM=1"
+	$(obj) ./fpu/fpu.c -D"SILENTREG=1" -D"SILENTMEM=1"
+	$(obj) ./fpu/fdiv.c -D"SILENTREG=1" -D"SILENTMEM=1"
+	$(obj) ./fpu/fless.c -D"SILENTREG=1" -D"SILENTMEM=1"
+	$(obj) ./fpu/feq.c -D"SILENTREG=1" -D"SILENTMEM=1"
+	$(obj) ./fpu/fi.c -D"SILENTREG=1" -D"SILENTMEM=1"
+	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o ftools.o -o sim -D"SILENTREG=1" -D"SILENTMEM=1"
+	rm -rf ./*.o
+
+
 clean: 
 	rm -rf ./*.o
 	rm -rf ./sim
