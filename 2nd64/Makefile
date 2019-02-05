@@ -35,6 +35,7 @@ print_reg.o: ./include/print_reg.c
 	$(obj) ./include/print_reg.c
 
 sim: simcho.o simulate64.o ./include/print_reg.o ftools.o fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o
+	rm -rf ./sim
 	$(app) simcho.o simulate64.o  ./include/print_reg.o fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim
 	rm -rf ./*.o
 
@@ -50,7 +51,8 @@ mandelbrot: silent ./test/bin/mandelbrot/safe/mandelbrot.ml.linked.s.txt
 mandelbrot30: silent ./test/bin/mandelbrot/safe-30/mandelbrot.ml.linked.s.txt
 	./silent ./test/bin/mandelbrot/safe-30/mandelbrot.ml.linked.s.txt mandelbrot30.txt
 
-silent: clean
+silent: 
+	rm -rf ./silent
 	$(obj) simulate64.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
 	$(obj) simcho.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
 	$(obj) ./fpu/ftools.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
@@ -64,7 +66,8 @@ silent: clean
 	$(app) simcho.o simulate64.o  ./include/print_reg.o fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o silent -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
 	rm -rf ./*.o
 
-silentreg: clean
+silentreg:
+	rm -rf ./silentreg
 	$(obj) simulate64.c -D"SILENTREG=1"
 	$(obj) simcho.c -D"SILENTREG=1"
 	$(obj) ./fpu/ftools.c -D"SILENTREG=1"
@@ -78,7 +81,8 @@ silentreg: clean
 	$(app) simcho.o simulate64.o  ./include/print_reg.o fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o silentreg -D"SILENTREG=1"
 	rm -rf ./*.o
 
-silentmem: clean
+silentmem: 
+	rm -rf ./silentmem
 	$(obj) simulate64.c -D"SILENTMEM=1"
 	$(obj) simcho.c -D"SILENTMEM=1"
 	$(obj) ./fpu/ftools.c -D"SILENTMEM=1"
@@ -92,7 +96,8 @@ silentmem: clean
 	$(app) simcho.o simulate64.o  ./include/print_reg.o fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o silentmem -D"SILENTMEM=1"
 	rm -rf ./*.o
 
-silentmemreg: clean
+silentmemreg:
+	rm -rf ./silentmemreg
 	$(obj) simulate64.c -D"SILENTREG=1" -D"SILENTMEM=1"
 	$(obj) simcho.c -D"SILENTREG=1" -D"SILENTMEM=1"
 	$(obj) ./fpu/ftools.c -D"SILENTREG=1" -D"SILENTMEM=1"
