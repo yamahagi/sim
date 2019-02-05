@@ -31,8 +31,11 @@ feq.o: ./fpu/feq.c
 fsqrt.o: ./fpu/fsqrt.c
 	$(obj) ./fpu/fsqrt.c
 
-sim: simcho.o simulate64.o ./include/print_reg.c ftools.o fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o
-	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim
+print_reg.o: ./include/print_reg.c
+	$(obj) ./include/print_reg.c
+
+sim: simcho.o simulate64.o ./include/print_reg.o ftools.o fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o
+	$(app) simcho.o simulate64.o  ./include/print_reg.o fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim
 	rm -rf ./*.o
 
 fib: silent ./test/bin/fib/safe/fib.ml.linked.s.txt 
@@ -57,7 +60,8 @@ silent: clean
 	$(obj) ./fpu/feq.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
 	$(obj) ./fpu/fi.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
 	$(obj) ./fpu/fsqrt.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
-	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
+	$(obj) ./include/print_reg.c -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
+	$(app) simcho.o simulate64.o  ./include/print_reg.o fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim -D"SILENT=1" -D"SILENTMEM=1" -D"SILENTREG=1"
 	rm -rf ./*.o
 
 silentreg: clean
@@ -70,7 +74,8 @@ silentreg: clean
 	$(obj) ./fpu/feq.c -D"SILENTREG=1"
 	$(obj) ./fpu/fi.c -D"SILENTREG=1"
 	$(obj) ./fpu/fsqrt.c -D"SILENTREG=1"
-	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim -D"SILENTREG=1"
+	$(obj) ./include/print_reg.c -D"SILENTREG=1"
+	$(app) simcho.o simulate64.o  ./include/print_reg.o fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim -D"SILENTREG=1"
 	rm -rf ./*.o
 
 silentmem: clean
@@ -83,7 +88,8 @@ silentmem: clean
 	$(obj) ./fpu/feq.c -D"SILENTMEM=1"
 	$(obj) ./fpu/fi.c -D"SILENTMEM=1"
 	$(obj) ./fpu/fsqrt.c -D"SILENTMEM=1"
-	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim -D"SILENTMEM=1"
+	$(obj) ./include/print_reg.c -D"SILENTMEM=1"
+	$(app) simcho.o simulate64.o  ./include/print_reg.o fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim -D"SILENTMEM=1"
 	rm -rf ./*.o
 
 silentmemreg: clean
@@ -96,7 +102,8 @@ silentmemreg: clean
 	$(obj) ./fpu/feq.c -D"SILENTREG=1" -D"SILENTMEM=1"
 	$(obj) ./fpu/fi.c -D"SILENTREG=1" -D"SILENTMEM=1"
 	$(obj) ./fpu/fsqrt.c -D"SILENTREG=1" -D"SILENTMEM=1"
-	$(app) simcho.o simulate64.o  ./include/print_reg.c fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim -D"SILENTREG=1" -D"SILENTMEM=1"
+	$(obj) ./include/print_reg.c -D"SILENTREG=1" -D"SILENTMEM=1"
+	$(app) simcho.o simulate64.o  ./include/print_reg.o fpu.o fdiv.o fi.o fless.o feq.o fsqrt.o ftools.o -o sim -D"SILENTREG=1" -D"SILENTMEM=1"
 	rm -rf ./*.o
 
 
