@@ -230,6 +230,9 @@ void print_prom(int64_t ir,int n){
 		printf("LIW ");
                 printf("r%d %d\n",get_rtiw(ir),get_siw(ir));
 	}
+	else if(getu!=NOP){
+		printf("boom\n");
+	}
 	else if(getw==NOP&&getu==NOP){
 //		printf("%d: ",n);
 //              printf("上下NOP\n");

@@ -22,22 +22,7 @@ unsigned long long ss;
 unsigned long long t12;
 union {float x0; int x0bit;} hoge;
 union {float x02jyou; int x02jyoubit;} fuga;
-/*
-for(int i=0;i<2048;i++){
-	x0int = 0;
-    	hoge.x0 = ((2048.0 / (i + 2048.0)) + (2048.0 / ((i+1.0) + 2048.0)))/2.0;	
-	for(int j = 0; j <23 ; j++ ){
-     		 x0int = x0int + ((( hoge.x0bit >> j ) & 1 ) << j);
-    	}
-    	x0int = x0int + (1 << 23);
-    	s12 = ((2048 + i) * x0int * x0int);
-    	ss =  2 * x0int - (s12 >> 35);
-    	t12 = (x0int * x0int) >> 35;	
-	
-	s[i] = ss;
-	t[i] = t12;
-}
-*/
+
 int key;
 key = split_bit(bdata,22,12);
 

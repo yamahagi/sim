@@ -189,7 +189,7 @@ if(op_liw!=LIW){
 		if(opcode == NOP){
 			if(get_opcode(ird)==NOP){
 				pc.position = 0;
-//	                	printf("実行命令 上下NOP\n");
+	                	printf("実行命令 上下NOP\n");
 				count[NOP]+=2;
         			pc.number++;                
 			}
@@ -210,10 +210,10 @@ if(op_liw!=LIW){
 #ifndef SILENT
 		printf("実行命令 ");
 		print_op(ir32);
-#endif
 		//命令実行後ではなく命令実行時の現在のレジスタ状態を表示
 		print_reg();
 		print_mem();
+#endif
 		
 		if(ir32 == 0){
 		printf("終了u\n");	
