@@ -189,7 +189,9 @@ if(op_liw!=LIW){
 		if(opcode == NOP){
 			if(get_opcode(ird)==NOP){
 				pc.position = 0;
+#ifndef SILENT
 	                	printf("実行命令 上下NOP\n");
+#endif 
 				count[NOP]+=2;
         			pc.number++;                
 			}
