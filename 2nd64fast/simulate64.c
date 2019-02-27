@@ -224,7 +224,6 @@ else{
 
 	} while (cnt<=20000000000);
 	fclose(fpin);
-	print_jmpd(promjmp,promcmpd);
 	return 0;
 } 
 

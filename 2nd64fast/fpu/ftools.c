@@ -28,13 +28,6 @@ void print_bit(int32_t data){
 	}
 	printf("\n");
 }
-void print_sqrtbit(int32_t data){
-	for(int i=0;i<32;i++){
-		if(i==1||i==9||i==17) printf(" ");
-		printf("%d",((data>>(31-i))&0x1));
-	}
-	printf("\n");
-}
 
 void print_ubit(uint32_t data){
 	for(int i=0;i<32;i++){

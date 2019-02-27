@@ -184,7 +184,7 @@ FILE *fp;
 		}
 //		prom[limit]=((num1<<56)&0xff00000000000000)+((num2<<48)&0xff000000000000)+(num3<<40&0xff0000000000)+(num4<<32&0xff00000000)+(num5<<24&0xff000000)+(num6<<16&0xff0000)+(num7<<8&0xff00)+(num8&0xff);
 		prom[limit] = num;
-		print_prom(prom[limit],limit);  
+//		print_prom(prom[limit],limit);  
 //		print_data64(num);
     		limit+=1;
        }
@@ -242,7 +242,6 @@ static void print_result(void) {
 	warning_nl();
 	print_elapsed_time();
 	print_val("cnt\t: %llu", cnt);
-	print_count();
 #ifdef ANALYSE_FLAG
 	print_val("analyse result");
 	print_analysis(stderr);

@@ -1,8 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "../ftools.h"
-#include "../fdiv.h"
+#include "ftools.h"
+#include "fdiv2.h"
+#include "fdiv.h"
 
 float ch20(float a){
 int b = int_get(a);
@@ -22,9 +23,7 @@ return *(float*)(&l);
 int main(void){
 
 int a = 0b00000000010110101100100010100010;
-a = 0b10000100000110101011110000000100;
 int b = 0b10000000011101100110011110001100;
-b = 0b10111100111111111111111111111111;
 float t = *(float *)(&(a));
 float l = *(float *)(&(b));
 float c = t/l;
